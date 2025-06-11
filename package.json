@@ -1,6 +1,6 @@
 {
-  "name": "postman-api-mcp-server",
-  "version": "0.0.1",
+  "name": "postman-api-mcp",
+  "version": "1.0.0",
   "description": "A simple MCP server to operate on the Postman API",
   "main": "index.js",
   "type": "module",
@@ -38,7 +38,7 @@
     "typescript-eslint": "^8.32.1"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "author": "Postman, Inc.",
   "license": "Apache-2.0"

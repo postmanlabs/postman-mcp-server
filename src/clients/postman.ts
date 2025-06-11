@@ -1,5 +1,5 @@
 import packageJson from '../../package.json' with { type: 'json' };
-const BASE_URL = 'https://api.getpostman.com';
+const BASE_URL = 'https://api.postman.com';
 
 export enum ContentType {
   Json = 'application/json',
