@@ -1,9 +1,11 @@
 # Postman API MCP Server
 
-This project was created with the [Postman Agent Generator](https://postman.com/explore/agent-generator), configured to [Model Context Provider (MCP)](https://modelcontextprotocol.io/introduction) Server output mode. It provides:
+**This project offers two MCP-compatible server options:**
 
-- An MCP-compatible server (`dist/src/index.js`) using the [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http).
-- Automatically generated JavaScript tools for each selected Postman API request.
+1. **Streamable HTTP server** — A fully MCP-compliant server entrypoint (`dist/src/index.js`) using the [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http).
+2. **STDIO server** — A lightweight MCP server that communicates over standard input/output, ideal for integration with editors and tools like [VS Code](https://code.visualstudio.com/).
+
+See more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
 
 ## 🧰 VS Code Integration
 
