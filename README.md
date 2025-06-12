@@ -48,8 +48,11 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
 
 3. Configure your extension to use one of the MCP servers:
 
-   - **postman-api-mcp**: Uses the local stdio-based server, running directly from your project files
-   - **postman-api-http-server**: Connects to the Postman cloud MCP server via [Streamable HTTP](https://github.com/modelcontextprotocol/typescript-sdk?tab=readme-ov-file#streamable-http) at the /mcp endpoint
+   - **postman-api-mcp**: Uses the local stdio-based server, running directly from your project files. 
+     - Clone the repository
+     - In the repository root folder, execute `npm install && npm run build`. This compiles the servver code in the `dist` folder.
+     - Make sure to replace `${workspaceFolder}` in the mcp.json file with the full path to the Postman API MCP repository.
+   - **postman-api-http-server**: Connects to the Postman cloud MCP server via [Streamable HTTP](https://github.com/modelcontextprotocol/typescript-sdk?tab=readme-ov-file#streamable-http) at the /mcp endpoint. No additional steps other than setup the mcp.json file are required.
 
 4. When prompted, enter your Postman API key.
 
