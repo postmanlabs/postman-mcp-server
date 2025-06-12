@@ -15,7 +15,7 @@ export const parameters = z.object({
             enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
             key: z.string().describe("The variable's name.").optional(),
             value: z.string().describe("The variable's value.").optional(),
-            type: z.enum(['secret', 'default', 'any']).describe('The variable type.').optional(),
+            type: z.enum(['secret', 'default']).describe('The variable type.').optional(),
           })
         )
         .describe("Information about the environment's variables.")

@@ -14,7 +14,7 @@ export const parameters = z.object({
       model: z
         .enum(['collection', 'folder', 'request'])
         .describe(
-          'The collection, folder, or request the items will be transferred to. For response transfers, use the `request` value.'
+          'The collection, folder, or request that the items will be transferred to. For response transfers, use the `request` value.'
         ),
     })
     .describe("Information about the item transfer's destination location."),

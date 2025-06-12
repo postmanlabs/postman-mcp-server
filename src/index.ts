@@ -106,13 +106,13 @@ const logger = {
 
 let currentApiKey: string | undefined = undefined;
 
+const allGeneratedTools = await loadAllTools();
+logger.info(`Dynamically loaded ${allGeneratedTools.length} tools...`);
+
 async function run() {
   const args = process.argv.slice(2);
   const isSSE = args.includes('--sse') || process.env.MCP_TRANSPORT === 'sse';
   logger.info(`Transport mode determined: ${isSSE ? 'HTTP/SSE' : 'Stdio'}`);
-
-  const allGeneratedTools = await loadAllTools();
-  logger.info(`Dynamically loaded ${allGeneratedTools.length} tools...`);
 
   const server = new Server(
     { name: SERVER_NAME, version: APP_VERSION },
@@ -126,6 +126,8 @@ async function run() {
     await server.close();
     process.exit(0);
   });
+
+  logger.info(`Registering ${allGeneratedTools.length} tools...`);
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const toolName = request.params.name;
