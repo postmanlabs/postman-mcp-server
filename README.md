@@ -57,7 +57,6 @@ You can now use your Postman API tools with your VS Code extension through the M
 
 See [DOCKER.md](./DOCKER.md) for up-to-date build, Docker, and usage instructions.
 
-## Contributing
 
 ## 💬 Questions and support
 
