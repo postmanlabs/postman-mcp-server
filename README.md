@@ -28,9 +28,9 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
         },
         "postman-api-http-server": {
           "type": "sse",
-          "url": "http://localhost:1337/sse",
-          "env": {
-            "POSTMAN_API_KEY": "${input:postman-api-key}"
+          "url": "https://mcp.postman.com/mcp",
+          "headers": {
+            "Authorization": "Bearer ${input:postman-api-key}"
           }
         }
       },
