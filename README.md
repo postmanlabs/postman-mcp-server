@@ -1,9 +1,8 @@
 # Postman API MCP Server
 
-**This project offers two MCP-compatible server options:**
+**This project offers a single MCP-compatible server option:**
 
-1. **Streamable HTTP server** — A fully MCP-compliant server entrypoint (`dist/src/index.js`) using the [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http).
-2. **STDIO server** — A lightweight MCP server that communicates over standard input/output, ideal for integration with editors and tools like [VS Code](https://code.visualstudio.com/).
+- **STDIO server** — A lightweight MCP server that communicates over standard input/output, ideal for integration with editors and tools like [VS Code](https://code.visualstudio.com/).
 
 See more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
 
@@ -25,13 +24,6 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
           "env": {
             "POSTMAN_API_KEY": "${input:postman-api-key}"
           }
-        },
-        "postman-api-http-server": {
-          "type": "sse",
-          "url": "https://mcp.postman.com/mcp",
-          "headers": {
-            "Authorization": "Bearer ${input:postman-api-key}"
-          }
         }
       },
       "inputs": [
@@ -46,13 +38,12 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
 
 2. Install an MCP-compatible VS Code extension (such as GitHub Copilot, Claude for VS Code, or other AI assistants that support MCP).
 
-3. Configure your extension to use one of the MCP servers:
+3. Configure your extension to use the MCP server:
 
    - **postman-api-mcp**: Uses the local stdio-based server, running directly from your project files.
      - Clone the repository
      - In the repository root folder, execute `npm install && npm run build`. This compiles the server code in the `dist` folder.
      - Make sure to replace `${workspaceFolder}` in the mcp.json file with the full path to the Postman API MCP repository.
-   - **postman-api-http-server**: Connects to the Postman cloud MCP server via [Streamable HTTP](https://github.com/modelcontextprotocol/typescript-sdk?tab=readme-ov-file#streamable-http) at the /mcp endpoint. No additional steps other than setting up the mcp.json file are required.
 
 4. When prompted, enter your Postman API key.
 

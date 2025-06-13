@@ -28,12 +28,8 @@ EXPOSE 1337
 
 ENV NODE_ENV=production
 
-FROM production-base AS production-http
-
-ENTRYPOINT ["npm", "run", "start"]
-
 FROM production-base AS production-stdio
 
 ENTRYPOINT ["npm", "run", "start:stdio"]
 
-FROM production-http AS production
+FROM production-stdio AS production
