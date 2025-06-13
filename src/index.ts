@@ -18,8 +18,6 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
 
-import { createApp } from './servers/express.js';
-
 interface ToolModule {
   method: string;
   description: string;
@@ -110,9 +108,7 @@ const allGeneratedTools = await loadAllTools();
 logger.info(`Dynamically loaded ${allGeneratedTools.length} tools...`);
 
 async function run() {
-  const args = process.argv.slice(2);
-  const isSSE = args.includes('--sse') || process.env.MCP_TRANSPORT === 'sse';
-  logger.info(`Transport mode determined: ${isSSE ? 'HTTP/SSE' : 'Stdio'}`);
+  logger.info(`Transport mode: Stdio`);
 
   const server = new Server(
     { name: SERVER_NAME, version: APP_VERSION },
@@ -163,30 +159,15 @@ async function run() {
     return { tools: transformedTools };
   });
 
-  if (isSSE) {
-    const apiKeyCb = (key: string | undefined) => {
-      currentApiKey = key;
-      logger.info('API key set successfully.');
-    };
-    const app = createApp(server, logger, apiKeyCb);
-    const port = process.env.PORT || 1337;
-    const httpServer = app.listen(port, () => {
-      logger.info(`[${SERVER_NAME} - HTTP/SSE Server] running on port ${port}.`);
-    });
-    process.on('SIGINT', () => {
-      httpServer.close(() => logger.info('HTTP server closed.'));
-    });
-  } else {
-    currentApiKey = process.env.POSTMAN_API_KEY;
-    if (!currentApiKey) {
-      logger.error('API key is required. Set the POSTMAN_API_KEY environment variable.');
-      process.exit(1);
-    }
-    logger.info(`[${SERVER_NAME} - Stdio Transport] running.`);
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    logger.info('Stdio transport connected. Waiting for messages...');
+  currentApiKey = process.env.POSTMAN_API_KEY;
+  if (!currentApiKey) {
+    logger.error('API key is required. Set the POSTMAN_API_KEY environment variable.');
+    process.exit(1);
   }
+  logger.info(`[${SERVER_NAME} - Stdio Transport] running.`);
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  logger.info('Stdio transport connected. Waiting for messages...');
 }
 
 run().catch((error) => {
