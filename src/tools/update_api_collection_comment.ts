@@ -11,10 +11,10 @@ export const parameters = z.object({
   body: z.string().describe('The contents of the comment.'),
   tags: z
     .object({
-      userName: z
+      '{{userName}}': z
         .object({
           type: z.literal('user').describe('The `user` value.'),
-          id: z.number().int().describe("The user's ID."),
+          id: z.string().describe("The user's ID."),
         })
         .describe(
           "An object that contains information about the tagged user. The object's name is the user's Postman username. For example, `@user-postman`."

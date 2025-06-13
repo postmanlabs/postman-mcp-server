@@ -19,20 +19,28 @@ export const parameters = z.object({
         .array(
           z
             .object({
-              key: z.string().describe("The variable's key (name).").optional(),
-              value: z.string().describe("The key's value.").optional(),
-              type: z
-                .enum(['string', 'boolean', 'integer'])
-                .describe("The variable's type.")
+              id: z
+                .string()
+                .describe("The variable's ID. Doesn't apply to collection-level variables.")
                 .optional(),
-              name: z.string().describe("The variable's name.").optional(),
+              key: z.string().describe("The variable's key (name).").optional(),
               description: z
                 .string()
                 .describe(
                   "The variable's description. Doesn't apply to collection-level variables."
                 )
                 .optional(),
-              disabled: z.boolean().default(false),
+              value: z.string().describe("The key's value.").optional(),
+              type: z
+                .enum(['string', 'boolean', 'integer'])
+                .describe("The variable's type.")
+                .optional(),
+              disabled: z
+                .boolean()
+                .describe(
+                  'If true, the variable is not enabled. Applies only to query parameter variables.'
+                )
+                .default(false),
             })
             .describe('Information about the variable.')
         )
@@ -54,6 +62,8 @@ export const parameters = z.object({
               'awsv4',
               'ntlm',
               'edgegrid',
+              'jwt',
+              'asap',
             ])
             .describe('The authorization type.'),
           apikey: z
@@ -274,6 +284,50 @@ export const parameters = z.object({
               'The attributes for [OAuth2](https://learning.postman.com/docs/sending-requests/authorization/oauth-20/) authentication.'
             )
             .optional(),
+          jwt: z
+            .array(
+              z
+                .object({
+                  key: z.string().describe("The auth method's key value."),
+                  value: z
+                    .union([z.string(), z.array(z.record(z.any()))])
+                    .describe("The key's value.")
+                    .optional(),
+                  type: z
+                    .enum(['string', 'boolean', 'number', 'array', 'object', 'any'])
+                    .describe("The value's type.")
+                    .optional(),
+                })
+                .describe(
+                  'Information about the supported Postman [authorization type](https://learning.postman.com/docs/sending-requests/authorization/authorization-types/).'
+                )
+            )
+            .describe(
+              'The attributes for JWT (JSON Web Token). Includes the `payload`, `secret`, `algorithm`, `addTokenTo`, and `headerPrefix` properties.'
+            )
+            .optional(),
+          asap: z
+            .array(
+              z
+                .object({
+                  key: z.string().describe("The auth method's key value."),
+                  value: z
+                    .union([z.string(), z.array(z.record(z.any()))])
+                    .describe("The key's value.")
+                    .optional(),
+                  type: z
+                    .enum(['string', 'boolean', 'number', 'array', 'object', 'any'])
+                    .describe("The value's type.")
+                    .optional(),
+                })
+                .describe(
+                  'Information about the supported Postman [authorization type](https://learning.postman.com/docs/sending-requests/authorization/authorization-types/).'
+                )
+            )
+            .describe(
+              'The attributes for ASAP (Atlassian S2S Authentication Protocol). Includes the `kid`, `aud`, `iss`, `alg`, `privateKey`, and `claims` properties.'
+            )
+            .optional(),
         })
         .describe(
           'The [authorization type supported by Postman](https://learning.postman.com/docs/sending-requests/authorization/authorization-types/).'
@@ -286,9 +340,7 @@ export const parameters = z.object({
               id: z.string().describe("The event's ID.").optional(),
               listen: z
                 .enum(['test', 'prerequest'])
-                .describe(
-                  'Can be set to `test` or `prerequest` for test scripts or pre-request scripts respectively.'
-                ),
+                .describe('The `prerequest` (pre-request) or `test` (post-response) value.'),
               script: z
                 .object({
                   id: z.string().describe("The script's ID.").optional(),
@@ -302,234 +354,11 @@ export const parameters = z.object({
                       'A list of script strings, where each line represents a line of code. Separate lines makes it easy to track script changes.'
                     )
                     .optional(),
-                  src: z
-                    .any()
-                    .superRefine((x, ctx) => {
-                      const schemas = [
-                        z
-                          .object({
-                            raw: z.string().describe("The request's raw URL.").optional(),
-                            protocol: z.string().describe('The request protocol.').optional(),
-                            host: z
-                              .any()
-                              .superRefine((x, ctx) => {
-                                const schemas = [
-                                  z.string().describe("The host's URL."),
-                                  z
-                                    .array(z.string().nullable())
-                                    .describe("A list of the host's subdomain components."),
-                                ];
-                                const errors = schemas.reduce<z.ZodError[]>(
-                                  (errors, schema) =>
-                                    ((result) =>
-                                      result.error ? [...errors, result.error] : errors)(
-                                      schema.safeParse(x)
-                                    ),
-                                  []
-                                );
-                                if (schemas.length - errors.length !== 1) {
-                                  ctx.addIssue({
-                                    path: ctx.path,
-                                    code: 'invalid_union',
-                                    unionErrors: errors,
-                                    message: 'Invalid input: Should pass single schema',
-                                  });
-                                }
-                              })
-                              .describe("The host's URL.")
-                              .optional(),
-                            path: z
-                              .any()
-                              .superRefine((x, ctx) => {
-                                const schemas = [
-                                  z.string(),
-                                  z
-                                    .array(
-                                      z.any().superRefine((x, ctx) => {
-                                        const schemas = [
-                                          z.string().nullable(),
-                                          z.object({
-                                            type: z.string().nullable().optional(),
-                                            value: z.string().nullable().optional(),
-                                          }),
-                                        ];
-                                        const errors = schemas.reduce<z.ZodError[]>(
-                                          (errors, schema) =>
-                                            ((result) =>
-                                              result.error ? [...errors, result.error] : errors)(
-                                              schema.safeParse(x)
-                                            ),
-                                          []
-                                        );
-                                        if (schemas.length - errors.length !== 1) {
-                                          ctx.addIssue({
-                                            path: ctx.path,
-                                            code: 'invalid_union',
-                                            unionErrors: errors,
-                                            message: 'Invalid input: Should pass single schema',
-                                          });
-                                        }
-                                      })
-                                    )
-                                    .describe("A list of the URL's path components."),
-                                ];
-                                const errors = schemas.reduce<z.ZodError[]>(
-                                  (errors, schema) =>
-                                    ((result) =>
-                                      result.error ? [...errors, result.error] : errors)(
-                                      schema.safeParse(x)
-                                    ),
-                                  []
-                                );
-                                if (schemas.length - errors.length !== 1) {
-                                  ctx.addIssue({
-                                    path: ctx.path,
-                                    code: 'invalid_union',
-                                    unionErrors: errors,
-                                    message: 'Invalid input: Should pass single schema',
-                                  });
-                                }
-                              })
-                              .optional(),
-                            port: z
-                              .string()
-                              .describe(
-                                "The URL's port number. An empty value indicates port `80` (http) or `443` (https)."
-                              )
-                              .optional(),
-                            query: z
-                              .array(
-                                z.object({
-                                  key: z
-                                    .string()
-                                    .nullable()
-                                    .describe("The query parameter's key.")
-                                    .optional(),
-                                  value: z
-                                    .string()
-                                    .nullable()
-                                    .describe("The key's value.")
-                                    .optional(),
-                                  disabled: z
-                                    .boolean()
-                                    .describe(
-                                      "If true, the query parameter isn't sent with the request."
-                                    )
-                                    .default(false),
-                                  description: z
-                                    .any()
-                                    .superRefine((x, ctx) => {
-                                      const schemas = [
-                                        z.object({
-                                          content: z
-                                            .string()
-                                            .describe("The description's contents.")
-                                            .optional(),
-                                          type: z
-                                            .string()
-                                            .describe(
-                                              "The raw description content's MIME type, such as `text/markdown` or `text/html`. The type is used to render the description in the Postman app or when generating documentation."
-                                            )
-                                            .optional(),
-                                        }),
-                                        z
-                                          .string()
-                                          .nullable()
-                                          .describe("The collection's description."),
-                                      ];
-                                      const errors = schemas.reduce<z.ZodError[]>(
-                                        (errors, schema) =>
-                                          ((result) =>
-                                            result.error ? [...errors, result.error] : errors)(
-                                            schema.safeParse(x)
-                                          ),
-                                        []
-                                      );
-                                      if (schemas.length - errors.length !== 1) {
-                                        ctx.addIssue({
-                                          path: ctx.path,
-                                          code: 'invalid_union',
-                                          unionErrors: errors,
-                                          message: 'Invalid input: Should pass single schema',
-                                        });
-                                      }
-                                    })
-                                    .describe(
-                                      'A description can be a raw text or an object containing the description along with its format.'
-                                    )
-                                    .optional(),
-                                })
-                              )
-                              .describe(
-                                'A list of query parameters. These are the query string parts of the URL, parsed as separate variables.'
-                              )
-                              .optional(),
-                            hash: z
-                              .string()
-                              .describe(
-                                'Contains the URL fragment (if any). Usually this is not transmitted over the network, but it could be useful to store this in some cases.'
-                              )
-                              .optional(),
-                            variable: z
-                              .array(
-                                z
-                                  .object({
-                                    key: z
-                                      .string()
-                                      .describe("The variable's key (name).")
-                                      .optional(),
-                                    value: z.string().describe("The key's value.").optional(),
-                                    type: z
-                                      .enum(['string', 'boolean', 'integer'])
-                                      .describe("The variable's type.")
-                                      .optional(),
-                                    name: z.string().describe("The variable's name.").optional(),
-                                    description: z
-                                      .string()
-                                      .describe(
-                                        "The variable's description. Doesn't apply to collection-level variables."
-                                      )
-                                      .optional(),
-                                    disabled: z.boolean().default(false),
-                                  })
-                                  .describe('Information about the variable.')
-                              )
-                              .describe('A list of variables.')
-                              .optional(),
-                          })
-                          .describe('Information about the URL.'),
-                        z.string().describe('The literal request URL.'),
-                      ];
-                      const errors = schemas.reduce<z.ZodError[]>(
-                        (errors, schema) =>
-                          ((result) => (result.error ? [...errors, result.error] : errors))(
-                            schema.safeParse(x)
-                          ),
-                        []
-                      );
-                      if (schemas.length - errors.length !== 1) {
-                        ctx.addIssue({
-                          path: ctx.path,
-                          code: 'invalid_union',
-                          unionErrors: errors,
-                          message: 'Invalid input: Should pass single schema',
-                        });
-                      }
-                    })
-                    .describe('Information about the URL.')
-                    .optional(),
-                  name: z.string().describe("The script's name.").optional(),
                 })
                 .describe(
                   'Information about the Javascript code that can be used to to perform setup or teardown operations in a response.'
                 )
                 .optional(),
-              disabled: z
-                .boolean()
-                .describe(
-                  'If true, the event is disabled. If this value is absent, then the event is considered enabled.'
-                )
-                .default(false),
             })
             .describe("Information about the collection's events.")
         )

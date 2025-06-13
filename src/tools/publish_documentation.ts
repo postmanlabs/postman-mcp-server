@@ -40,18 +40,17 @@ export const parameters = z.object({
     .object({
       metaTags: z
         .array(
-          z
-            .object({
-              name: z
-                .string()
-                .describe(
-                  "The key's name:\n  - `title` — The title of your documentation. This value appears in relevant search queries and browser tabs. By default, the system uses the collection's name for the documentation title.\n  - `description` — The documentation's description. This provides brief information about your document and lets users know what it contains. By default, the system uses the collection's description content.\n"
-                ),
-              value: z.string().describe("The `name` key's value."),
-            })
-            .describe(
-              "The key-pair values that contain the documentation's `title` and `description` metadata information."
-            )
+          z.object({
+            name: z
+              .string()
+              .describe(
+                "The key's name:\n  - `title` — The title of your documentation. This value appears in relevant search queries and browser tabs. By default, the system uses the collection's name for the documentation title.\n  - `description` — The documentation's description. This provides brief information about your document and lets users know what it contains. By default, the system uses the collection's description content.\n"
+              ),
+            value: z.string().describe("The `name` key's value."),
+          })
+        )
+        .describe(
+          "The key-pair values that contain the documentation's `title` and `description` metadata information."
         )
         .optional(),
       appearance: z
