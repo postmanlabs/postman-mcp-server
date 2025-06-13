@@ -6,6 +6,8 @@
 
 See more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
 
+Note: If you prefer to use the HTTP version, it's available at http://mcp.postman.com.
+
 ## 🧰 VS Code Integration
 
 You can integrate your MCP server with Visual Studio Code to use it with VS Code extensions that support MCP.
