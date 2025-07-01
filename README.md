@@ -85,7 +85,7 @@ You will be asked to input your Postman API key. Afterwards, the agent performs 
 
 ### 🧰 Claude Integration
 
-Open the `claude_desktop_config.json` file, accessible from Claude preferences. Paste this information:
+Open the *claude_desktop_config.json* file, which is accessible from Claude preferences. Then, add the following:
 
 ```
 {
