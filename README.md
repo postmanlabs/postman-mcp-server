@@ -81,7 +81,7 @@ If you prefer to use the HTTP version, it's available at http://mcp.postman.com.
   }
 ```
 
-You will be asked to input the Postman API key, and the agent will perform calls to the Postman cloud MCP server (http://mcp.postman.com)
+You will be asked to input your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server (http://mcp.postman.com).
 
 ### 🧰 Claude Integration
 
