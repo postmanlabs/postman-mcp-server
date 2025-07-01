@@ -6,8 +6,6 @@
 
 See more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
 
-Note: If you prefer to use the HTTP version, it's available at http://mcp.postman.com.
-
 ## 🧰 VS Code Integration
 
 You can integrate your MCP server with Visual Studio Code to use it with VS Code extensions that support MCP.
@@ -55,6 +53,55 @@ You can now use your Postman API tools with your VS Code extension through the M
 
 See [DOCKER.md](./DOCKER.md) for up-to-date build, Docker, and usage instructions.
 
+
+## HTTP streamable version
+
+If you prefer to use the HTTP version, it's available at http://mcp.postman.com. Here are the instructions to install it:
+
+### 🧰 VS Code Integration
+
+```
+{
+    "servers": {
+      "postman-api-http-server": {
+        "type": "mcp",
+        "url": "https://mcp.postman.com/mcp",
+        "headers": {
+            "Authorization": "Bearer ${input:postman-api-key}"
+          }
+      }
+    },
+    "inputs": [
+      {
+        "id": "postman-api-key",
+        "type": "promptString",
+        "description": "Enter your Postman API key"
+      }
+    ]
+  }
+```
+
+You will be asked to input your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server (http://mcp.postman.com).
+
+### 🧰 Claude Integration
+
+Open the *claude_desktop_config.json* file, which is accessible from Claude preferences. Then, add the following:
+
+```
+{
+  "mcpServers": {
+    "postman-api": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://mcp.postman-beta.com/mcp",
+        "--header",
+        "Authorization: Bearer PMAK-YOUR-POSTMAN-API-KEY"
+      ]
+    }
+  }
+}
+```
 
 ## 💬 Questions and support
 
