@@ -108,3 +108,4 @@ Open the *claude_desktop_config.json* file, which is accessible from Claude pref
 - See the [Postman Agent Generator](https://postman.com/explore/agent-generator) page for updates and new capabilities.
 - See [Add your MCP requests to your collections](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/) to learn how to use Postman to perform MCP requests.
 - Visit the [Postman Community](https://community.postman.com/) to share what you've built, ask questions, and get help.
+- You can connect to both HTTP and STDIO servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
