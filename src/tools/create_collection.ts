@@ -82,45 +82,48 @@ export const parameters = z.object({
             request: z
               .object({
                 url: z
-                  .object({
-                    raw: z.string().describe("The request's raw URL.").optional(),
-                    protocol: z.string().describe('The request protocol.').optional(),
-                    host: z.array(z.string().nullable()).describe("The host's URL.").optional(),
-                    path: z
-                      .array(z.string())
-                      .describe("A list of the URL's path components.")
-                      .optional(),
-                    port: z
-                      .string()
-                      .describe(
-                        "The URL's port number. An empty value indicates port `80` (http) or `443` (https)."
-                      )
-                      .optional(),
-                    query: z
-                      .array(
-                        z.object({
-                          key: z
-                            .string()
-                            .nullable()
-                            .describe("The query parameter's key.")
-                            .optional(),
-                          value: z.string().nullable().describe("The key's value.").optional(),
-                          disabled: z
-                            .boolean()
-                            .describe("If true, the query parameter isn't sent with the request.")
-                            .default(false),
-                          description: z
-                            .string()
-                            .nullable()
-                            .describe("The query parameter's description.")
-                            .optional(),
-                        })
-                      )
-                      .describe(
-                        'A list of query parameters. These are the query string parts of the URL, parsed as separate variables.'
-                      )
-                      .optional(),
-                  })
+                  .union([
+                    z.string().nullable().describe("The request's raw URL."),
+                    z.object({
+                      raw: z.string().describe("The request's raw URL.").optional(),
+                      protocol: z.string().describe('The request protocol.').optional(),
+                      host: z.array(z.string().nullable()).describe("The host's URL.").optional(),
+                      path: z
+                        .array(z.string())
+                        .describe("A list of the URL's path components.")
+                        .optional(),
+                      port: z
+                        .string()
+                        .describe(
+                          "The URL's port number. An empty value indicates port `80` (http) or `443` (https)."
+                        )
+                        .optional(),
+                      query: z
+                        .array(
+                          z.object({
+                            key: z
+                              .string()
+                              .nullable()
+                              .describe("The query parameter's key.")
+                              .optional(),
+                            value: z.string().nullable().describe("The key's value.").optional(),
+                            disabled: z
+                              .boolean()
+                              .describe("If true, the query parameter isn't sent with the request.")
+                              .default(false),
+                            description: z
+                              .string()
+                              .nullable()
+                              .describe("The query parameter's description.")
+                              .optional(),
+                          })
+                        )
+                        .describe(
+                          'A list of query parameters. These are the query string parts of the URL, parsed as separate variables.'
+                        )
+                        .optional(),
+                    }),
+                  ])
                   .describe('Information about the URL.')
                   .optional(),
                 auth: z

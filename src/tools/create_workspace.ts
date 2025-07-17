@@ -14,6 +14,7 @@ export const parameters = z.object({
           'The type of workspace:\n- `personal`\n- `private` — Private workspaces are available on Postman [**Professional** and **Enterprise** plans](https://www.postman.com/pricing).\n- `public`\n- `team`\n- `partner` — [Partner Workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/partner-workspaces/) are available on Postman [**Professional** and **Enterprise** plans](https://www.postman.com/pricing)).\n'
         ),
       description: z.string().describe("The workspace's description.").optional(),
+      about: z.string().describe('A brief summary about the workspace.').optional(),
     })
     .describe('Information about the workspace.')
     .optional(),

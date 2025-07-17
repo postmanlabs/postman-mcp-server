@@ -16,6 +16,7 @@ export const parameters = z.object({
         )
         .optional(),
       description: z.string().describe('The new workspace description.').optional(),
+      about: z.string().describe('A brief summary about the workspace.').optional(),
     })
     .optional(),
 });
