@@ -597,10 +597,10 @@ export const parameters = z.object({
               })
               .describe('Information about the collection request.')
               .optional(),
-            response: z
-              .array(z.any().describe("Information about the request's response."))
-              .describe("A list of the collection's responses.")
-              .optional(),
+            // response: z
+            //   .array(z.any().describe("Information about the request's response."))
+            //   .describe("A list of the collection's responses.")
+            //   .optional(),
             protocolProfileBehavior: z
               .object({
                 strictSSL: z

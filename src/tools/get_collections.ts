@@ -5,7 +5,7 @@ export const method = 'get-collections';
 export const description =
   'The workspace ID query is required for this endpoint. If not provided, the LLM should ask the user to provide it.';
 export const parameters = z.object({
-  workspace: z.string().describe("The workspace's ID.").optional(),
+  workspace: z.string().describe("The workspace's ID."),
   name: z.string().describe('Filter results by collections that match the given name.').optional(),
   limit: z
     .number()

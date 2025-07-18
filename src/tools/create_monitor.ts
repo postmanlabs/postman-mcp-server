@@ -60,7 +60,7 @@ export const parameters = z.object({
           cron: z
             .string()
             .describe(
-              "The monitor's run frequency, based on the given cron pattern. For example:\n\n| Frequency | Cron pattern |\n| --------- | ------------ |\n| Every 5 minutes | `*/5 * * * *` |\n| Every 30 minutes | `*/30 * * * *` |\n| Every hour | `0 */1 * * *` |\n| Every 6 hours | `0 */6 * * *` |\n| Every day at 5 pm | `0 17 * * *` |\n| Every Monday at 12 pm | `0 12 * * MON` |\n| Every weekday (Mon — Fri) at 6 am | `0 6 * * MON-FRI` |\n"
+              'The cron expression that defines when the monitor runs. Use standard five-field POSIX cron syntax.\n'
             )
             .optional(),
           timezone: z
