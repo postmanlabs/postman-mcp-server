@@ -98,12 +98,12 @@ export const parameters = z.object({
                           .string()
                           .describe('The type of script. For example, `text/javascript`.')
                           .optional(),
-                        exec: z
-                          .array(z.string().nullable())
-                          .describe(
-                            'A list of script strings, where each line represents a line of code. Separate lines makes it easy to track script changes.'
-                          )
-                          .optional(),
+                        // exec: z
+                        //   .array(z.string().nullable())
+                        //   .describe(
+                        //     'A list of script strings, where each line represents a line of code. Separate lines makes it easy to track script changes.'
+                        //   )
+                        //   .optional(),
                       })
                       .describe(
                         'Information about the Javascript code that can be used to to perform setup or teardown operations in a response.'
@@ -597,10 +597,10 @@ export const parameters = z.object({
               })
               .describe('Information about the collection request.')
               .optional(),
-            response: z
-              .array(z.any().describe("Information about the request's response."))
-              .describe("A list of the collection's responses.")
-              .optional(),
+            // response: z
+            //   .array(z.any().describe("Information about the request's response."))
+            //   .describe("A list of the collection's responses.")
+            //   .optional(),
             protocolProfileBehavior: z
               .object({
                 strictSSL: z
