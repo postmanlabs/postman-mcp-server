@@ -1,4 +1,4 @@
-# Postman API MCP Server
+# Postman MCP Server
 
 **This project offers a single MCP-compatible server option:**
 
@@ -43,7 +43,7 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
    - **postman-api-mcp**: Uses the local stdio-based server, running directly from your project files.
      - Clone the repository
      - In the repository root folder, execute `npm install && npm run build`. This compiles the server code in the `dist` folder.
-     - Make sure to replace `${workspaceFolder}` in the mcp.json file with the full path to the Postman API MCP repository.
+     - Make sure to replace `${workspaceFolder}` in the mcp.json file with the full path to the Postman MCP repository.
 
 4. When prompted, enter your Postman API key.
 
