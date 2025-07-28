@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
 export const method = 'get-generated-collection-specs';
 export const description = 'Gets the API specification generated for the given collection.';
@@ -16,7 +17,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string }
+  extra: { apiKey: string; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/collections/${params.collectionUid}/generations/${params.elementType}`;
@@ -25,6 +26,7 @@ export async function handler(
     const result = await fetchPostmanAPI(url, {
       method: 'GET',
       apiKey: extra.apiKey,
+      headers: extra.headers,
     });
     return {
       content: [
