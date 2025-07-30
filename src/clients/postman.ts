@@ -1,3 +1,4 @@
+import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types';
 import packageJson from '../../package.json' with { type: 'json' };
 const BASE_URL = 'https://api.postman.com';
 
@@ -6,9 +7,10 @@ export enum ContentType {
   JsonPatch = 'application/json-patch+json',
 }
 
-export interface FetchPostmanAPIOptions extends RequestInit {
+export interface FetchPostmanAPIOptions extends Omit<RequestInit, 'headers'> {
   contentType?: ContentType;
   apiKey: string;
+  headers?: IsomorphicHeaders;
 }
 
 export async function fetchPostmanAPI(
@@ -21,15 +23,22 @@ export async function fetchPostmanAPI(
   }
   const contentType = options.contentType || ContentType.Json;
 
+  const userAgentHeader =
+    options.headers && 'user-agent' in options.headers
+      ? `${options.headers['user-agent']}/${packageJson.name}/${packageJson.version}`
+      : `${packageJson.name}/${packageJson.version}`;
+
   const headers = {
-    'Content-Type': contentType,
-    'X-API-Key': apiKey,
-    'User-Agent': `${packageJson.name}/${packageJson.version}`,
     ...options.headers,
+    'content-type': contentType,
+    'x-api-key': apiKey,
+    'user-agent': userAgentHeader,
   };
 
+  const { headers: _, ...optionsWithoutHeaders } = options;
+
   const response = await fetch(`${BASE_URL}${endpoint}`, {
-    ...options,
+    ...optionsWithoutHeaders,
     headers,
   });
 

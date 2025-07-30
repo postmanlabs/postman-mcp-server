@@ -7,6 +7,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ErrorCode,
+  IsomorphicHeaders,
   ListToolsRequestSchema,
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
@@ -30,7 +31,7 @@ interface ToolModule {
   };
   handler: (
     params: any,
-    extra: { apiKey: string }
+    extra: { apiKey: string; headers?: IsomorphicHeaders }
   ) => Promise<{
     content: Array<{ type: string; text: string } & Record<string, unknown>>;
   }>;
@@ -125,7 +126,7 @@ async function run() {
 
   logger.info(`Registering ${allGeneratedTools.length} tools...`);
 
-  server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     const toolName = request.params.name;
     const tool = allGeneratedTools.find((t) => t.method === toolName);
 
@@ -140,7 +141,10 @@ async function run() {
         throw new McpError(ErrorCode.InvalidParams, 'API key is required.');
       }
 
-      const result = await tool.handler(args as any, { apiKey: currentApiKey });
+      const result = await tool.handler(args as any, {
+        apiKey: currentApiKey,
+        headers: extra.requestInfo?.headers,
+      });
       return result;
     } catch (error: any) {
       throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`, {
