@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
 export const method = 'get-environments';
 export const description =
@@ -17,7 +18,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string }
+  extra: { apiKey: string; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/environments`;
@@ -27,6 +28,7 @@ export async function handler(
     const result = await fetchPostmanAPI(url, {
       method: 'GET',
       apiKey: extra.apiKey,
+      headers: extra.headers,
     });
     return {
       content: [

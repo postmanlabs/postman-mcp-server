@@ -1,11 +1,16 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
 export const method = 'get-collection';
 export const description =
   "Gets information about a collection. For a complete list of this endpoint's possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).";
 export const parameters = z.object({
-  collectionId: z.string().describe("The collection's ID."),
+  collectionId: z
+    .string()
+    .describe(
+      'The collection ID must be in the form <OWNER_ID>-<UUID> (e.g. 12345-33823532ab9e41c9b6fd12d0fd459b8b).'
+    ),
   access_key: z
     .string()
     .describe(
@@ -29,7 +34,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string }
+  extra: { apiKey: string; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/collections/${params.collectionId}`;
@@ -40,6 +45,7 @@ export async function handler(
     const result = await fetchPostmanAPI(url, {
       method: 'GET',
       apiKey: extra.apiKey,
+      headers: extra.headers,
     });
     return {
       content: [

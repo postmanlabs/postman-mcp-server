@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
 export const method = 'delete-environment';
 export const description = 'Deletes an environment.';
@@ -13,7 +14,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string }
+  extra: { apiKey: string; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/environments/${params.environmentId}`;
@@ -22,6 +23,7 @@ export async function handler(
     const result = await fetchPostmanAPI(url, {
       method: 'DELETE',
       apiKey: extra.apiKey,
+      headers: extra.headers,
     });
     return {
       content: [
