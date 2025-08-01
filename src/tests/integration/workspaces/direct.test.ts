@@ -142,7 +142,6 @@ describe('Postman MCP - Direct Integration Tests', () => {
           },
         });
         testFactory.endTimer('update-workspace', updateStartTime, !updateResult.isError);
-        console.log('updateResult ~ ', updateResult);
         expect(WorkspaceDataFactory.validateWorkspaceResponse(updateResult)).toBe(true);
 
         const verifyUpdateStartTime = testFactory.startTimer();
