@@ -51,7 +51,9 @@ async function loadAllTools(): Promise<ToolModule[]> {
     for (const file of toolFiles) {
       try {
         const toolPath = join(toolsDir, file);
-        const toolModule = await import(toolPath);
+        // If the OS is windows, prepend 'file://' to the path
+        const isWindows = process.platform === 'win32';
+        const toolModule = await import(isWindows ? `file://${toolPath}`: toolPath);
 
         if (
           toolModule.method &&
