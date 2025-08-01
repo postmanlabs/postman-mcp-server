@@ -44,7 +44,7 @@ export class WorkspaceDataFactory {
   }
 
   // Performance tracking
-  startTimer(operation: string): number {
+  startTimer(): number {
     return Date.now();
   }
 
