@@ -1,4 +1,4 @@
-name: Run Vitests and upload benchmark results
+name: Run Vitests
 
 on:
   push:
@@ -8,9 +8,6 @@ on:
 
 jobs:
   test:
-    permissions:
-      contents: write
-      pull-requests: write
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -30,9 +27,3 @@ jobs:
     - run: npm test
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
-
-    - name: Store benchmark results
-      uses: actions/upload-artifact@v4
-      with:
-        name: benchmark-results-${{ matrix.os }}
-        path: benchmark-results.json

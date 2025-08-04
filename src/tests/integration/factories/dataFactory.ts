@@ -1,33 +1,5 @@
-export interface PerformanceMetric {
-  operation: string;
-  startTime: number;
-  endTime: number;
-  duration: number;
-  success: boolean;
-  error?: string;
-}
-
 export class TestDataFactory {
-  protected performanceMetrics: PerformanceMetric[] = [];
   protected createdIds: string[] = [];
-
-  startTimer(): number {
-    return Date.now();
-  }
-
-  endTimer(operation: string, startTime: number, success: boolean, error?: string): void {
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-
-    this.performanceMetrics.push({
-      operation,
-      startTime,
-      endTime,
-      duration,
-      success,
-      error,
-    });
-  }
 
   addCreatedId(id: string): void {
     this.createdIds.push(id);
@@ -39,14 +11,6 @@ export class TestDataFactory {
 
   clearCreatedIds(): void {
     this.createdIds = [];
-  }
-
-  getPerformanceMetrics(): PerformanceMetric[] {
-    return [...this.performanceMetrics];
-  }
-
-  clearPerformanceMetrics(): void {
-    this.performanceMetrics = [];
   }
 }
 
