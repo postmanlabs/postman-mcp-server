@@ -56,7 +56,7 @@ See [DOCKER.md](./DOCKER.md) for up-to-date build, Docker, and usage instruction
 
 ## HTTP streamable version
 
-If you prefer to use the HTTP version, it's available at http://mcp.postman.com. Here are the instructions to install it:
+If you prefer to use the HTTP version, it's available at https://mcp.postman.com. Here are the instructions to install it:
 
 ### 🧰 VS Code Integration
 
@@ -81,7 +81,7 @@ If you prefer to use the HTTP version, it's available at http://mcp.postman.com.
   }
 ```
 
-You will be asked to input your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server (http://mcp.postman.com).
+You will be asked to input your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server (https://mcp.postman.com).
 
 ### 🧰 Claude Integration
 
