@@ -89,7 +89,7 @@ export class WorkspaceDataFactory extends TestDataFactory {
       const pattern = /"id": "([a-zA-Z0-9_-]+)"/;
       const match = text.match(pattern);
       return match ? match[1] : null;
-    } catch (e) {
+    } catch {
       const pattern = /"id": "([a-zA-Z0-9_-]+)"/;
       const match = text.match(pattern);
       return match ? match[1] : null;
@@ -152,7 +152,7 @@ export class EnvironmentDataFactory extends TestDataFactory {
       const pattern = /"id": "([a-zA-Z0-9_-]+)"/;
       const match = text.match(pattern);
       return match ? match[1] : null;
-    } catch (e) {
+    } catch {
       const pattern = /"id": "([a-zA-Z0-9_-]+)"/;
       const match = text.match(pattern);
       return match ? match[1] : null;
