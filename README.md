@@ -8,6 +8,8 @@ See more about the Model Context Protocol available transports in the [MCP speci
 
 ## 🧰 VS Code Integration
 
+> VS Code only supports up to 128 tools. If you add the Postman MCP server and this exceeds 128 tools, you will encounter an issue with your agent.
+
 You can integrate your MCP server with Visual Studio Code to use it with VS Code extensions that support MCP.
 
 1. Create a `.vscode/mcp.json` file in your project with the following configuration:
