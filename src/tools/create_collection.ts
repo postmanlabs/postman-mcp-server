@@ -4,9 +4,9 @@ import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
 export const method = 'create-collection';
 export const description =
-  'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in your "My Workspace" workspace.\n- For a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n    - \\`info\\` object — Refer to the **Information** entry.\n    - \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n';
+  'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in the oldest personal Internal workspace you own.\n- For a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n    - \\`info\\` object — Refer to the **Information** entry.\n    - \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n';
 export const parameters = z.object({
-  workspace: z.string().describe("The workspace's ID.").optional(),
+  workspace: z.string().describe("The workspace's ID."),
   collection: z
     .object({
       info: z
@@ -41,7 +41,10 @@ export const parameters = z.object({
                         "The variable's description. Doesn't apply to collection-level variables."
                       )
                       .optional(),
-                    disabled: z.boolean().default(false),
+                    disabled: z
+                      .boolean()
+                      .describe('If true, the variable is not enabled.')
+                      .default(false),
                   })
                   .describe('Information about the variable.')
               )
@@ -664,7 +667,10 @@ export const parameters = z.object({
                   "The variable's description. Doesn't apply to collection-level variables."
                 )
                 .optional(),
-              disabled: z.boolean().default(false),
+              disabled: z
+                .boolean()
+                .describe('If true, the variable is not enabled.')
+                .default(false),
             })
             .describe('Information about the variable.')
         )
@@ -1000,7 +1006,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in your "My Workspace" workspace.\n- For a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n    - \\`info\\` object — Refer to the **Information** entry.\n    - \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n',
+    'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in the oldest personal Internal workspace you own.\n- For a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n    - \\`info\\` object — Refer to the **Information** entry.\n    - \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: false,

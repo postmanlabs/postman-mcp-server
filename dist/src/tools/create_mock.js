@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
 export const method = 'create-mock';
-export const description = 'Creates a mock server in a collection.\n\n**Note:**\n\n- If you do not include the \\`workspaceId\\` query parameter, the system creates the mock server in your [Personal\nworkspace](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/).\n- You cannot create mocks for collections added to an API definition.\n';
+export const description = 'Creates a mock server in a collection.\n\n**Note:**\n\n- You cannot create mocks for collections added to an API definition.\n- If you do not include the \\`workspaceId\\` query parameter, the system creates the mock server in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
-    workspaceId: z.string().describe("The workspace's ID.").optional(),
+    workspace: z.string().describe("The workspace's ID."),
     mock: z
         .object({
         collection: z.string().describe("The unique ID of the mock's associated collection."),
@@ -20,7 +20,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a mock server in a collection.\n\n**Note:**\n\n- If you do not include the \\`workspaceId\\` query parameter, the system creates the mock server in your [Personal\nworkspace](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/).\n- You cannot create mocks for collections added to an API definition.\n',
+    title: 'Creates a mock server in a collection.\n\n**Note:**\n\n- You cannot create mocks for collections added to an API definition.\n- If you do not include the \\`workspaceId\\` query parameter, the system creates the mock server in the oldest personal Internal workspace you own.\n',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,
@@ -29,8 +29,8 @@ export async function handler(params, extra) {
     try {
         const endpoint = `/mocks`;
         const query = new URLSearchParams();
-        if (params.workspaceId !== undefined)
-            query.set('workspaceId', String(params.workspaceId));
+        if (params.workspace !== undefined)
+            query.set('workspace', String(params.workspace));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
         if (params.mock !== undefined)

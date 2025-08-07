@@ -1,17 +1,13 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { fetchPostmanAPI } from '../clients/postman.js';
 import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
-export const method = 'create-update-spec-file';
-export const description = "Creates or updates an API specification's file.\n";
-export const parameters = z.object({
-  specId: z.string().describe("The spec's ID."),
-  filePath: z.string().describe('The path to the file.'),
-  content: z.string().describe("The specification's stringified contents."),
-});
+export const method = 'get-spec-files';
+export const description = 'Gets all the files in an API specification.';
+export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
 export const annotations = {
-  title: "Creates or updates an API specification's file.\n",
-  readOnlyHint: false,
+  title: 'Gets all the files in an API specification.',
+  readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };
@@ -21,15 +17,11 @@ export async function handler(
   extra: { apiKey: string; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
-    const endpoint = `/specs/${params.specId}/files/${params.filePath}`;
+    const endpoint = `/specs/${params.specId}/files`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
-    const bodyPayload: any = {};
-    if (params.content !== undefined) bodyPayload.content = params.content;
     const result = await fetchPostmanAPI(url, {
-      method: 'PATCH',
-      body: JSON.stringify(bodyPayload),
-      contentType: ContentType.Json,
+      method: 'GET',
       apiKey: extra.apiKey,
       headers: extra.headers,
     });
