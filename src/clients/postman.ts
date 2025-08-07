@@ -29,7 +29,6 @@ export async function fetchPostmanAPI(
       : `${packageJson.name}/${packageJson.version}`;
 
   const headers = {
-    ...options.headers,
     'content-type': contentType,
     'x-api-key': apiKey,
     'user-agent': userAgentHeader,
