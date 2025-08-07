@@ -1,6 +1,6 @@
 {
   "name": "postman-api-mcp",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A simple MCP server to operate on the Postman API",
   "main": "index.js",
   "type": "module",
