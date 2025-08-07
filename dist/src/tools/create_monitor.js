@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
 export const method = 'create-monitor';
-export const description = 'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` parameter, the monitor is created in your personal workspace.\n';
+export const description = 'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` query parameter, the system creates the monitor in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
-    workspace: z.string().describe("The workspace's ID.").optional(),
+    workspace: z.string().describe("The workspace's ID."),
     monitor: z
         .object({
         name: z.string().describe("The monitor's name."),
@@ -106,10 +106,11 @@ export const parameters = z.object({
             .describe("Information about the monitor's notification settings.")
             .optional(),
     })
+        .describe('Information about the monitor.')
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` parameter, the monitor is created in your personal workspace.\n',
+    title: 'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` query parameter, the system creates the monitor in the oldest personal Internal workspace you own.\n',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

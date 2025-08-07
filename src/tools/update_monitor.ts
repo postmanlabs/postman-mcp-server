@@ -119,6 +119,7 @@ export const parameters = z.object({
         .describe("Information about the monitor's notification settings.")
         .optional(),
     })
+    .describe('Information about the monitor.')
     .optional(),
 });
 export const annotations = {

@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
 export const method = 'create-environment';
-export const description = 'Creates an environment.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in your "My Workspace" workspace.\n';
+export const description = 'Creates an environment.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- If you do not include the \\`workspace\\` query parameter, the system creates the environment in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
-    workspace: z.string().describe("The workspace's ID.").optional(),
+    workspace: z.string().describe("The workspace's ID."),
     environment: z
         .object({
         name: z.string().describe("The environment's name."),
@@ -17,10 +17,11 @@ export const parameters = z.object({
             .describe("Information about the environment's variables.")
             .optional(),
     })
+        .describe('Information about the environment.')
         .optional(),
 });
 export const annotations = {
-    title: 'Creates an environment.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in your "My Workspace" workspace.\n',
+    title: 'Creates an environment.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- If you do not include the \\`workspace\\` query parameter, the system creates the environment in the oldest personal Internal workspace you own.\n',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

@@ -17,6 +17,7 @@ export const parameters = z.object({
             .describe("Information about the environment's variables.")
             .optional(),
     })
+        .describe('Information about the environment.')
         .optional(),
 });
 export const annotations = {
