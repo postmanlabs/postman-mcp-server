@@ -19,7 +19,7 @@
     "src/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "zod-schemas"
+    "src/tests/**",
+    "node_modules"
   ]
 }
