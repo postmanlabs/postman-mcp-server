@@ -1,0 +1,2 @@
+# Mark these files as generated
+dist/** linguist-generated=true

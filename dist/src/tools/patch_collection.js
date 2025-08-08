@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'patch-collection';
 export const description = 'Updates specific collection information, such as its name, events, or its variables. For more information about the \\`auth\\`, \\`variable\\`, and \\`events\\` properties, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n- For \\`variable\\`, refer to the **Variable List** entry. Also accepts \\`variables\\`.\n- For \\`auth\\`, refer to the **Auth** entry.\n- For \\`events\\`, refer to the **Event List** entry.\n';
 export const parameters = z.object({
@@ -311,8 +316,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

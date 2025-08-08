@@ -1,4 +1,4 @@
-import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types';
+import { ErrorCode, IsomorphicHeaders, McpError } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../../package.json' with { type: 'json' };
 const BASE_URL = 'https://api.postman.com';
 
@@ -43,7 +43,23 @@ export async function fetchPostmanAPI(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`API request failed: ${response.status} ${errorText}`);
+    switch (response.status) {
+      case 400:
+      case 422:
+      case 401:
+      case 403:
+        throw new McpError(
+          ErrorCode.InvalidParams,
+          `API request failed: ${response.status} ${errorText}`,
+          {
+            cause: errorText,
+          }
+        );
+      default:
+        throw new McpError(ErrorCode.InternalError, `API request failed: ${response.status}`, {
+          cause: errorText,
+        });
+    }
   }
 
   if (response.status === 204) return null;

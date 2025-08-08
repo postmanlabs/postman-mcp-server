@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'get-all-elements-and-folders';
 export const description = "Gets information about the folders and their elements added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).\n\n**Note:**\n\nThe \\`limit\\` and \\`offset\\` parameters are separately applied to elements and folders. For example, if you query a \\`limit\\` value of \\`10\\` and an \\`offset\\` value \\`0\\`, the endpoint returns 10 elements and 10 folders for a total of 20 items. The \\`totalCount\\` property in the \\`meta\\` response is the total count of both elements and folders.\n";
 export const parameters = z.object({
@@ -115,8 +120,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

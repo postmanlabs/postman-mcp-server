@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'update-collection-folder';
 export const description = 'Updates a folder in a collection. For a complete list of properties, refer to the **Folder** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nThis endpoint acts like a PATCH method. It only updates the values that you pass in the request body (for example, the \\`name\\` property). The endpoint does not update the entire resource.\n';
 export const parameters = z.object({
@@ -41,8 +46,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

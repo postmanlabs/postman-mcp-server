@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'create-request-comment';
 export const description = "The request ID must contain the team ID as a prefix, in \\`teamId-requestId\\` format.\n\nFor example, if you're creating a comment on collection ID \\`24585957-7b2c98f7-30db-4b67-8685-0079f48a0947\\` (note on the prefix), and\nthe collection request's ID is \\`2c450b59-9bbf-729b-6ac0-f92535a7c336\\`, then the \\`{requestId}\\` must be \\`24585957-2c450b59-9bbf-729b-6ac0-f92535a7c336\\`.\n";
 export const parameters = z.object({
@@ -61,8 +66,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

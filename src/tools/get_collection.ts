@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
-import { IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
+import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+
+function asMcpError(error: unknown): McpError {
+  const cause = (error as any)?.cause ?? String(error);
+  return new McpError(ErrorCode.InternalError, cause);
+}
 
 export const method = 'get-collection';
 export const description =
@@ -55,9 +60,10 @@ export async function handler(
         },
       ],
     };
-  } catch (e: any) {
-    return {
-      content: [{ type: 'text', text: `Failed: ${e.message}` }],
-    };
+  } catch (e: unknown) {
+    if (e instanceof McpError) {
+      throw e;
+    }
+    throw asMcpError(e);
   }
 }
