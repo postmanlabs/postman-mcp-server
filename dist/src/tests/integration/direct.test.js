@@ -9,7 +9,6 @@ describe('Postman MCP - Direct Integration Tests', () => {
     let createdWorkspaceIds = [];
     let createdEnvironmentIds = [];
     beforeAll(async () => {
-        console.log('🚀 Starting Postman MCP server for integration tests...');
         const cleanEnv = Object.fromEntries(Object.entries(process.env).filter(([_, value]) => value !== undefined));
         cleanEnv.NODE_ENV = 'test';
         serverProcess = spawn('node', ['dist/src/index.js'], {

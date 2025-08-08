@@ -63,16 +63,16 @@ async function loadAllTools(): Promise<ToolModule[]> {
         ) {
           tools.push(toolModule as ToolModule);
         } else {
-          console.warn(`Tool module ${file} is missing required exports. Skipping.`);
+          // Intentionally no console logging; rely on MCP logging once server is initialized
         }
-      } catch (error) {
-        console.error(`Failed to load tool ${file}:`, error);
+      } catch {
+        // Intentionally no console logging; rely on MCP logging once server is initialized
       }
     }
 
     return tools;
-  } catch (error) {
-    console.error('Failed to read tools directory:', error);
+  } catch {
+    // Intentionally no console logging; rely on MCP logging once server is initialized
     return [];
   }
 }
@@ -83,50 +83,24 @@ const SERVER_NAME = packageJson.name;
 const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
 
-const logger = {
-  timestamp() {
-    return new Date().toISOString();
-  },
-  info(message: string, sessionId: string | null = null) {
-    const sessionPart = sessionId ? `[SessionId: ${sessionId}] ` : '';
-    console.log(`[${this.timestamp()}] [INFO] ${sessionPart}${message}`);
-  },
-  debug(message: string, sessionId: string | null = null) {
-    const sessionPart = sessionId ? `[SessionId: ${sessionId}] ` : '';
-    console.log(`[${this.timestamp()}] [DEBUG] ${sessionPart}${message}`);
-  },
-  warn(message: string, sessionId: string | null = null) {
-    const sessionPart = sessionId ? `[SessionId: ${sessionId}] ` : '';
-    console.warn(`[${this.timestamp()}] [WARN] ${sessionPart}${message}`);
-  },
-  error(message: string, error: any = null, sessionId: string | null = null) {
-    const sessionPart = sessionId ? `[SessionId: ${sessionId}] ` : '';
-    console.error(`[${this.timestamp()}] [ERROR] ${sessionPart}${message}`, error || '');
-  },
-};
-
 let currentApiKey: string | undefined = undefined;
 
 const allGeneratedTools = await loadAllTools();
-logger.info(`Dynamically loaded ${allGeneratedTools.length} tools...`);
 
 async function run() {
-  logger.info(`Transport mode: Stdio`);
-
   const server = new Server(
     { name: SERVER_NAME, version: APP_VERSION },
-    { capabilities: { tools: {} } }
+    { capabilities: { tools: {}, logging: {} } }
   );
 
-  server.onerror = (error: any) => logger.error('[MCP Server Error]', error);
+  server.onerror = (_error: any) => {};
 
   process.on('SIGINT', async () => {
-    logger.info('SIGINT received, shutting down server...');
     await server.close();
     process.exit(0);
   });
 
-  logger.info(`Registering ${allGeneratedTools.length} tools...`);
+  // Logging handled by MCP framework/clients; avoid explicit logs
 
   server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     const toolName = request.params.name;
@@ -167,16 +141,14 @@ async function run() {
 
   currentApiKey = process.env.POSTMAN_API_KEY;
   if (!currentApiKey) {
-    logger.error('API key is required. Set the POSTMAN_API_KEY environment variable.');
+    // Avoid explicit logging; exit with failure
     process.exit(1);
   }
-  logger.info(`[${SERVER_NAME} - Stdio Transport] running.`);
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  logger.info('Stdio transport connected. Waiting for messages...');
 }
 
-run().catch((error) => {
-  logger.error('Unhandled error during server execution:', error);
+run().catch(() => {
+  // Avoid console logging per requirements; exit with failure
   process.exit(1);
 });
