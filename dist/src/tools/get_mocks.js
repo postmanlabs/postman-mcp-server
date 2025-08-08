@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'get-mocks';
 export const description = 'Gets all active mock servers. By default, this endpoint returns only mock servers you created across all workspaces.\n\n**Note:**\n\nIf you pass both the \\`teamId\\` and \\`workspace\\` query parameters, this endpoint only accepts the \\`workspace\\` query.\n';
 export const parameters = z.object({
@@ -36,8 +41,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

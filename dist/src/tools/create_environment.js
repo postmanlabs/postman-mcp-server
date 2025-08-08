@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'create-environment';
 export const description = 'Creates an environment.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- If you do not include the \\`workspace\\` query parameter, the system creates the environment in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
@@ -53,8 +58,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

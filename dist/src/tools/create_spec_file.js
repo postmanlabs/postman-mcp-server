@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'create-spec-file';
 export const description = 'Creates an API specification file.\n\n**Note:**\n\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Creating a spec file assigns it the \\`DEFAULT\\` file type.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n';
 export const parameters = z.object({
@@ -40,8 +45,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'create-collection';
 export const description = 'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- If you do not include the \\`workspace\\` query parameter, the system creates the collection in the oldest personal Internal workspace you own.\n- For a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n    - \\`info\\` object — Refer to the **Information** entry.\n    - \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n';
 export const parameters = z.object({
@@ -809,8 +814,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }

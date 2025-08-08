@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { fetchPostmanAPI } from '../clients/postman.js';
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+function asMcpError(error) {
+    const cause = error?.cause ?? String(error);
+    return new McpError(ErrorCode.InternalError, cause);
+}
 export const method = 'get-collection';
 export const description = "Gets information about a collection. For a complete list of this endpoint's possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).";
 export const parameters = z.object({
@@ -45,8 +50,9 @@ export async function handler(params, extra) {
         };
     }
     catch (e) {
-        return {
-            content: [{ type: 'text', text: `Failed: ${e.message}` }],
-        };
+        if (e instanceof McpError) {
+            throw e;
+        }
+        throw asMcpError(e);
     }
 }
