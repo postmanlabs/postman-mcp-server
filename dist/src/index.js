@@ -8,13 +8,32 @@ import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+function log(level, message, context) {
+    const timestamp = new Date().toISOString();
+    const suffix = context ? ` ${JSON.stringify(context)}` : '';
+    console.error(`[${timestamp}] [${level.toUpperCase()}] ${message}${suffix}`);
+}
+function sendClientLog(server, level, data) {
+    try {
+        server.sendLoggingMessage?.({ level, data });
+    }
+    catch {
+    }
+}
+function logBoth(server, level, message, context) {
+    log(level, message, context);
+    if (server)
+        sendClientLog(server, level, message);
+}
 async function loadAllTools() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     const toolsDir = join(__dirname, 'tools');
     try {
+        log('info', 'Loading tools from directory', { toolsDir });
         const files = await readdir(toolsDir);
         const toolFiles = files.filter((file) => file.endsWith('.js'));
+        log('debug', 'Discovered tool files', { count: toolFiles.length });
         const tools = [];
         for (const file of toolFiles) {
             try {
@@ -26,16 +45,27 @@ async function loadAllTools() {
                     toolModule.parameters &&
                     toolModule.handler) {
                     tools.push(toolModule);
+                    log('info', 'Loaded tool', { method: toolModule.method, file });
                 }
                 else {
+                    log('warn', 'Tool module missing required exports; skipping', { file });
                 }
             }
-            catch {
+            catch (error) {
+                log('error', 'Failed to load tool module', {
+                    file,
+                    error: String(error?.message || error),
+                });
             }
         }
+        log('info', 'Tool loading completed', { totalLoaded: tools.length });
         return tools;
     }
-    catch {
+    catch (error) {
+        log('error', 'Failed to read tools directory', {
+            toolsDir,
+            error: String(error?.message || error),
+        });
         return [];
     }
 }
@@ -45,37 +75,61 @@ const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
 let currentApiKey = undefined;
 const allGeneratedTools = await loadAllTools();
+log('info', 'Server initialization starting', {
+    serverName: SERVER_NAME,
+    version: APP_VERSION,
+    toolCount: allGeneratedTools.length,
+});
 async function run() {
     const server = new Server({ name: SERVER_NAME, version: APP_VERSION }, { capabilities: { tools: {}, logging: {} } });
-    server.onerror = (_error) => { };
+    server.onerror = (error) => {
+        const msg = String(error?.message || error);
+        logBoth(server, 'error', `MCP server error: ${msg}`, { error: msg });
+    };
     process.on('SIGINT', async () => {
+        logBoth(server, 'warn', 'SIGINT received; shutting down');
         await server.close();
         process.exit(0);
     });
+    log('info', 'Setting up request handlers');
     server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
         const toolName = request.params.name;
         const tool = allGeneratedTools.find((t) => t.method === toolName);
+        log('info', `Tool invocation started: ${toolName}`, { toolName });
         if (!tool) {
+            log('warn', `Unknown tool requested: ${toolName}`, { toolName });
             throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${toolName}`);
         }
         const args = request.params.arguments || {};
         try {
+            const start = Date.now();
             if (!currentApiKey) {
+                log('error', 'Missing API key for tool invocation', { toolName });
                 throw new McpError(ErrorCode.InvalidParams, 'API key is required.');
             }
             const result = await tool.handler(args, {
                 apiKey: currentApiKey,
                 headers: extra.requestInfo?.headers,
             });
+            const durationMs = Date.now() - start;
+            log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
+                toolName,
+                durationMs,
+            });
             return result;
         }
         catch (error) {
-            throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`, {
-                originalError: error,
-            });
+            const errMsg = String(error?.message || error);
+            logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
+            if (error instanceof McpError)
+                throw error;
+            throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
         }
     });
     server.setRequestHandler(ListToolsRequestSchema, async () => {
+        log('debug', `Tools list requested; ${allGeneratedTools.length} tools available`, {
+            toolCount: allGeneratedTools.length,
+        });
         const transformedTools = allGeneratedTools.map((tool) => ({
             name: tool.method,
             description: tool.description,
@@ -86,11 +140,17 @@ async function run() {
     });
     currentApiKey = process.env.POSTMAN_API_KEY;
     if (!currentApiKey) {
+        log('error', 'POSTMAN_API_KEY is required');
         process.exit(1);
     }
+    log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
     await server.connect(transport);
+    logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${allGeneratedTools.length} tools`);
 }
-run().catch(() => {
+run().catch((error) => {
+    log('error', 'Unhandled error during server execution', {
+        error: String(error?.message || error),
+    });
     process.exit(1);
 });

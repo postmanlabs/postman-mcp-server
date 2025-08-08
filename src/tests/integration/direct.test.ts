@@ -7,6 +7,8 @@ import {
   TestWorkspace,
   EnvironmentDataFactory,
   TestEnvironment,
+  SpecDataFactory,
+  TestSpec,
 } from './factories/dataFactory.js';
 
 describe('Postman MCP - Direct Integration Tests', () => {
@@ -14,6 +16,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
   let serverProcess: ChildProcess;
   let createdWorkspaceIds: string[] = [];
   let createdEnvironmentIds: string[] = [];
+  let createdSpecIds: string[] = [];
 
   beforeAll(async () => {
     console.log('🚀 Starting Postman MCP server for integration tests...');
@@ -75,8 +78,10 @@ describe('Postman MCP - Direct Integration Tests', () => {
   afterEach(async () => {
     await cleanupTestWorkspaces(createdWorkspaceIds);
     await cleanupTestEnvironments(createdEnvironmentIds);
+    await cleanupTestSpecs(createdSpecIds);
     createdWorkspaceIds = [];
     createdEnvironmentIds = [];
+    createdSpecIds = [];
   });
 
   describe('Workspace Workflow', () => {
@@ -193,6 +198,82 @@ describe('Postman MCP - Direct Integration Tests', () => {
     });
   });
 
+  describe('Spec Workflow', () => {
+    it('should create, retrieve, update, and delete spec files', async () => {
+      const specData = SpecDataFactory.createSpec();
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Juan Test] Spec Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+      const specId = await createSpec(specData, workspaceId);
+      createdSpecIds.push(specId);
+
+      const specFileData = SpecDataFactory.createSpecFile({
+        path: 'test.json',
+        content: '{ "hello": "world" }',
+      });
+      const createResult = await client.callTool({
+        name: 'create-spec-file',
+        arguments: {
+          specId: specId,
+          ...specFileData,
+        },
+      });
+      expect(SpecDataFactory.validateResponse(createResult)).toBe(true);
+      const createdFile = SpecDataFactory.extractSpecFileFromResponse(createResult);
+
+      expect(createdFile).toBeDefined();
+
+      const getFilesResult = await client.callTool({
+        name: 'get-spec-files',
+        arguments: { specId: specId },
+      });
+
+      expect(SpecDataFactory.validateResponse(getFilesResult)).toBe(true);
+      const files = SpecDataFactory.extractSpecFilesFromResponse(getFilesResult);
+      expect(files).toBeInstanceOf(Array);
+      expect(files.length).toBe(2);
+
+      const getFileResult = await client.callTool({
+        name: 'get-spec-file',
+        arguments: {
+          specId: specId,
+          filePath: specFileData.path,
+        },
+      });
+
+      expect(SpecDataFactory.validateResponse(getFileResult)).toBe(true);
+      const retrievedFile = SpecDataFactory.extractSpecFileFromResponse(getFileResult);
+      expect(retrievedFile).toBeDefined();
+      expect(retrievedFile.path).toEqual(specFileData.path);
+
+      const updatedContent = '{ "hello": "world_updated" }';
+      const updateResult = await client.callTool({
+        name: 'update-spec-file',
+        arguments: {
+          specId: specId,
+          filePath: specFileData.path,
+          content: updatedContent,
+        },
+      });
+
+      expect(SpecDataFactory.validateResponse(updateResult)).toBe(true);
+      const updatedFile = SpecDataFactory.extractSpecFileFromResponse(updateResult);
+      expect(updatedFile.id).toEqual(createdFile?.id);
+
+      const deleteResult = await client.callTool({
+        name: 'delete-spec-file',
+        arguments: {
+          specId: specId,
+          filePath: specFileData.path,
+        },
+      });
+
+      expect(SpecDataFactory.validateResponse(deleteResult)).toBe(true);
+    });
+  });
+
   async function createWorkspace(workspaceData: TestWorkspace): Promise<string> {
     const result = await client.callTool({
       name: 'create-workspace',
@@ -229,6 +310,28 @@ describe('Postman MCP - Direct Integration Tests', () => {
     return environmentId;
   }
 
+  async function createSpec(specData: TestSpec, workspaceId: string): Promise<string> {
+    const result = await client.callTool({
+      name: 'create-spec',
+      arguments: {
+        workspaceId,
+        name: specData.name,
+        type: specData.type,
+        files: specData.files,
+      },
+    });
+
+    if (result.isError) {
+      throw new Error((result.content as any)[0].text);
+    }
+    expect(SpecDataFactory.validateResponse(result)).toBe(true);
+    const specId = SpecDataFactory.extractIdFromResponse(result);
+    if (!specId) {
+      throw new Error(`Spec ID not found in response: ${JSON.stringify(result)}`);
+    }
+    return specId;
+  }
+
   async function cleanupTestWorkspaces(workspaceIds: string[]): Promise<void> {
     for (const workspaceId of workspaceIds) {
       try {
@@ -255,6 +358,21 @@ describe('Postman MCP - Direct Integration Tests', () => {
         });
       } catch (error) {
         console.warn(`Failed to cleanup environment ${environmentId}:`, String(error));
+      }
+    }
+  }
+
+  async function cleanupTestSpecs(specIds: string[]): Promise<void> {
+    for (const specId of specIds) {
+      try {
+        await client.callTool({
+          name: 'delete-spec',
+          arguments: {
+            specId,
+          },
+        });
+      } catch (error) {
+        console.warn(`Failed to cleanup spec ${specId}:`, String(error));
       }
     }
   }
