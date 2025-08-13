@@ -1,0 +1,9 @@
+# Ignore everything
+src/**
+.github/**
+.cursor/**
+.dockerignore
+Docker.md
+Dockerfile
+eslint.config.mjs
+tsconfig.json
