@@ -15,7 +15,7 @@
     "url": "https://github.com/postmanlabs/postman-mcp-server"
   },
   "homepage": "https://github.com/postmanlabs/postman-mcp-server",
-  "documentation": "https://learning.postman.com/docs/postman-ai-agent-builder/",
+  "documentation": "https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/overview",
   "support": "https://github.com/postmanlabs/postman-api-mcp/issues",
   "icon": "icon.png",
   "server": {
