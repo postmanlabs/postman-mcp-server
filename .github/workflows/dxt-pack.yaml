@@ -1,0 +1,52 @@
+name: Release DXT
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync manifest version with package.json
+        run: |
+          pkg_version=$(jq -r .version package.json)
+          jq --arg v "$pkg_version" '.version = $v' manifest.json > manifest.tmp.json
+          mv manifest.tmp.json manifest.json
+
+      - name: Build project
+        run: npm run build
+
+      - name: Install DXT
+        run: npm ci --omit=dev
+
+      - name: Install DXT
+        run: npm install -g @anthropic-ai/dxt
+
+      - name: Package extension
+        run: |
+          dxt pack
+          current_dir=$(basename "$PWD")
+          echo "DXT_FILENAME=${current_dir}.dxt" >> $GITHUB_ENV
+
+      - name: Upload release asset
+        uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.DXT_FILENAME }}
+          asset_name: ${{ env.DXT_FILENAME }}
+          tag: ${{ github.ref }}
+          overwrite: true
