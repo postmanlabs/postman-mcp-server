@@ -61,7 +61,7 @@ Configure the extension to use the **postman-api-mcp** server, a local STDIO-bas
 
 The streamable HTTP version is available at `https://mcp.postman.com`. It supports two tool configurations to better serve different use cases:
 
-- **Minimal** (Default) — Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
+- **Minimal** — Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
 ### Cursor integration
@@ -72,7 +72,7 @@ To integrate the MCP server with Cursor, click the following button:
 
 ### VS Code integration
 
-To install in VS Code, add the following to the *.vscode/mcp.json* s file:
+To install in VS Code, add the following to the *.vscode/mcp.json* file:
 
 ```json
 {
@@ -119,7 +119,7 @@ Open the *claude_desktop_config.json* file, which is accessible in Claude's pref
 
 ### Tool configuration modes
 
-- **Minimal mode (default)** - Provides 37 essential tools for common Postman operations.
+- **Minimal mode** - Provides 37 essential tools for common Postman operations.
 - **Full mode** - Add `--full` to the `args` array to access all 106 available tools.
 
 The following example demonstrates how to enable full mode in VS Code:
@@ -127,15 +127,11 @@ The following example demonstrates how to enable full mode in VS Code:
 ```json
 {
     "servers": {
-        "postman-api-mcp": {
-            "type": "stdio",
-            "command": "node",
-            "args": [
-                "${workspaceFolder}/dist/src/index.js",
-                "--full"
-            ],
-            "env": {
-                "POSTMAN_API_KEY": "${input:postman-api-key}"
+        "postman-api-http-server": {
+            "type": "sse",
+            "url": "https://mcp.postman.com/{minimal | mcp}", // choose "minimal" or "mcp"
+            "headers": {
+                "Authorization": "Bearer ${input:postman-api-key}"
             }
         }
     },
