@@ -47,7 +47,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
     const transport = new StdioClientTransport({
       command: 'node',
-      args: ['dist/src/index.js'],
+      args: ['dist/src/index.js', '--full'],
       env: cleanEnv,
     });
 
@@ -84,7 +84,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     createdSpecIds = [];
   });
 
-  describe('Workspace Workflow', () => {
+  describe('Workspace Workflow',{ timeout: 30000 }, () => {
     it('should create, list, search, update, and delete a single workspace', async () => {
       const workspaceData = WorkspaceDataFactory.createWorkspace();
       const workspaceId = await createWorkspace(workspaceData);
@@ -94,14 +94,14 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdWorkspaceIds[0]).toBe(workspaceId);
 
       const listResult = await client.callTool({
-        name: 'get-workspaces',
+        name: 'getWorkspaces',
         arguments: {},
       });
       expect(WorkspaceDataFactory.validateResponse(listResult)).toBe(true);
       expect((listResult.content as any)[0].text).toContain(workspaceId);
 
       const searchResult = await client.callTool({
-        name: 'get-workspace',
+        name: 'getWorkspace',
         arguments: { workspaceId },
       });
       expect(WorkspaceDataFactory.validateResponse(searchResult)).toBe(true);
@@ -109,7 +109,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
       const updatedName = '[Integration Test] Updated Workspace';
       const updateResult = await client.callTool({
-        name: 'update-workspace',
+        name: 'updateWorkspace',
         arguments: {
           workspaceId,
           workspace: { name: updatedName, type: 'personal' },
@@ -118,7 +118,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(WorkspaceDataFactory.validateResponse(updateResult)).toBe(true);
 
       const verifyUpdateResult = await client.callTool({
-        name: 'get-workspace',
+        name: 'getWorkspace',
         arguments: {
           workspaceId,
         },
@@ -126,7 +126,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(WorkspaceDataFactory.validateResponse(verifyUpdateResult)).toBe(true);
       expect((verifyUpdateResult.content as any)[0].text).toContain(updatedName);
     });
-  });
+  }, );
 
   describe('Environment Workflow', () => {
     it('should create, list, search, update, and delete a single environment', async () => {
@@ -138,14 +138,14 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdEnvironmentIds[0]).toBe(environmentId);
 
       const listResult = await client.callTool({
-        name: 'get-environments',
+        name: 'getEnvironments',
         arguments: {},
       });
       expect(EnvironmentDataFactory.validateResponse(listResult)).toBe(true);
       expect((listResult.content as any)[0].text).toContain(environmentId);
 
       const getResult = await client.callTool({
-        name: 'get-environment',
+        name: 'getEnvironment',
         arguments: { environmentId },
       });
       expect(EnvironmentDataFactory.validateResponse(getResult)).toBe(true);
@@ -165,7 +165,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       };
 
       const updateResult = await client.callTool({
-        name: 'put-environment',
+        name: 'putEnvironment',
         arguments: {
           environmentId,
           environment: updatedEnvironment,
@@ -174,7 +174,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(EnvironmentDataFactory.validateResponse(updateResult)).toBe(true);
 
       const verifyUpdateResult = await client.callTool({
-        name: 'get-environment',
+        name: 'getEnvironment',
         arguments: {
           environmentId,
         },
@@ -190,7 +190,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       createdEnvironmentIds.push(environmentId);
 
       const getResult = await client.callTool({
-        name: 'get-environment',
+        name: 'getEnvironment',
         arguments: { environmentId },
       });
       expect(EnvironmentDataFactory.validateResponse(getResult)).toBe(true);
@@ -214,7 +214,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
         content: '{ "hello": "world" }',
       });
       const createResult = await client.callTool({
-        name: 'create-spec-file',
+        name: 'createSpecFile',
         arguments: {
           specId: specId,
           ...specFileData,
@@ -226,7 +226,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdFile).toBeDefined();
 
       const getFilesResult = await client.callTool({
-        name: 'get-spec-files',
+        name: 'getSpecFiles',
         arguments: { specId: specId },
       });
 
@@ -236,7 +236,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(files.length).toBe(2);
 
       const getFileResult = await client.callTool({
-        name: 'get-spec-file',
+        name: 'getSpecFile',
         arguments: {
           specId: specId,
           filePath: specFileData.path,
@@ -250,7 +250,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
       const updatedContent = '{ "hello": "world_updated" }';
       const updateResult = await client.callTool({
-        name: 'update-spec-file',
+        name: 'updateSpecFile',
         arguments: {
           specId: specId,
           filePath: specFileData.path,
@@ -263,7 +263,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(updatedFile.id).toEqual(createdFile?.id);
 
       const deleteResult = await client.callTool({
-        name: 'delete-spec-file',
+        name: 'deleteSpecFile',
         arguments: {
           specId: specId,
           filePath: specFileData.path,
@@ -276,7 +276,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
   async function createWorkspace(workspaceData: TestWorkspace): Promise<string> {
     const result = await client.callTool({
-      name: 'create-workspace',
+      name: 'createWorkspace',
       arguments: {
         workspace: workspaceData,
       },
@@ -294,7 +294,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
   async function createEnvironment(environmentData: TestEnvironment): Promise<string> {
     const result = await client.callTool({
-      name: 'create-environment',
+      name: 'createEnvironment',
       arguments: {
         environment: environmentData,
       },
@@ -312,7 +312,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
   async function createSpec(specData: TestSpec, workspaceId: string): Promise<string> {
     const result = await client.callTool({
-      name: 'create-spec',
+      name: 'createSpec',
       arguments: {
         workspaceId,
         name: specData.name,
@@ -336,7 +336,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     for (const workspaceId of workspaceIds) {
       try {
         await client.callTool({
-          name: 'delete-workspace',
+          name: 'deleteWorkspace',
           arguments: {
             workspaceId,
           },
@@ -351,7 +351,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     for (const environmentId of environmentIds) {
       try {
         await client.callTool({
-          name: 'delete-environment',
+          name: 'deleteEnvironment',
           arguments: {
             environmentId,
           },
@@ -366,7 +366,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     for (const specId of specIds) {
       try {
         await client.callTool({
-          name: 'delete-spec',
+          name: 'deleteSpec',
           arguments: {
             specId,
           },
