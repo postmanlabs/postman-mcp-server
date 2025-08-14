@@ -151,7 +151,7 @@ export class SpecDataFactory extends TestDataFactory {
     return {
       path: 'index.yaml',
       content:
-        "openapi: 3.0.0\ninfo:\n  title: My API\n  version: 1.0.0\npaths:\n  /:\n    get:\n      summary: My Endpoint\n      responses:\n        '200':\n          description: OK",
+        'openapi: 3.0.0\ninfo:\n  title: My API\n  version: 1.0.0\npaths:\n  /:\n    get:\n      summary: My Endpoint\n      responses:\n        \'200\':\n          description: OK',
       ...overrides,
     };
   }

@@ -8,6 +8,7 @@ import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { enabledResources } from './enabledResources.js';
 function log(level, message, context) {
     const timestamp = new Date().toISOString();
     const suffix = context ? ` ${JSON.stringify(context)}` : '';
@@ -81,6 +82,11 @@ log('info', 'Server initialization starting', {
     toolCount: allGeneratedTools.length,
 });
 async function run() {
+    const args = process.argv.slice(2);
+    const useFull = args.includes('--full');
+    const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
+    const minimalTools = allGeneratedTools.filter((t) => enabledResources.minimal.includes(t.method));
+    const tools = useFull ? fullTools : minimalTools;
     const server = new Server({ name: SERVER_NAME, version: APP_VERSION }, { capabilities: { tools: {}, logging: {} } });
     server.onerror = (error) => {
         const msg = String(error?.message || error);
@@ -94,7 +100,7 @@ async function run() {
     log('info', 'Setting up request handlers');
     server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
         const toolName = request.params.name;
-        const tool = allGeneratedTools.find((t) => t.method === toolName);
+        const tool = tools.find((t) => t.method === toolName);
         log('info', `Tool invocation started: ${toolName}`, { toolName });
         if (!tool) {
             log('warn', `Unknown tool requested: ${toolName}`, { toolName });
@@ -127,10 +133,10 @@ async function run() {
         }
     });
     server.setRequestHandler(ListToolsRequestSchema, async () => {
-        log('debug', `Tools list requested; ${allGeneratedTools.length} tools available`, {
-            toolCount: allGeneratedTools.length,
+        log('debug', `Tools list requested; ${tools.length} tools available`, {
+            toolCount: tools.length,
         });
-        const transformedTools = allGeneratedTools.map((tool) => ({
+        const transformedTools = tools.map((tool) => ({
             name: tool.method,
             description: tool.description,
             inputSchema: zodToJsonSchema(tool.parameters),
@@ -146,7 +152,7 @@ async function run() {
     log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${allGeneratedTools.length} tools`);
+    logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`);
 }
 run().catch((error) => {
     log('error', 'Unhandled error during server execution', {

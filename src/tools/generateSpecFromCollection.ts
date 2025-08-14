@@ -1,0 +1,61 @@
+import { z } from 'zod';
+import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+
+function asMcpError(error: unknown): McpError {
+  const cause = (error as any)?.cause ?? String(error);
+  return new McpError(ErrorCode.InternalError, cause);
+}
+
+export const method = 'generateSpecFromCollection';
+export const description =
+  'Generates an API specification for the given collection. The response contains a polling link to the task status.';
+export const parameters = z.object({
+  collectionUid: z.string().describe("The collection's unique ID."),
+  elementType: z.literal('spec').describe('The `spec` value.'),
+  name: z.string().describe("The API specification's name."),
+  type: z.literal('OPENAPI:3.0').describe("The specification's type."),
+  format: z.enum(['JSON', 'YAML']).describe('The format of the API specification.'),
+});
+export const annotations = {
+  title:
+    'Generates an API specification for the given collection. The response contains a polling link to the task status.',
+  readOnlyHint: false,
+  destructiveHint: false,
+  idempotentHint: false,
+};
+
+export async function handler(
+  params: z.infer<typeof parameters>,
+  extra: { apiKey: string; headers?: IsomorphicHeaders }
+): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+  try {
+    const endpoint = `/collections/${params.collectionUid}/generations/${params.elementType}`;
+    const query = new URLSearchParams();
+    const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
+    const bodyPayload: any = {};
+    if (params.name !== undefined) bodyPayload.name = params.name;
+    if (params.type !== undefined) bodyPayload.type = params.type;
+    if (params.format !== undefined) bodyPayload.format = params.format;
+    const result = await fetchPostmanAPI(url, {
+      method: 'POST',
+      body: JSON.stringify(bodyPayload),
+      contentType: ContentType.Json,
+      apiKey: extra.apiKey,
+      headers: extra.headers,
+    });
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `${typeof result === 'string' ? result : JSON.stringify(result, null, 2)}`,
+        },
+      ],
+    };
+  } catch (e: unknown) {
+    if (e instanceof McpError) {
+      throw e;
+    }
+    throw asMcpError(e);
+  }
+}

@@ -18,6 +18,7 @@ import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
+import { enabledResources } from './enabledResources.js';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -45,8 +46,12 @@ function logBoth(
   if (server) sendClientLog(server, level, message);
 }
 
+type FullResourceMethod = (typeof enabledResources.full)[number];
+type MinimalResourceMethod = (typeof enabledResources.minimal)[number];
+type EnabledResourceMethod = FullResourceMethod;
+
 interface ToolModule {
-  method: string;
+  method: EnabledResourceMethod;
   description: string;
   parameters: z.ZodSchema;
   annotations?: {
@@ -129,6 +134,15 @@ log('info', 'Server initialization starting', {
 });
 
 async function run() {
+  const args = process.argv.slice(2);
+  const useFull = args.includes('--full');
+
+  const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
+  const minimalTools = allGeneratedTools.filter((t) =>
+    enabledResources.minimal.includes(t.method as MinimalResourceMethod)
+  );
+  const tools = useFull ? fullTools : minimalTools;
+
   const server = new Server(
     { name: SERVER_NAME, version: APP_VERSION },
     { capabilities: { tools: {}, logging: {} } }
@@ -150,7 +164,7 @@ async function run() {
 
   server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     const toolName = request.params.name;
-    const tool = allGeneratedTools.find((t) => t.method === toolName);
+    const tool = tools.find((t) => t.method === toolName);
 
     // Keep start event on stderr only to reduce client noise
     log('info', `Tool invocation started: ${toolName}`, { toolName });
@@ -193,10 +207,10 @@ async function run() {
 
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     // Debug-only on stderr; avoid client notification noise
-    log('debug', `Tools list requested; ${allGeneratedTools.length} tools available`, {
-      toolCount: allGeneratedTools.length,
+    log('debug', `Tools list requested; ${tools.length} tools available`, {
+      toolCount: tools.length,
     });
-    const transformedTools = allGeneratedTools.map((tool) => ({
+    const transformedTools = tools.map((tool) => ({
       name: tool.method,
       description: tool.description,
       inputSchema: zodToJsonSchema(tool.parameters),
@@ -216,7 +230,7 @@ async function run() {
   logBoth(
     server,
     'info',
-    `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${allGeneratedTools.length} tools`
+    `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`
   );
 }
 
