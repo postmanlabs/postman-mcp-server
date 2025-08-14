@@ -8,7 +8,7 @@ See more about the Model Context Protocol available transports in the [MCP speci
 
 ## 🧰 VS Code Integration
 
-> VS Code only supports up to 128 tools. If you add the Postman MCP server and this exceeds 128 tools, you will encounter an issue with your agent.
+> VS Code only supports up to 128 tools. By default, this server provides 37 tools (minimal mode). Use --full flag to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
 
 You can integrate your MCP server with Visual Studio Code to use it with VS Code extensions that support MCP.
 
@@ -50,6 +50,38 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
 4. When prompted, enter your Postman API key.
 
 You can now use your Postman API tools with your VS Code extension through the MCP protocol.
+
+### Tool Configuration Modes
+
+- **Default (minimal)**: Provides 37 essential tools for common Postman operations.
+- **Full mode**: Add "--full" to the `args` array to access all 106 available tools.
+
+Example (enable full mode in VS Code):
+
+```json
+{
+  "servers": {
+    "postman-api-mcp": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/dist/src/index.js",
+        "--full"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": "${input:postman-api-key}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "id": "postman-api-key",
+      "type": "promptString",
+      "description": "Enter your Postman API key"
+    }
+  ]
+}
+```
 
 ## 🐳 Docker Setup
 
@@ -104,6 +136,15 @@ Open the *claude_desktop_config.json* file, which is accessible from Claude pref
   }
 }
 ```
+
+## Migration from v1.x to v2.x
+
+- **Tool naming changes**: All tool names changed from kebab-case to camelCase.
+  - Examples: `create-collection` → `createCollection`, `get-workspaces` → `getWorkspaces`, `delete-environment` → `deleteEnvironment`.
+- **Tool availability changes**:
+  - Default behavior provides only 37 essential tools (minimal mode).
+  - Use the `--full` flag to access all 106 tools.
+  - Minimal mode is designed to stay within VS Code's 128 tool limit when combined with other MCP servers.
 
 ## 💬 Questions and support
 

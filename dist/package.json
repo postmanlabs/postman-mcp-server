@@ -5,8 +5,6 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "node dist/src/index.js --sse",
-        "start:dev": "tsx src/index.ts --sse",
         "start:stdio": "node dist/src/index.js",
         "build": "eslint --fix ./src && prettier --write \"src/**/*.ts\" && tsc",
         "test": "vitest",

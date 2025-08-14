@@ -4,11 +4,11 @@ USER app
 
 WORKDIR /app
 
-COPY ./package*.json ./
+COPY --chown=app ./package*.json ./
 
 RUN npm ci
 
-COPY . ./
+COPY --chown=app . ./
 
 RUN npm run build
 
@@ -30,6 +30,6 @@ ENV NODE_ENV=production
 
 FROM production-base AS production-stdio
 
-ENTRYPOINT ["npm", "run", "start:stdio"]
+ENTRYPOINT ["node", "dist/src/index.js"]
 
 FROM production-stdio AS production
