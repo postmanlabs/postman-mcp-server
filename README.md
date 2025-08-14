@@ -66,9 +66,7 @@ The streamable HTTP version is available at `https://mcp.postman.com`. It suppor
 
 ### Cursor integration
 
-To integrate the MCP server with Cursor, click the following button:
-
-[![Install the Postman MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman_mcp_server&config=eyJ1cmwiOiJodHRwczovL21jcC5wb3N0bWFuLmNvbS9taW5pbWFsIiwiaGVhZGVycyI6eyJBdXRob3JpemF0aW9uIjoiQmVhcmVyIFlPVVJfQVBJX0tFWSJ9fQ%3D%3D)
+To integrate the MCP server with Cursor, check the latest [Postman MCP server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.dxt` file.
 
 ### VS Code integration
 
