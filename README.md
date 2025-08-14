@@ -4,11 +4,11 @@
 
 - **STDIO server** — A lightweight MCP server that communicates over standard input/output, ideal for integration with editors and tools like [VS Code](https://code.visualstudio.com/).
 
-See more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
+View more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
 
 ## 🧰 VS Code Integration
 
-> VS Code only supports up to 128 tools. By default, this server provides 37 tools (minimal mode). Use --full flag to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
+> VS Code only supports up to 128 tools. By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
 
 You can integrate your MCP server with Visual Studio Code to use it with VS Code extensions that support MCP.
 
@@ -42,7 +42,7 @@ You can integrate your MCP server with Visual Studio Code to use it with VS Code
 
 3. Configure your extension to use the MCP server:
 
-   - **postman-api-mcp**: Uses the local stdio-based server, running directly from your project files.
+   - **postman-api-mcp** - Uses the local STDIO-based server, running directly from your project files.
      - Clone the repository
      - In the repository root folder, execute `npm install`. This will install all the required dependencies.
      - Make sure to replace `${workspaceFolder}` in the mcp.json file with the full path to the Postman MCP repository.
@@ -53,10 +53,12 @@ You can now use your Postman API tools with your VS Code extension through the M
 
 ### Tool Configuration Modes
 
-- **Default (minimal)**: Provides 37 essential tools for common Postman operations.
-- **Full mode**: Add "--full" to the `args` array to access all 106 available tools.
+- **Default (minimal)** - Provides 37 essential tools for common Postman operations.
+- **Full mode** - Add `--full` to the `args` array to access all 106 available tools.
 
-Example (enable full mode in VS Code):
+#### Example
+
+The following example demonstrates how to enable full mode in VS Code:
 
 ```json
 {
@@ -139,12 +141,14 @@ Open the *claude_desktop_config.json* file, which is accessible from Claude pref
 
 ## Migration from v1.x to v2.x
 
-- **Tool naming changes**: All tool names changed from kebab-case to camelCase.
-  - Examples: `create-collection` → `createCollection`, `get-workspaces` → `getWorkspaces`, `delete-environment` → `deleteEnvironment`.
-- **Tool availability changes**:
-  - Default behavior provides only 37 essential tools (minimal mode).
-  - Use the `--full` flag to access all 106 tools.
+- **Tool naming changes** - All tool names changed from kebab-case to camelCase. For example:
+  - `create-collection` → `createCollection`
+  - `get-workspaces` → `getWorkspaces`
+  - `delete-environment` → `deleteEnvironment`
+- **Tool availability changes**
+  - Default (minimal mode) behavior provides only 37 essential tools.
   - Minimal mode is designed to stay within VS Code's 128 tool limit when combined with other MCP servers.
+  - The `--full` flag provides access to all 106 tools.
 
 ## 💬 Questions and support
 
