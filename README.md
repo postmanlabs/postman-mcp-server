@@ -6,7 +6,12 @@
 
 See more about the Model Context Protocol available transports in the [MCP specification](https://modelcontextprotocol.io/docs/concepts/transports).
 
-## 🧰 VS Code Integration
+## Cursor Integration
+
+<Click on this button to add it (server version)>
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman_mcp_server&config=eyJ1cmwiOiJodHRwczovL21jcC5wb3N0bWFuLmNvbS9taW5pbWFsIiwiaGVhZGVycyI6eyJBdXRob3JpemF0aW9uIjoiQmVhcmVyIFlPVVJfQVBJX0tFWSJ9fQ%3D%3D)
+
+## VS Code Integration
 
 > VS Code only supports up to 128 tools. By default, this server provides 37 tools (minimal mode). Use --full flag to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
 
