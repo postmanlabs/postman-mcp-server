@@ -57,6 +57,10 @@ Configure the extension to use the **postman-api-mcp** server, a local STDIO-bas
 1. Replace `${workspaceFolder}` in the *mcp.json* file with the full path to the Postman MCP repository.
 1. When prompted, enter your [Postman API key](https://go.postman.co/settings/me/api-keys).
 
+### Claude integration
+
+To integrate the MCP server with Claude, check the latest [Postman MCP server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.dxt` file. For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
+
 ## Streamable HTTP
 
 The streamable HTTP version is available at `https://mcp.postman.com`. It supports two tool configurations to better serve different use cases:
@@ -96,10 +100,6 @@ To install in VS Code, add the following to the *.vscode/mcp.json* file:
 ```
 
 When prompted, enter your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server at `https://mcp.postman.com`.
-
-### Claude integration
-
-To integrate the MCP server with Claude, check the latest [Postman MCP server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.dxt` file. For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
 
 ### Tool configuration modes
 
