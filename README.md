@@ -77,7 +77,7 @@ To integrate the MCP server with Cursor, click the following button:
 
 ### VS Code integration
 
-> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
+> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** (`https://mcp.postman.com//mcp`) mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
 
 To install in VS Code, add the following to the *.vscode/mcp.json* file:
 
