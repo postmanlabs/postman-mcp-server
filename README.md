@@ -64,8 +64,6 @@ To integrate the MCP server with Claude, check the latest [Postman MCP server re
 
 ## Streamable HTTP
 
-> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
-
 The streamable HTTP version is available at `https://mcp.postman.com`. It supports two tool configurations to better serve different use cases:
 
 - **Minimal** — Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
@@ -78,6 +76,8 @@ To integrate the MCP server with Cursor, click the following button:
 [![Install the Postman MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman_mcp_server&config=eyJ1cmwiOiJodHRwczovL21jcC5wb3N0bWFuLmNvbS9taW5pbWFsIiwiaGVhZGVycyI6eyJBdXRob3JpemF0aW9uIjoiQmVhcmVyIFlPVVJfQVBJX0tFWSJ9fQ%3D%3D)
 
 ### VS Code integration
+
+> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
 
 To install in VS Code, add the following to the *.vscode/mcp.json* file:
 
