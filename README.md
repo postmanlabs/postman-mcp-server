@@ -64,6 +64,8 @@ To integrate the MCP server with Claude, check the latest [Postman MCP server re
 
 ## Streamable HTTP
 
+> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
+
 The streamable HTTP version is available at `https://mcp.postman.com`. It supports two tool configurations to better serve different use cases:
 
 - **Minimal** — Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
