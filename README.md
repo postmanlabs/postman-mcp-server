@@ -83,7 +83,7 @@ To install in VS Code, add the following to the *.vscode/mcp.json* file:
     "servers": {
         "postman-api-http-server": {
             "type": "sse",
-            "url": "https://mcp.postman.com/mcp",
+            "url": "https://mcp.postman.com/{minimal | mcp}", // choose "minimal" or "mcp"
             "headers": {
                 "Authorization": "Bearer ${input:postman-api-key}"
             }
@@ -100,34 +100,6 @@ To install in VS Code, add the following to the *.vscode/mcp.json* file:
 ```
 
 When prompted, enter your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server at `https://mcp.postman.com`.
-
-### Tool configuration modes
-
-- **Minimal mode** - Provides 37 essential tools for common Postman operations.
-- **Full mode** - Add `--full` to the `args` array to access all 106 available tools.
-
-The following example demonstrates how to enable full mode in VS Code:
-
-```json
-{
-    "servers": {
-        "postman-api-http-server": {
-            "type": "sse",
-            "url": "https://mcp.postman.com/{minimal | mcp}", // choose "minimal" or "mcp"
-            "headers": {
-                "Authorization": "Bearer ${input:postman-api-key}"
-            }
-        }
-    },
-    "inputs": [
-        {
-            "id": "postman-api-key",
-            "type": "promptString",
-            "description": "Enter your Postman API key"
-        }
-    ]
-}
-```
 
 ## Migration from v1.x to v2.x
 
