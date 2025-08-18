@@ -29,7 +29,8 @@ Integrate your MCP server with Visual Studio Code and use it with VS Code extens
                 "type": "stdio",
                 "command": "node",
                 "args": [
-                    "${workspaceFolder}/dist/src/index.js"
+                    "${workspaceFolder}/dist/src/index.js",
+                    "--full" // (optional) Use this flag to enable full mode
                 ],
                 "env": {
                     "POSTMAN_API_KEY": "${input:postman-api-key}"
