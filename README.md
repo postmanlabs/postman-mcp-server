@@ -29,7 +29,8 @@ Integrate your MCP server with Visual Studio Code and use it with VS Code extens
                 "type": "stdio",
                 "command": "node",
                 "args": [
-                    "${workspaceFolder}/dist/src/index.js"
+                    "${workspaceFolder}/dist/src/index.js",
+                    "--full" // (optional) Use this flag to enable full mode
                 ],
                 "env": {
                     "POSTMAN_API_KEY": "${input:postman-api-key}"
@@ -76,37 +77,9 @@ To integrate the MCP server with Cursor, click the following button:
 
 ### VS Code integration
 
+> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** (`https://mcp.postman.com//mcp`) mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
+
 To install in VS Code, add the following to the *.vscode/mcp.json* file:
-
-```json
-{
-    "servers": {
-        "postman-api-http-server": {
-            "type": "sse",
-            "url": "https://mcp.postman.com/mcp",
-            "headers": {
-                "Authorization": "Bearer ${input:postman-api-key}"
-            }
-        }
-    },
-    "inputs": [
-        {
-            "id": "postman-api-key",
-            "type": "promptString",
-            "description": "Enter your Postman API key"
-        }
-    ]
-}
-```
-
-When prompted, enter your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server at `https://mcp.postman.com`.
-
-### Tool configuration modes
-
-- **Minimal mode** - Provides 37 essential tools for common Postman operations.
-- **Full mode** - Add `--full` to the `args` array to access all 106 available tools.
-
-The following example demonstrates how to enable full mode in VS Code:
 
 ```json
 {
@@ -128,6 +101,8 @@ The following example demonstrates how to enable full mode in VS Code:
     ]
 }
 ```
+
+When prompted, enter your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server at `https://mcp.postman.com`.
 
 ## Migration from v1.x to v2.x
 
