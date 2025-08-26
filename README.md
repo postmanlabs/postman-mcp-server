@@ -16,7 +16,7 @@ This is a lightweight solution that's ideal for integration with editors and too
 ### VS Code integration
 
 > **Note:**
-> VS Code only supports up to 128 tools. By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
+> By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
 
 Integrate your MCP server with Visual Studio Code and use it with VS Code extensions that support MCP. To do this, do the following:
 
@@ -78,7 +78,7 @@ To integrate the MCP server with Cursor, click the following button:
 
 ### VS Code integration
 
-> VS Code only supports up to 128 tools. By default, the server provides 37 tools. Use **Full** (`https://mcp.postman.com//mcp`) mode to access all 106 tools, but note this may exceed VS Code's 128 tool limit when combined with other MCP servers.
+> By default, the server provides 37 tools. Use **Full** (`https://mcp.postman.com//mcp`) mode to access all 106 tools.
 
 To install in VS Code, add the following to the *.vscode/mcp.json* file:
 
@@ -86,7 +86,7 @@ To install in VS Code, add the following to the *.vscode/mcp.json* file:
 {
     "servers": {
         "postman-api-http-server": {
-            "type": "sse",
+            "type": "http",
             "url": "https://mcp.postman.com/{minimal | mcp}", // choose "minimal" or "mcp"
             "headers": {
                 "Authorization": "Bearer ${input:postman-api-key}"
@@ -113,7 +113,6 @@ When prompted, enter your Postman API key. Afterwards, the agent performs calls 
   - `delete-environment` → `deleteEnvironment`
 - **Tool availability changes**
   - The default (Minimal) behavior provides only 37 essential tools.
-  - Minimal mode is designed to stay within VS Code's 128 tool limit when combined with other MCP servers.
   - The `--full` flag provides access to all 106 tools.
 
 ## Questions and support
