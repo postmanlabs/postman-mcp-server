@@ -7,7 +7,7 @@
   "scripts": {
     "start:stdio": "node dist/src/index.js",
     "build": "eslint --fix ./src && prettier --write \"src/**/*.ts\" && tsc",
-    "prepack": "npm run build && node scripts/sync-dist-pkg.mjs",
+    "prepack": "npm run build",
     "test": "vitest",
     "lint": "eslint",
     "lint:fix": "eslint --fix"
