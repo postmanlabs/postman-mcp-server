@@ -6,15 +6,12 @@ eslint.config.mjs
 # Development and build files
 .github/
 scripts/
-bin/act
 node_modules/
 *.log
-*.tgz
 
 # Test files
 **/*.test.ts
 **/*.test.js
-src/tests/
 
 # Documentation (except README.md which is included)
 DOCKER.md
@@ -23,20 +20,8 @@ DOCKER.md
 .git/
 .gitignore
 .vscode/
+.cursor/
 .idea/
 *.swp
 *.swo
 *~
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# Coverage and test output
-coverage/
-.nyc_output/
