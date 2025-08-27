@@ -1,0 +1,27 @@
+# Source files (only dist/ should be published)
+src/
+tsconfig.json
+eslint.config.mjs
+
+# Development and build files
+.github/
+scripts/
+node_modules/
+*.log
+
+# Test files
+**/*.test.ts
+**/*.test.js
+
+# Documentation (except README.md which is included)
+DOCKER.md
+
+# Git and editor files
+.git/
+.gitignore
+.vscode/
+.cursor/
+.idea/
+*.swp
+*.swo
+*~

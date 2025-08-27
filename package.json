@@ -1,15 +1,25 @@
 {
-  "name": "postman-api-mcp",
+  "name": "@postman/postman-mcp-server",
   "version": "2.0.1",
   "description": "A simple MCP server to operate on the Postman API",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "type": "module",
   "scripts": {
     "start:stdio": "node dist/src/index.js",
     "build": "eslint --fix ./src && prettier --write \"src/**/*.ts\" && tsc",
+    "prepack": "npm run build && node scripts/sync-dist-pkg.mjs",
     "test": "vitest",
     "lint": "eslint",
     "lint:fix": "eslint --fix"
+  },
+  "bin": "dist/src/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^11.0.0",
