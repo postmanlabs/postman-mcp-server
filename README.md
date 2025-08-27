@@ -80,7 +80,7 @@ To integrate the MCP server with Cursor, click the following button:
 
 > By default, the server provides 37 tools. Use **Full** (`https://mcp.postman.com/mcp`) mode to access all 106 tools.
 
-To install in VS Code, you can use the [Postman VS Code Extension](vscode:extension/Postman.postman-for-vscode). Or you can add the following to the *.vscode/mcp.json* file:
+To install in VS Code, you can use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode). Or you can add the following to the *.vscode/mcp.json* file:
 
 ```json
 {
