@@ -4,9 +4,9 @@ import unusedImports from "eslint-plugin-unused-imports";
 import eslintConfigPrettier from 'eslint-config-prettier'; // Ensures ESLint doesn't conflict with Prettier
 
 export default tseslint.config(
+  { ignores: ['dist/**', '**/*.js'] },
   {
     files: ['src/**/*.ts'],
-    ignores: ['**/*.js']
   },
   eslint.configs.recommended,
   tseslint.configs.recommended,
