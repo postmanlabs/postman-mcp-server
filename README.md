@@ -60,7 +60,12 @@ Configure the extension to use the **postman-api-mcp** server, a local STDIO-bas
 
 ### Claude integration
 
-To integrate the MCP server with Claude, check the latest [Postman MCP server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.dxt` file. For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
+To integrate the MCP server with Claude, check the latest [Postman MCP server release](https://github.com/postmanlabs/postman-mcp-server/releases) and download one of the available `.dxt` files:
+
+- **postman-api-mcp-minimal.dxt** - Contains 37 essential tools for basic Postman operations
+- **postman-api-mcp-full.dxt** - Contains all 106+ tools for comprehensive Postman functionality
+
+For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
 
 ## Streamable HTTP
 
