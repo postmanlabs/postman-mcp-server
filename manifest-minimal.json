@@ -1,10 +1,10 @@
 {
   "dxt_version": "0.2",
   "version": "",
-  "name": "postman-mcp-server",
-  "display_name": "Postman MCP Server",
-  "description": "A basic MCP server that operates using the Postman API.",
-  "long_description": "This extension enables AI assistants to interact with the Postman API through Model Context Protocol (MCP). It provides a rich set of tools for managing your collections, environments, mocks, monitors, and more, all secured with your Postman API key.",
+  "name": "postman-mcp-server-minimal",
+  "display_name": "Postman MCP Server (Minimal)",
+  "description": "A minimal MCP server with essential Postman API tools (37 tools).",
+  "long_description": "This extension enables AI assistants to interact with the Postman API through Model Context Protocol (MCP). This minimal version includes only the essential tools for basic Postman operations, providing faster performance and simplifying use for common workflows. All secured with your Postman API key.",
   "author": {
     "name": "Postman, Inc.",
     "email": "help@postman.com",
@@ -38,7 +38,8 @@
     "postman-api",
     "collections",
     "monitors",
-    "mocks"
+    "mocks",
+    "minimal"
   ],
   "license": "Apache-2.0",
   "user_config": {

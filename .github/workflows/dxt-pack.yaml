@@ -21,32 +21,55 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync manifest version with package.json
+      - name: Sync manifest versions with package.json
         run: |
           pkg_version=$(jq -r .version package.json)
-          jq --arg v "$pkg_version" '.version = $v' manifest.json > manifest.tmp.json
-          mv manifest.tmp.json manifest.json
+          jq --arg v "$pkg_version" '.version = $v' manifest-minimal.json > manifest-minimal.tmp.json
+          mv manifest-minimal.tmp.json manifest-minimal.json
+          jq --arg v "$pkg_version" '.version = $v' manifest-full.json > manifest-full.tmp.json
+          mv manifest-full.tmp.json manifest-full.json
 
       - name: Build project
         run: npm run build
 
-      - name: Install DXT
+      - name: Install dependencies for packaging
         run: npm ci --omit=dev
 
       - name: Install DXT
         run: npm install -g @anthropic-ai/dxt
 
-      - name: Package extension
+      - name: Package extensions
         run: |
-          dxt pack
           current_dir=$(basename "$PWD")
-          echo "DXT_FILENAME=${current_dir}.dxt" >> $GITHUB_ENV
+          
+          # Package minimal version
+          cp manifest-minimal.json manifest.json
+          dxt pack
+          mv "${current_dir}.dxt" "${current_dir}-minimal.dxt"
+          
+          # Package full version  
+          cp manifest-full.json manifest.json
+          dxt pack
+          mv "${current_dir}.dxt" "${current_dir}-full.dxt"
+          
+          # Set environment variables
+          echo "DXT_MINIMAL_FILENAME=${current_dir}-minimal.dxt" >> $GITHUB_ENV
+          echo "DXT_FULL_FILENAME=${current_dir}-full.dxt" >> $GITHUB_ENV
 
-      - name: Upload release asset
+      - name: Upload minimal release asset
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.DXT_FILENAME }}
-          asset_name: ${{ env.DXT_FILENAME }}
+          file: ${{ env.DXT_MINIMAL_FILENAME }}
+          asset_name: ${{ env.DXT_MINIMAL_FILENAME }}
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Upload full release asset
+        uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.DXT_FULL_FILENAME }}
+          asset_name: ${{ env.DXT_FULL_FILENAME }}
           tag: ${{ github.ref }}
           overwrite: true

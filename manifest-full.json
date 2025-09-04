@@ -1,0 +1,68 @@
+{
+  "dxt_version": "0.2",
+  "version": "",
+  "name": "postman-mcp-server-full",
+  "display_name": "Postman MCP Server (Full)",
+  "description": "A comprehensive MCP server with all available Postman API tools (106+ tools).",
+  "long_description": "This extension enables AI assistants to interact with the Postman API through Model Context Protocol (MCP). This full version provides access to all available Postman API tools including advanced features like collection forks, comments, monitors, PAN operations, and more. All secured with your Postman API key.",
+  "author": {
+    "name": "Postman, Inc.",
+    "email": "help@postman.com",
+    "url": "https://www.postman.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/postmanlabs/postman-mcp-server"
+  },
+  "homepage": "https://github.com/postmanlabs/postman-mcp-server",
+  "documentation": "https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/overview",
+  "support": "https://github.com/postmanlabs/postman-api-mcp/issues",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/src/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/src/index.js",
+        "--full"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": "${user_config.postman_api_key}"
+      }
+    }
+  },
+  "keywords": [
+    "postman",
+    "api",
+    "mcp",
+    "postman-api",
+    "collections",
+    "monitors",
+    "mocks",
+    "full",
+    "comprehensive"
+  ],
+  "license": "Apache-2.0",
+  "user_config": {
+    "postman_api_key": {
+      "type": "string",
+      "title": "Postman API Key",
+      "description": "A valid Postman API key used to authenticate requests.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=20.0.0"
+    }
+  },
+  "tools_generated": true
+}
