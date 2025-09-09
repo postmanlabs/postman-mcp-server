@@ -84,7 +84,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     createdSpecIds = [];
   });
 
-  describe('Workspace Workflow', { timeout: 30000 }, () => {
+  describe('Workspace Workflow', () => {
     it('should create, list, search, update, and delete a single workspace', async () => {
       const workspaceData = WorkspaceDataFactory.createWorkspace();
       const workspaceId = await createWorkspace(workspaceData);

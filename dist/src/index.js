@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ErrorCode, ListToolsRequestSchema, McpError, } from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ErrorCode, isInitializeRequest, ListToolsRequestSchema, McpError, } from '@modelcontextprotocol/sdk/types.js';
 import zodToJsonSchema from 'zod-to-json-schema';
 import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
@@ -75,6 +75,7 @@ const SERVER_NAME = packageJson.name;
 const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
 let currentApiKey = undefined;
+let clientInfo = undefined;
 const allGeneratedTools = await loadAllTools();
 log('info', 'Server initialization starting', {
     serverName: SERVER_NAME,
@@ -115,7 +116,10 @@ async function run() {
             }
             const result = await tool.handler(args, {
                 apiKey: currentApiKey,
-                headers: extra.requestInfo?.headers,
+                headers: {
+                    ...extra.requestInfo?.headers,
+                    'user-agent': clientInfo?.name,
+                },
             });
             const durationMs = Date.now() - start;
             log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
@@ -151,6 +155,12 @@ async function run() {
     }
     log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
+    transport.onmessage = (message) => {
+        if (isInitializeRequest(message)) {
+            clientInfo = message.params.clientInfo;
+            log('debug', '📥 Received MCP initialize request', { clientInfo });
+        }
+    };
     await server.connect(transport);
     logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`);
 }

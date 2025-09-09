@@ -3,10 +3,11 @@
 import dotenv from 'dotenv';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-
+import { InitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
+  isInitializeRequest,
   IsomorphicHeaders,
   ListToolsRequestSchema,
   McpError,
@@ -62,7 +63,10 @@ interface ToolModule {
   };
   handler: (
     params: any,
-    extra: { apiKey: string; headers?: IsomorphicHeaders }
+    extra: {
+      apiKey: string;
+      headers?: IsomorphicHeaders;
+    }
   ) => Promise<{
     content: Array<{ type: string; text: string } & Record<string, unknown>>;
   }>;
@@ -125,6 +129,7 @@ const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
 
 let currentApiKey: string | undefined = undefined;
+let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefined;
 
 const allGeneratedTools = await loadAllTools();
 log('info', 'Server initialization starting', {
@@ -186,7 +191,10 @@ async function run() {
 
       const result = await tool.handler(args as any, {
         apiKey: currentApiKey,
-        headers: extra.requestInfo?.headers,
+        headers: {
+          ...extra.requestInfo?.headers,
+          'user-agent': clientInfo?.name,
+        },
       });
 
       const durationMs = Date.now() - start;
@@ -226,6 +234,12 @@ async function run() {
   }
   log('info', 'Starting stdio transport');
   const transport = new StdioServerTransport();
+  transport.onmessage = (message) => {
+    if (isInitializeRequest(message)) {
+      clientInfo = message.params.clientInfo;
+      log('debug', '📥 Received MCP initialize request', { clientInfo });
+    }
+  };
   await server.connect(transport);
   logBoth(
     server,
