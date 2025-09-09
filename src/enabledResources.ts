@@ -187,7 +187,10 @@ const minimal = [
   'duplicateCollection',
 ] as const;
 
+const excludedFromGeneration = ['createCollection', 'putCollection'] as const;
+
 export const enabledResources = {
   full,
   minimal,
+  excludedFromGeneration,
 };
