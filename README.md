@@ -75,7 +75,7 @@ The streamable HTTP version is available at `https://mcp.postman.com`. It suppor
 - **Minimal** — Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
-> **Note:** The EU streamable HTTP server version is available under https://mcp.eu.postman.com.
+> **Note:** The streamable EU HTTP server is available at `https://mcp.eu.postman.com`.
 
 ### Cursor integration
 
