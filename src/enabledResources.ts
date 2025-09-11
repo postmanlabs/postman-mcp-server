@@ -185,13 +185,10 @@ const minimal = [
   'createCollectionRequest',
   'createCollectionResponse',
   'duplicateCollection',
-  'getStatusOfAnAsyncApiTask'
+  'getStatusOfAnAsyncApiTask',
 ] as const;
 
-const excludedFromGeneration = [
-  'createCollection',
-  'putCollection',
-] as const;
+const excludedFromGeneration = ['createCollection', 'putCollection'] as const;
 
 export const enabledResources = {
   full,
