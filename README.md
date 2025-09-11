@@ -39,9 +39,9 @@ The streamable HTTP server supports the following tool configurations:
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
-### Prerequisites
+**Note:** The streamable EU HTTP server is available at `https://mcp.eu.postman.com`.
 
-**Note:** Make certain you're using [VS Code 1.101](https://code.visualstudio.com/updates/v1_101) or [later](https://code.visualstudio.com/updates) for remove MCP server support.
+### Prerequisites
 
 Before getting started, make certain you have a valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
@@ -56,9 +56,6 @@ Afterwards, enable Agent mode, located by the Copilot chat textbox to start the 
 **Note:** By default, the server provides 37 tools. Use full mode (`https://mcp.postman.com/mcp`) to access all 106 tools.
 
 #### Manual configuration
-
-<!-- Is this note correct? -->
-**Note:** Streamable HTTP support is only available for VS Code 1.101 or later.
 
 To manually configure the streamable HTTP Postman MCP Server in VS Code, add the following JSON block to the *.vscode/mcp.json* file:
 
@@ -123,13 +120,12 @@ To configure the extension to use the local Postman MCP Server, do the following
 
 ### Install in VS Code
 
-<!-- Does this also require VS Code v1.10.0 and later? -->
-
 [![Install with Node in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=postman-api-mcp&inputs=%5B%7B%22id%22%3A%22postman-api-key%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Enter%20your%20Postman%20API%20key%22%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40postman%2Fpostman-mcp-server%22%2C%22--full%22%5D%2C%22env%22%3A%7B%22POSTMAN_API_KEY%22%3A%22%24%7Binput%3Apostman-api-key%7D%22%7D%7D)
 
 To install the local Postman MCP Server in Visual Studio Code, click the install button.
 
-**Note:** By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
+**Note:**
+- By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
 
 #### Manual configuration
 
