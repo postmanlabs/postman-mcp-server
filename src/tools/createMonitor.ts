@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
@@ -41,6 +41,7 @@ export const parameters = z.object({
             )
             .optional(),
         })
+        .describe("Information about the monitor's retry settings.")
         .optional(),
       options: z
         .object({
@@ -141,7 +142,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/monitors`;
@@ -150,13 +151,12 @@ export async function handler(
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
     if (params.monitor !== undefined) bodyPayload.monitor = params.monitor;
-    const result = await fetchPostmanAPI(url, {
-      method: 'POST',
+    const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
-      apiKey: extra.apiKey,
       headers: extra.headers,
-    });
+    };
+    const result = await extra.client.post(url, options);
     return {
       content: [
         {

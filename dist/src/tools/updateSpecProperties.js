@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { ContentType } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
@@ -25,13 +25,12 @@ export async function handler(params, extra) {
         const bodyPayload = {};
         if (params.name !== undefined)
             bodyPayload.name = params.name;
-        const result = await fetchPostmanAPI(url, {
-            method: 'PATCH',
+        const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            apiKey: extra.apiKey,
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.patch(url, options);
         return {
             content: [
                 {

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { ContentType } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
@@ -31,6 +31,7 @@ export const parameters = z.object({
                 .describe('The number of times to reattempt a monitor run if it fails or errors. This may impact your [monitor usage](https://learning.postman.com/docs/monitoring-your-api/monitor-usage/#view-monitor-usage).')
                 .optional(),
         })
+            .describe("Information about the monitor's retry settings.")
             .optional(),
         options: z
             .object({
@@ -124,13 +125,12 @@ export async function handler(params, extra) {
         const bodyPayload = {};
         if (params.monitor !== undefined)
             bodyPayload.monitor = params.monitor;
-        const result = await fetchPostmanAPI(url, {
-            method: 'PUT',
+        const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            apiKey: extra.apiKey,
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.put(url, options);
         return {
             content: [
                 {

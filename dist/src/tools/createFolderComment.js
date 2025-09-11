@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { ContentType } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
@@ -18,7 +18,7 @@ export const parameters = z.object({
         .optional(),
     tags: z
         .object({
-        userName: z
+        '{{userName}}': z
             .object({
             type: z.literal('user').describe('The `user` value.'),
             id: z.string().describe("The user's ID."),
@@ -47,13 +47,12 @@ export async function handler(params, extra) {
             bodyPayload.threadId = params.threadId;
         if (params.tags !== undefined)
             bodyPayload.tags = params.tags;
-        const result = await fetchPostmanAPI(url, {
-            method: 'POST',
+        const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            apiKey: extra.apiKey,
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.post(url, options);
         return {
             content: [
                 {
