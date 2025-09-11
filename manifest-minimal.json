@@ -1,6 +1,6 @@
 {
   "dxt_version": "0.2",
-  "version": "",
+  "version": "2.2.0",
   "name": "postman-mcp-server-minimal",
   "display_name": "Postman MCP Server (Minimal)",
   "description": "A minimal MCP server with essential Postman API tools (37 tools).",
