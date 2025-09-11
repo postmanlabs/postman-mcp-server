@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI } from '../clients/postman.js';
+import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
@@ -9,11 +9,11 @@ function asMcpError(error: unknown): McpError {
 
 export const method = 'patchEnvironment';
 export const description =
-  'Updates specific environment properties, such as its name and variables.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n';
+  'Updates specific environment properties, such as its name and variables.\n\n**Note:**\n\n- You can only perform one type of operation at a time. For example, you cannot perform an \\`add\\` and \\`replace\\` operation in the same call.\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- To add a description to an existing variable, use the \\`add\\` operation.\n';
 export const parameters = z.object({ environmentId: z.string().describe("The environment's ID.") });
 export const annotations = {
   title:
-    'Updates specific environment properties, such as its name and variables.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n',
+    'Updates specific environment properties, such as its name and variables.\n\n**Note:**\n\n- You can only perform one type of operation at a time. For example, you cannot perform an \\`add\\` and \\`replace\\` operation in the same call.\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- To add a description to an existing variable, use the \\`add\\` operation.\n',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,
@@ -21,17 +21,16 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/environments/${params.environmentId}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
-    const result = await fetchPostmanAPI(url, {
-      method: 'PATCH',
-      apiKey: extra.apiKey,
+    const options: any = {
       headers: extra.headers,
-    });
+    };
+    const result = await extra.client.patch(url, options);
     return {
       content: [
         {

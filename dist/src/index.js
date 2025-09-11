@@ -9,6 +9,20 @@ import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { enabledResources } from './enabledResources.js';
+import { PostmanAPIClient } from './clients/postman.js';
+const SUPPORTED_REGIONS = {
+    us: 'https://api.postman.com',
+    eu: 'https://api.eu.postman.com',
+};
+function isValidRegion(region) {
+    return region in SUPPORTED_REGIONS;
+}
+function setRegionEnvironment(region) {
+    if (!isValidRegion(region)) {
+        throw new Error(`Invalid region: ${region}. Supported regions: us, eu`);
+    }
+    process.env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
+}
 function log(level, message, context) {
     const timestamp = new Date().toISOString();
     const suffix = context ? ` ${JSON.stringify(context)}` : '';
@@ -74,17 +88,33 @@ dotenv.config();
 const SERVER_NAME = packageJson.name;
 const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
-let currentApiKey = undefined;
 let clientInfo = undefined;
-const allGeneratedTools = await loadAllTools();
-log('info', 'Server initialization starting', {
-    serverName: SERVER_NAME,
-    version: APP_VERSION,
-    toolCount: allGeneratedTools.length,
-});
 async function run() {
     const args = process.argv.slice(2);
     const useFull = args.includes('--full');
+    const regionIndex = args.findIndex((arg) => arg === '--region');
+    if (regionIndex !== -1 && regionIndex + 1 < args.length) {
+        const region = args[regionIndex + 1];
+        if (isValidRegion(region)) {
+            setRegionEnvironment(region);
+            log('info', `Using region: ${region}`, {
+                region,
+                baseUrl: process.env.POSTMAN_API_BASE_URL,
+            });
+        }
+        else {
+            log('error', `Invalid region: ${region}`);
+            console.error(`Supported regions: ${Object.keys(SUPPORTED_REGIONS).join(', ')}`);
+            process.exit(1);
+        }
+    }
+    const client = PostmanAPIClient.getInstance();
+    const allGeneratedTools = await loadAllTools();
+    log('info', 'Server initialization starting', {
+        serverName: SERVER_NAME,
+        version: APP_VERSION,
+        toolCount: allGeneratedTools.length,
+    });
     const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
     const minimalTools = allGeneratedTools.filter((t) => enabledResources.minimal.includes(t.method));
     const tools = useFull ? fullTools : minimalTools;
@@ -110,12 +140,8 @@ async function run() {
         const args = request.params.arguments || {};
         try {
             const start = Date.now();
-            if (!currentApiKey) {
-                log('error', 'Missing API key for tool invocation', { toolName });
-                throw new McpError(ErrorCode.InvalidParams, 'API key is required.');
-            }
             const result = await tool.handler(args, {
-                apiKey: currentApiKey,
+                client,
                 headers: {
                     ...extra.requestInfo?.headers,
                     'user-agent': clientInfo?.name,
@@ -148,11 +174,6 @@ async function run() {
         }));
         return { tools: transformedTools };
     });
-    currentApiKey = process.env.POSTMAN_API_KEY;
-    if (!currentApiKey) {
-        log('error', 'POSTMAN_API_KEY is required');
-        process.exit(1);
-    }
     log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
     transport.onmessage = (message) => {

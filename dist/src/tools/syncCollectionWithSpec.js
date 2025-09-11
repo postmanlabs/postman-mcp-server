@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { fetchPostmanAPI } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
@@ -24,11 +23,10 @@ export async function handler(params, extra) {
         if (params.specId !== undefined)
             query.set('specId', String(params.specId));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
-        const result = await fetchPostmanAPI(url, {
-            method: 'PUT',
-            apiKey: extra.apiKey,
+        const options = {
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.put(url, options);
         return {
             content: [
                 {

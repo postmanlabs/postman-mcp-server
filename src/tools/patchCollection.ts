@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
@@ -9,7 +9,7 @@ function asMcpError(error: unknown): McpError {
 
 export const method = 'patchCollection';
 export const description =
-  'Updates specific collection information, such as its name, events, or its variables. For more information about the \\`auth\\`, \\`variable\\`, and \\`events\\` properties, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n- For \\`variable\\`, refer to the **Variable List** entry. Also accepts \\`variables\\`.\n- For \\`auth\\`, refer to the **Auth** entry.\n- For \\`events\\`, refer to the **Event List** entry.\n';
+  'Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n';
 export const parameters = z.object({
   collectionId: z
     .string()
@@ -34,21 +34,15 @@ export const parameters = z.object({
                 .describe("The variable's ID. Doesn't apply to collection-level variables.")
                 .optional(),
               key: z.string().describe("The variable's key (name).").optional(),
-              description: z
-                .string()
-                .describe(
-                  "The variable's description. Doesn't apply to collection-level variables."
-                )
-                .optional(),
-              value: z.string().describe("The key's value.").optional(),
-              type: z
-                .enum(['string', 'boolean', 'integer'])
-                .describe("The variable's type.")
+              description: z.string().max(512).describe("The variable's description.").optional(),
+              value: z
+                .union([z.string(), z.boolean(), z.number().int()])
+                .describe("The key's value.")
                 .optional(),
               disabled: z
                 .boolean()
                 .describe(
-                  'If true, the variable is not enabled. Applies only to query parameter variables.'
+                  "If true, the variable is not enabled. Doesn't apply to path parameter variables."
                 )
                 .default(false),
             })
@@ -372,13 +366,16 @@ export const parameters = z.object({
             })
             .describe("Information about the collection's events.")
         )
+        .describe(
+          'A list of scripts configured to run when specific events occur. These scripts can be referenced in the collection by their ID.'
+        )
         .optional(),
     })
     .optional(),
 });
 export const annotations = {
   title:
-    'Updates specific collection information, such as its name, events, or its variables. For more information about the \\`auth\\`, \\`variable\\`, and \\`events\\` properties, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n- For \\`variable\\`, refer to the **Variable List** entry. Also accepts \\`variables\\`.\n- For \\`auth\\`, refer to the **Auth** entry.\n- For \\`events\\`, refer to the **Event List** entry.\n',
+    'Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,
@@ -386,7 +383,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/collections/${params.collectionId}`;
@@ -394,13 +391,12 @@ export async function handler(
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
     if (params.collection !== undefined) bodyPayload.collection = params.collection;
-    const result = await fetchPostmanAPI(url, {
-      method: 'PATCH',
+    const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
-      apiKey: extra.apiKey,
       headers: extra.headers,
-    });
+    };
+    const result = await extra.client.patch(url, options);
     return {
       content: [
         {
