@@ -16,8 +16,8 @@ This is a lightweight solution that's ideal for integration with editors and too
 ### VS Code integration
 
 > **Note:**
-> By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
-> Use the `--region` flag to specify the Postman API region (us or eu), or set the `POSTMAN_API_BASE_URL` environment variable directly.
+> - By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
+> - Use the `--region` flag to specify a Postman API region (US or EU), or set the `POSTMAN_API_BASE_URL` environment variable directly.
 
 Integrate your MCP server with Visual Studio Code and use it with VS Code extensions that support MCP. To do this, do the following:
 
