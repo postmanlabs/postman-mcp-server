@@ -3,10 +3,11 @@
 import dotenv from 'dotenv';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-
+import { InitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
+  isInitializeRequest,
   IsomorphicHeaders,
   ListToolsRequestSchema,
   McpError,
@@ -19,6 +20,23 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
 import { enabledResources } from './enabledResources.js';
+import { PostmanAPIClient } from './clients/postman.js';
+
+const SUPPORTED_REGIONS = {
+  us: 'https://api.postman.com',
+  eu: 'https://api.eu.postman.com',
+} as const;
+
+function isValidRegion(region: string): region is keyof typeof SUPPORTED_REGIONS {
+  return region in SUPPORTED_REGIONS;
+}
+
+function setRegionEnvironment(region: string): void {
+  if (!isValidRegion(region)) {
+    throw new Error(`Invalid region: ${region}. Supported regions: us, eu`);
+  }
+  process.env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
+}
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -62,7 +80,10 @@ interface ToolModule {
   };
   handler: (
     params: any,
-    extra: { apiKey: string; headers?: IsomorphicHeaders }
+    extra: {
+      client: PostmanAPIClient;
+      headers?: IsomorphicHeaders;
+    }
   ) => Promise<{
     content: Array<{ type: string; text: string } & Record<string, unknown>>;
   }>;
@@ -124,18 +145,37 @@ const SERVER_NAME = packageJson.name;
 const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
 
-let currentApiKey: string | undefined = undefined;
-
-const allGeneratedTools = await loadAllTools();
-log('info', 'Server initialization starting', {
-  serverName: SERVER_NAME,
-  version: APP_VERSION,
-  toolCount: allGeneratedTools.length,
-});
+let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefined;
 
 async function run() {
   const args = process.argv.slice(2);
   const useFull = args.includes('--full');
+
+  const regionIndex = args.findIndex((arg) => arg === '--region');
+  if (regionIndex !== -1 && regionIndex + 1 < args.length) {
+    const region = args[regionIndex + 1];
+    if (isValidRegion(region)) {
+      setRegionEnvironment(region);
+      log('info', `Using region: ${region}`, {
+        region,
+        baseUrl: process.env.POSTMAN_API_BASE_URL,
+      });
+    } else {
+      log('error', `Invalid region: ${region}`);
+      console.error(`Supported regions: ${Object.keys(SUPPORTED_REGIONS).join(', ')}`);
+      process.exit(1);
+    }
+  }
+
+  // Create singleton client with selected base URL
+  const client = PostmanAPIClient.getInstance();
+
+  const allGeneratedTools = await loadAllTools();
+  log('info', 'Server initialization starting', {
+    serverName: SERVER_NAME,
+    version: APP_VERSION,
+    toolCount: allGeneratedTools.length,
+  });
 
   const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
   const minimalTools = allGeneratedTools.filter((t) =>
@@ -179,14 +219,13 @@ async function run() {
 
     try {
       const start = Date.now();
-      if (!currentApiKey) {
-        log('error', 'Missing API key for tool invocation', { toolName });
-        throw new McpError(ErrorCode.InvalidParams, 'API key is required.');
-      }
 
       const result = await tool.handler(args as any, {
-        apiKey: currentApiKey,
-        headers: extra.requestInfo?.headers,
+        client,
+        headers: {
+          ...extra.requestInfo?.headers,
+          'user-agent': clientInfo?.name,
+        },
       });
 
       const durationMs = Date.now() - start;
@@ -219,13 +258,15 @@ async function run() {
     return { tools: transformedTools };
   });
 
-  currentApiKey = process.env.POSTMAN_API_KEY;
-  if (!currentApiKey) {
-    log('error', 'POSTMAN_API_KEY is required');
-    process.exit(1);
-  }
+  // API key validation is handled by the singleton client
   log('info', 'Starting stdio transport');
   const transport = new StdioServerTransport();
+  transport.onmessage = (message) => {
+    if (isInitializeRequest(message)) {
+      clientInfo = message.params.clientInfo;
+      log('debug', '📥 Received MCP initialize request', { clientInfo });
+    }
+  };
   await server.connect(transport);
   logBoth(
     server,

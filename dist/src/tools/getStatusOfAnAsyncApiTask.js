@@ -1,11 +1,10 @@
 import { z } from 'zod';
-import { fetchPostmanAPI } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
 }
-export const method = 'getStatusOfAnAsyncTask';
+export const method = 'getStatusOfAnAsyncApiTask';
 export const description = 'Gets the status of an asynchronous task.';
 export const parameters = z.object({
     apiId: z.string().describe("The API's ID."),
@@ -25,11 +24,10 @@ export async function handler(params, extra) {
         const endpoint = `/apis/${params.apiId}/tasks/${params.taskId}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
-        const result = await fetchPostmanAPI(url, {
-            method: 'GET',
-            apiKey: extra.apiKey,
+        const options = {
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.get(url, options);
         return {
             content: [
                 {

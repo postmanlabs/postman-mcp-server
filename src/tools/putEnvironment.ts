@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
@@ -17,12 +17,20 @@ export const parameters = z.object({
       name: z.string().describe("The environment's name.").optional(),
       values: z
         .array(
-          z.object({
-            enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
-            key: z.string().describe("The variable's name.").optional(),
-            value: z.string().describe("The variable's value.").optional(),
-            type: z.enum(['secret', 'default']).describe('The variable type.').optional(),
-          })
+          z
+            .object({
+              enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
+              key: z.string().describe("The variable's name.").optional(),
+              value: z.string().describe("The variable's value.").optional(),
+              type: z
+                .enum(['secret', 'default'])
+                .describe(
+                  "The variable's type:\n- `secret` — The variable value is masked.\n- `default` — The variable value is visible in plain text.\n"
+                )
+                .optional(),
+              description: z.string().max(512).describe("The variable's description.").optional(),
+            })
+            .describe("Information about the environment's variables.")
         )
         .describe("Information about the environment's variables.")
         .optional(),
@@ -40,7 +48,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/environments/${params.environmentId}`;
@@ -48,13 +56,12 @@ export async function handler(
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
     if (params.environment !== undefined) bodyPayload.environment = params.environment;
-    const result = await fetchPostmanAPI(url, {
-      method: 'PUT',
+    const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
-      apiKey: extra.apiKey,
       headers: extra.headers,
-    });
+    };
+    const result = await extra.client.put(url, options);
     return {
       content: [
         {

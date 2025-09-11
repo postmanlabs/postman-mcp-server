@@ -19,7 +19,7 @@ const full = [
     'getCollectionsForkedByUser',
     'pullCollectionChanges',
     'createCollectionFork',
-    'collection-merges',
+    'mergeCollectionFork',
     'createCollectionFolder',
     'deleteCollectionFolder',
     'getCollectionFolder',
@@ -99,7 +99,7 @@ const full = [
     'publishDocumentation',
     'unpublishDocumentation',
     'getAsyncSpecTaskStatus',
-    'getStatusOfAnAsyncTask',
+    'getStatusOfAnAsyncApiTask',
     'getAuthenticatedUser',
     'getTaggedEntities',
     'transferCollectionFolders',
@@ -148,8 +148,11 @@ const minimal = [
     'createCollectionRequest',
     'createCollectionResponse',
     'duplicateCollection',
+    'getStatusOfAnAsyncApiTask',
 ];
+const excludedFromGeneration = ['createCollection', 'putCollection'];
 export const enabledResources = {
     full,
     minimal,
+    excludedFromGeneration,
 };

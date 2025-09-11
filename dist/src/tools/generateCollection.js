@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { ContentType } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
@@ -49,6 +49,10 @@ export const parameters = z.object({
             .boolean()
             .describe('Whether authentication details should be included in all requests, or always inherited from the collection.')
             .default(false),
+        nestedFolderHierarchy: z
+            .boolean()
+            .describe("If true, creates subfolders in the generated collection based on the order of the endpoints' tags.")
+            .default(false),
     })
         .describe("The advanced creation options and their values. For more details, see Postman's [OpenAPI to Postman Collection Converter OPTIONS documentation](https://github.com/postmanlabs/openapi-to-postman/blob/develop/OPTIONS.md). These properties are case-sensitive.")
         .optional(),
@@ -69,13 +73,12 @@ export async function handler(params, extra) {
             bodyPayload.name = params.name;
         if (params.options !== undefined)
             bodyPayload.options = params.options;
-        const result = await fetchPostmanAPI(url, {
-            method: 'POST',
+        const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            apiKey: extra.apiKey,
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.post(url, options);
         return {
             content: [
                 {

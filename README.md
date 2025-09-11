@@ -126,6 +126,7 @@ To install the local Postman MCP Server in Visual Studio Code, click the install
 
 **Note:**
 - By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
+- Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
 
 #### Manual configuration
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI, ContentType } from '../clients/postman.js';
+import { ContentType } from '../clients/postman.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
@@ -19,6 +19,7 @@ export const parameters = z.object({
             .optional(),
         value: z.string().describe("The variable's value.").optional(),
         enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
+        description: z.string().max(512).describe("The variable's description.").optional(),
     })
         .describe('Information about the global variable.'))
         .describe("A list of the workspace's global variables.")
@@ -38,13 +39,12 @@ export async function handler(params, extra) {
         const bodyPayload = {};
         if (params.values !== undefined)
             bodyPayload.values = params.values;
-        const result = await fetchPostmanAPI(url, {
-            method: 'PUT',
+        const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            apiKey: extra.apiKey,
             headers: extra.headers,
-        });
+        };
+        const result = await extra.client.put(url, options);
         return {
             content: [
                 {

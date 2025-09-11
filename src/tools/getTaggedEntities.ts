@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { fetchPostmanAPI } from '../clients/postman.js';
+import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
@@ -50,7 +50,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { apiKey: string; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
 ): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
   try {
     const endpoint = `/tags/${params.slug}/entities`;
@@ -60,11 +60,10 @@ export async function handler(
     if (params.cursor !== undefined) query.set('cursor', String(params.cursor));
     if (params.entityType !== undefined) query.set('entityType', String(params.entityType));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
-    const result = await fetchPostmanAPI(url, {
-      method: 'GET',
-      apiKey: extra.apiKey,
+    const options: any = {
       headers: extra.headers,
-    });
+    };
+    const result = await extra.client.get(url, options);
     return {
       content: [
         {
