@@ -4,8 +4,8 @@ The Postman MCP Server connects Postman to AI tools, giving AI agents and assist
 
 Postman supports the following tool configurations:
 
-- **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations.
-- **Full** — Includes all available Postman API tools (100+ tools).
+- **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
+- **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collabration and Postman's Enterprise features.
 
 ### Use Cases
 
@@ -41,7 +41,7 @@ The streamable HTTP Postman MCP Server is hosted by Postman and provides the eas
 
 The streamable HTTP server supports the following tool configurations:
 
-- **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`. This offers faster performance and simplifies use for those who only need basic Postman operations.
+- **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`.
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
 **Note:** The streamable EU HTTP server is available at `https://mcp.eu.postman.com`.
@@ -69,7 +69,7 @@ To manually configure the streamable HTTP Postman MCP Server in VS Code, add the
     "servers": {
         "postman-api-http-server": {
             "type": "http",
-            "url": "https://mcp.postman.com/{minimal | mcp}", // choose "minimal" or "mcp"
+            "url": "https://mcp.postman.com/{minimal | mcp}", // use "minimal" (default) or "mcp" (full)
             "headers": {
                 "Authorization": "Bearer ${input:postman-api-key}"
             }
@@ -106,6 +106,11 @@ STDIO is a lightweight solution that's ideal for integration with editors and to
 [![Install GitHub Copilot](https://img.shields.io/badge/Install-GitHub%20Copilot-black?style=for-the-badge&logo=github)](vscode:extension/GitHub.copilot) [![Install Claude for VS Code](https://img.shields.io/badge/Install-Claude%20for%20VS%20Code-orange?style=for-the-badge&logo=anthropic)](vscode:extension/Anthropic.claude-dev)
 
 **Note:** For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
+
+STDIO supports the following tool configurations:
+
+- **Minimal** — (Default) Only includes essential tools for basic Postman operations.
+- **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
 
 ### Prerequisites
 
