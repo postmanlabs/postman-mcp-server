@@ -16,6 +16,12 @@ Postman supports the following tool configurations:
 
 Designed for developers who want to integrate their AI tools with Postman’s context and features. Supports quick natural language queries queries to advanced agent workflows.
 
+### Support for EU
+
+The Postman MCP Server supports the EU region for Streamable HTTP and STDIO:
+- For streamable HTTP, the server is available at `https://mcp.eu.postman.com`.
+- For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu``), or set the `POSTMAN_API_BASE_URL` environment variable directly.
+
 ---
 
 ### Contents
