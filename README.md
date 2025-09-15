@@ -2,6 +2,11 @@
 
 The Postman MCP Server connects Postman to AI tools, giving AI agents and assistants the ability to access workspaces, manage collections and environments, evaluate APIs, and automate workflows through natural language interactions.
 
+Postman supports the following tool configurations:
+
+- **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations.
+- **Full** — Includes all available Postman API tools (100+ tools).
+
 ### Use Cases
 
 - **Collection management** - Create and tag collections, update collection and request documentation, add comments, or perform actions across multiple collections without leaving your editor.
