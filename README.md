@@ -62,8 +62,6 @@ Before getting started, make certain you have a valid [Postman API Key](https://
 
 To install the streamable HTTP Postman MCP Server in Visual Studio Code, click the install button or use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode).
 
-Afterwards, enable Agent mode, located by the Copilot chat textbox to start the server.
-
 **Note:** By default, the server provides 37 tools. Use full mode (`https://mcp.postman.com/mcp`) to access all 106 tools.
 
 #### Manual configuration
