@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -49,16 +54,16 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
-    const endpoint = `/tags/${params.slug}/entities`;
+    const endpoint = `/tags/${args.slug}/entities`;
     const query = new URLSearchParams();
-    if (params.limit !== undefined) query.set('limit', String(params.limit));
-    if (params.direction !== undefined) query.set('direction', String(params.direction));
-    if (params.cursor !== undefined) query.set('cursor', String(params.cursor));
-    if (params.entityType !== undefined) query.set('entityType', String(params.entityType));
+    if (args.limit !== undefined) query.set('limit', String(args.limit));
+    if (args.direction !== undefined) query.set('direction', String(args.direction));
+    if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
+    if (args.entityType !== undefined) query.set('entityType', String(args.entityType));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,

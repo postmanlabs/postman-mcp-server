@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -44,21 +49,19 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/monitors`;
     const query = new URLSearchParams();
-    if (params.workspace !== undefined) query.set('workspace', String(params.workspace));
-    if (params.active !== undefined) query.set('active', String(params.active));
-    if (params.owner !== undefined) query.set('owner', String(params.owner));
-    if (params.collectionUid !== undefined)
-      query.set('collectionUid', String(params.collectionUid));
-    if (params.environmentUid !== undefined)
-      query.set('environmentUid', String(params.environmentUid));
-    if (params.cursor !== undefined) query.set('cursor', String(params.cursor));
-    if (params.limit !== undefined) query.set('limit', String(params.limit));
+    if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
+    if (args.active !== undefined) query.set('active', String(args.active));
+    if (args.owner !== undefined) query.set('owner', String(args.owner));
+    if (args.collectionUid !== undefined) query.set('collectionUid', String(args.collectionUid));
+    if (args.environmentUid !== undefined) query.set('environmentUid', String(args.environmentUid));
+    if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
+    if (args.limit !== undefined) query.set('limit', String(args.limit));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,

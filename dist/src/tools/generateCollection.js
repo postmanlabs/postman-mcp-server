@@ -1,16 +1,16 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
 }
 export const method = 'generateCollection';
-export const description = 'Creates a collection from the given API specification. The response contains a polling link to the task status.';
+export const description = 'Creates a collection from the given API specification.\nThe specification must already exist or be created before it can be used to generate a collection.\nThe response contains a polling link to the task status.\n';
 export const parameters = z.object({
     specId: z.string().describe("The spec's ID."),
     elementType: z.literal('collection').describe('The `collection` element type.'),
-    name: z.string().describe("The generated collection's name.").optional(),
+    name: z.string().describe("The generated collection's name."),
     options: z
         .object({
         requestNameSource: z
@@ -55,24 +55,24 @@ export const parameters = z.object({
             .default(false),
     })
         .describe("The advanced creation options and their values. For more details, see Postman's [OpenAPI to Postman Collection Converter OPTIONS documentation](https://github.com/postmanlabs/openapi-to-postman/blob/develop/OPTIONS.md). These properties are case-sensitive.")
-        .optional(),
+        .default({ enableOptionalParameters: true, folderStrategy: 'Paths' }),
 });
 export const annotations = {
-    title: 'Creates a collection from the given API specification. The response contains a polling link to the task status.',
+    title: 'Creates a collection from the given API specification.\nThe specification must already exist or be created before it can be used to generate a collection.\nThe response contains a polling link to the task status.\n',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${params.specId}/generations/${params.elementType}`;
+        const endpoint = `/specs/${args.specId}/generations/${args.elementType}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.name !== undefined)
-            bodyPayload.name = params.name;
-        if (params.options !== undefined)
-            bodyPayload.options = params.options;
+        if (args.name !== undefined)
+            bodyPayload.name = args.name;
+        if (args.options !== undefined)
+            bodyPayload.options = args.options;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

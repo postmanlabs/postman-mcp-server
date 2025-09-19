@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -33,20 +33,20 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: false,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
         const endpoint = `/specs`;
         const query = new URLSearchParams();
-        if (params.workspaceId !== undefined)
-            query.set('workspaceId', String(params.workspaceId));
+        if (args.workspaceId !== undefined)
+            query.set('workspaceId', String(args.workspaceId));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.name !== undefined)
-            bodyPayload.name = params.name;
-        if (params.type !== undefined)
-            bodyPayload.type = params.type;
-        if (params.files !== undefined)
-            bodyPayload.files = params.files;
+        if (args.name !== undefined)
+            bodyPayload.name = args.name;
+        if (args.type !== undefined)
+            bodyPayload.type = args.type;
+        if (args.files !== undefined)
+            bodyPayload.files = args.files;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

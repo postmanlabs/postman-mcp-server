@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -9,20 +14,20 @@ function asMcpError(error: unknown): McpError {
 
 export const method = 'getAuthenticatedUser';
 export const description =
-  'Gets information about the authenticated user.\n\n**Note:**\n\n- This API returns a different response for users with the [Guest and Partner roles](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#team-roles).\n- The \\`flow_count\\` response only returns for users on [Free plans](https://www.postman.com/pricing/).\n';
+  'Gets information about the authenticated user.\n- This endpoint provides “current user” context (\\`user.id\\`, \\`username\\`, \\`teamId\\`, roles).\n- When a user asks for “my …” (e.g., “my workspaces, my information, etc.”), call this first to resolve the user ID.\n';
 export const parameters = z.object({});
 export const annotations = {
   title:
-    'Gets information about the authenticated user.\n\n**Note:**\n\n- This API returns a different response for users with the [Guest and Partner roles](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#team-roles).\n- The \\`flow_count\\` response only returns for users on [Free plans](https://www.postman.com/pricing/).\n',
+    'Gets information about the authenticated user.\n- This endpoint provides “current user” context (\\`user.id\\`, \\`username\\`, \\`teamId\\`, roles).\n- When a user asks for “my …” (e.g., “my workspaces, my information, etc.”), call this first to resolve the user ID.\n',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/me`;
     const query = new URLSearchParams();

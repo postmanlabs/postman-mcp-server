@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -29,17 +34,17 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/collections/merge`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
-    if (params.destination !== undefined) bodyPayload.destination = params.destination;
-    if (params.source !== undefined) bodyPayload.source = params.source;
-    if (params.strategy !== undefined) bodyPayload.strategy = params.strategy;
+    if (args.destination !== undefined) bodyPayload.destination = args.destination;
+    if (args.source !== undefined) bodyPayload.source = args.source;
+    if (args.strategy !== undefined) bodyPayload.strategy = args.strategy;
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,

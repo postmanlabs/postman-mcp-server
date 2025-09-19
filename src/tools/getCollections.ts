@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -33,16 +38,16 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/collections`;
     const query = new URLSearchParams();
-    if (params.workspace !== undefined) query.set('workspace', String(params.workspace));
-    if (params.name !== undefined) query.set('name', String(params.name));
-    if (params.limit !== undefined) query.set('limit', String(params.limit));
-    if (params.offset !== undefined) query.set('offset', String(params.offset));
+    if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
+    if (args.name !== undefined) query.set('name', String(args.name));
+    if (args.limit !== undefined) query.set('limit', String(args.limit));
+    if (args.offset !== undefined) query.set('offset', String(args.offset));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,
