@@ -1,6 +1,6 @@
 {
     "name": "@postman/postman-mcp-server",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "description": "A simple MCP server to operate on the Postman API",
     "main": "dist/src/index.js",
     "type": "module",
@@ -10,7 +10,11 @@
         "prepack": "npm run build",
         "test": "vitest",
         "lint": "eslint",
-        "lint:fix": "eslint --fix"
+        "lint:fix": "eslint --fix",
+        "preversion": "npm run build",
+        "version": "git add dist/",
+        "release": "npm version",
+        "release-custom": "node scripts/release.js"
     },
     "bin": "dist/src/index.js",
     "files": [
