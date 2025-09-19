@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -19,12 +19,12 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: false,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/monitors/${params.monitorId}/run`;
+        const endpoint = `/monitors/${args.monitorId}/run`;
         const query = new URLSearchParams();
-        if (params.async !== undefined)
-            query.set('async', String(params.async));
+        if (args.async !== undefined)
+            query.set('async', String(args.async));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
             headers: extra.headers,

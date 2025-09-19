@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -27,16 +27,16 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
         const endpoint = `/collections/collection-forks`;
         const query = new URLSearchParams();
-        if (params.cursor !== undefined)
-            query.set('cursor', String(params.cursor));
-        if (params.limit !== undefined)
-            query.set('limit', String(params.limit));
-        if (params.direction !== undefined)
-            query.set('direction', String(params.direction));
+        if (args.cursor !== undefined)
+            query.set('cursor', String(args.cursor));
+        if (args.limit !== undefined)
+            query.set('limit', String(args.limit));
+        if (args.direction !== undefined)
+            query.set('direction', String(args.direction));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
             headers: extra.headers,

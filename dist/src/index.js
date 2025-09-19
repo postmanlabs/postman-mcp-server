@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 import dotenv from 'dotenv';
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { CallToolRequestSchema, ErrorCode, isInitializeRequest, ListToolsRequestSchema, McpError, } from '@modelcontextprotocol/sdk/types.js';
-import zodToJsonSchema from 'zod-to-json-schema';
+import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
@@ -108,7 +107,11 @@ async function run() {
             process.exit(1);
         }
     }
-    const client = PostmanAPIClient.getInstance();
+    const apiKey = process.env.POSTMAN_API_KEY;
+    if (!apiKey) {
+        log('error', 'POSTMAN_API_KEY environment variable is required for STDIO mode');
+        process.exit(1);
+    }
     const allGeneratedTools = await loadAllTools();
     log('info', 'Server initialization starting', {
         serverName: SERVER_NAME,
@@ -118,7 +121,7 @@ async function run() {
     const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
     const minimalTools = allGeneratedTools.filter((t) => enabledResources.minimal.includes(t.method));
     const tools = useFull ? fullTools : minimalTools;
-    const server = new Server({ name: SERVER_NAME, version: APP_VERSION }, { capabilities: { tools: {}, logging: {} } });
+    const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION });
     server.onerror = (error) => {
         const msg = String(error?.message || error);
         logBoth(server, 'error', `MCP server error: ${msg}`, { error: msg });
@@ -128,52 +131,37 @@ async function run() {
         await server.close();
         process.exit(0);
     });
-    log('info', 'Setting up request handlers');
-    server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
-        const toolName = request.params.name;
-        const tool = tools.find((t) => t.method === toolName);
-        log('info', `Tool invocation started: ${toolName}`, { toolName });
-        if (!tool) {
-            log('warn', `Unknown tool requested: ${toolName}`, { toolName });
-            throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${toolName}`);
-        }
-        const args = request.params.arguments || {};
-        try {
-            const start = Date.now();
-            const result = await tool.handler(args, {
-                client,
-                headers: {
-                    ...extra.requestInfo?.headers,
-                    'user-agent': clientInfo?.name,
-                },
-            });
-            const durationMs = Date.now() - start;
-            log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
-                toolName,
-                durationMs,
-            });
-            return result;
-        }
-        catch (error) {
-            const errMsg = String(error?.message || error);
-            logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
-            if (error instanceof McpError)
-                throw error;
-            throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
-        }
-    });
-    server.setRequestHandler(ListToolsRequestSchema, async () => {
-        log('debug', `Tools list requested; ${tools.length} tools available`, {
-            toolCount: tools.length,
+    const client = new PostmanAPIClient(apiKey);
+    log('info', 'Registering tools with McpServer');
+    for (const tool of tools) {
+        server.tool(tool.method, tool.description, tool.parameters.shape, tool.annotations || {}, async (args, extra) => {
+            const toolName = tool.method;
+            log('info', `Tool invocation started: ${toolName}`, { toolName });
+            try {
+                const start = Date.now();
+                const result = await tool.handler(args, {
+                    client,
+                    headers: {
+                        ...extra?.requestInfo?.headers,
+                        'user-agent': clientInfo?.name,
+                    },
+                });
+                const durationMs = Date.now() - start;
+                log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
+                    toolName,
+                    durationMs,
+                });
+                return result;
+            }
+            catch (error) {
+                const errMsg = String(error?.message || error);
+                logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
+                if (error instanceof McpError)
+                    throw error;
+                throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
+            }
         });
-        const transformedTools = tools.map((tool) => ({
-            name: tool.method,
-            description: tool.description,
-            inputSchema: zodToJsonSchema(tool.parameters),
-            annotations: tool.annotations,
-        }));
-        return { tools: transformedTools };
-    });
+    }
     log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
     transport.onmessage = (message) => {

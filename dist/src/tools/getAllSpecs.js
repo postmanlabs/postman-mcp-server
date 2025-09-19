@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -24,16 +24,16 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
         const endpoint = `/specs`;
         const query = new URLSearchParams();
-        if (params.workspaceId !== undefined)
-            query.set('workspaceId', String(params.workspaceId));
-        if (params.cursor !== undefined)
-            query.set('cursor', String(params.cursor));
-        if (params.limit !== undefined)
-            query.set('limit', String(params.limit));
+        if (args.workspaceId !== undefined)
+            query.set('workspaceId', String(args.workspaceId));
+        if (args.cursor !== undefined)
+            query.set('cursor', String(args.cursor));
+        if (args.limit !== undefined)
+            query.set('limit', String(args.limit));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
             headers: extra.headers,

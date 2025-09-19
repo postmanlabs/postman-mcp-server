@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -43,18 +48,18 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/specs`;
     const query = new URLSearchParams();
-    if (params.workspaceId !== undefined) query.set('workspaceId', String(params.workspaceId));
+    if (args.workspaceId !== undefined) query.set('workspaceId', String(args.workspaceId));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
-    if (params.name !== undefined) bodyPayload.name = params.name;
-    if (params.type !== undefined) bodyPayload.type = params.type;
-    if (params.files !== undefined) bodyPayload.files = params.files;
+    if (args.name !== undefined) bodyPayload.name = args.name;
+    if (args.type !== undefined) bodyPayload.type = args.type;
+    if (args.files !== undefined) bodyPayload.files = args.files;
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,

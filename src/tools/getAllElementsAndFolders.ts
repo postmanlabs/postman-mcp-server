@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -98,26 +103,25 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/network/private`;
     const query = new URLSearchParams();
-    if (params.since !== undefined) query.set('since', String(params.since));
-    if (params.until !== undefined) query.set('until', String(params.until));
-    if (params.addedBy !== undefined) query.set('addedBy', String(params.addedBy));
-    if (params.name !== undefined) query.set('name', String(params.name));
-    if (params.summary !== undefined) query.set('summary', String(params.summary));
-    if (params.description !== undefined) query.set('description', String(params.description));
-    if (params.sort !== undefined) query.set('sort', String(params.sort));
-    if (params.direction !== undefined) query.set('direction', String(params.direction));
-    if (params.createdBy !== undefined) query.set('createdBy', String(params.createdBy));
-    if (params.offset !== undefined) query.set('offset', String(params.offset));
-    if (params.limit !== undefined) query.set('limit', String(params.limit));
-    if (params.parentFolderId !== undefined)
-      query.set('parentFolderId', String(params.parentFolderId));
-    if (params.type !== undefined) query.set('type', String(params.type));
+    if (args.since !== undefined) query.set('since', String(args.since));
+    if (args.until !== undefined) query.set('until', String(args.until));
+    if (args.addedBy !== undefined) query.set('addedBy', String(args.addedBy));
+    if (args.name !== undefined) query.set('name', String(args.name));
+    if (args.summary !== undefined) query.set('summary', String(args.summary));
+    if (args.description !== undefined) query.set('description', String(args.description));
+    if (args.sort !== undefined) query.set('sort', String(args.sort));
+    if (args.direction !== undefined) query.set('direction', String(args.direction));
+    if (args.createdBy !== undefined) query.set('createdBy', String(args.createdBy));
+    if (args.offset !== undefined) query.set('offset', String(args.offset));
+    if (args.limit !== undefined) query.set('limit', String(args.limit));
+    if (args.parentFolderId !== undefined) query.set('parentFolderId', String(args.parentFolderId));
+    if (args.type !== undefined) query.set('type', String(args.type));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,

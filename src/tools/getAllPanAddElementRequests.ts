@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -75,22 +80,22 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/network/private/network-entity/request/all`;
     const query = new URLSearchParams();
-    if (params.since !== undefined) query.set('since', String(params.since));
-    if (params.until !== undefined) query.set('until', String(params.until));
-    if (params.requestedBy !== undefined) query.set('requestedBy', String(params.requestedBy));
-    if (params.type !== undefined) query.set('type', String(params.type));
-    if (params.status !== undefined) query.set('status', String(params.status));
-    if (params.name !== undefined) query.set('name', String(params.name));
-    if (params.sort !== undefined) query.set('sort', String(params.sort));
-    if (params.direction !== undefined) query.set('direction', String(params.direction));
-    if (params.offset !== undefined) query.set('offset', String(params.offset));
-    if (params.limit !== undefined) query.set('limit', String(params.limit));
+    if (args.since !== undefined) query.set('since', String(args.since));
+    if (args.until !== undefined) query.set('until', String(args.until));
+    if (args.requestedBy !== undefined) query.set('requestedBy', String(args.requestedBy));
+    if (args.type !== undefined) query.set('type', String(args.type));
+    if (args.status !== undefined) query.set('status', String(args.status));
+    if (args.name !== undefined) query.set('name', String(args.name));
+    if (args.sort !== undefined) query.set('sort', String(args.sort));
+    if (args.direction !== undefined) query.set('direction', String(args.direction));
+    if (args.offset !== undefined) query.set('offset', String(args.offset));
+    if (args.limit !== undefined) query.set('limit', String(args.limit));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,

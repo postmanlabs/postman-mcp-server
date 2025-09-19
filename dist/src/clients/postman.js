@@ -10,19 +10,12 @@ export class PostmanAPIClient {
     apiKey;
     static instance = null;
     constructor(apiKey, baseUrl = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com') {
-        if (!apiKey && !process.env.POSTMAN_API_KEY) {
-            throw new Error('API key is required. Provide it as parameter or set POSTMAN_API_KEY environment variable.');
-        }
-        this.apiKey = apiKey || process.env.POSTMAN_API_KEY;
+        this.apiKey = apiKey;
         this.baseUrl = baseUrl;
     }
     static getInstance(apiKey, baseUrl) {
         if (!PostmanAPIClient.instance) {
-            const key = apiKey || process.env.POSTMAN_API_KEY;
-            if (!key) {
-                throw new Error('API key is required. Provide it as parameter or set POSTMAN_API_KEY environment variable.');
-            }
-            PostmanAPIClient.instance = new PostmanAPIClient(key, baseUrl);
+            PostmanAPIClient.instance = new PostmanAPIClient(apiKey, baseUrl);
         }
         return PostmanAPIClient.instance;
     }
@@ -45,20 +38,37 @@ export class PostmanAPIClient {
         return this.request(endpoint, { ...options, method: 'DELETE' });
     }
     async request(endpoint, options) {
+        const currentApiKey = this.apiKey || process.env.POSTMAN_API_KEY;
+        if (!currentApiKey) {
+            throw new Error('API key is required for requests. Provide it via constructor parameter or set POSTMAN_API_KEY environment variable.');
+        }
         const contentType = options.contentType || ContentType.Json;
-        const userAgentHeader = options.headers && 'user-agent' in options.headers
-            ? `${options.headers['user-agent']}/${packageJson.name}/${packageJson.version}`
+        const userAgentKey = Object.keys(options.headers ?? {}).find((key) => key.toLowerCase() === 'user-agent');
+        const userAgentValue = userAgentKey ? options.headers?.[userAgentKey] : undefined;
+        const userAgentHeader = userAgentValue
+            ? `${userAgentValue}/${packageJson.name}/${packageJson.version}`
             : `${packageJson.name}/${packageJson.version}`;
+        const disallowed = new Set([
+            'content-length',
+            'transfer-encoding',
+            'connection',
+            'host',
+            'accept-encoding',
+            'keep-alive',
+        ]);
+        const extra = Object.fromEntries(Object.entries(options.headers ?? {}).filter(([k]) => !disallowed.has(k.toLowerCase())));
+        const hasBody = options.body !== undefined && options.body !== null;
         const headers = {
-            'content-type': contentType,
-            'x-api-key': this.apiKey,
+            ...(hasBody ? { 'content-type': contentType } : {}),
+            ...extra,
+            'x-api-key': currentApiKey,
             'user-agent': userAgentHeader,
-            ...options.headers,
         };
-        const { headers: _, ...optionsWithoutHeaders } = options;
+        const { headers: _ignored, ...optionsWithoutHeaders } = options;
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             ...optionsWithoutHeaders,
             headers,
+            signal: AbortSignal.timeout(300000),
         });
         if (!response.ok) {
             await this.handleErrorResponse(response);
