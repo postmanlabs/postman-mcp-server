@@ -1,6 +1,6 @@
 {
-  "mcpb_version": "0.1",
-  "version": "2.2.1",
+  "manifest_version": "0.1",
+  "version": "2.3.3",
   "name": "postman-mcp-server-full",
   "display_name": "Postman MCP Server (Full)",
   "description": "A comprehensive MCP server with all available Postman API tools (106+ tools).",

@@ -1,6 +1,6 @@
 {
-  "mcpb_version": "0.1",
-  "version": "2.2.1",
+  "manifest_version": "0.1",
+  "version": "2.3.3",
   "name": "postman-mcp-server-minimal",
   "display_name": "Postman MCP Server (Minimal)",
   "description": "A minimal MCP server with essential Postman API tools (37 tools).",
