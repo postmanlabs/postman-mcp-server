@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -25,16 +25,16 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${params.collectionId}/requests/${params.requestId}`;
+        const endpoint = `/collections/${args.collectionId}/requests/${args.requestId}`;
         const query = new URLSearchParams();
-        if (params.ids !== undefined)
-            query.set('ids', String(params.ids));
-        if (params.uid !== undefined)
-            query.set('uid', String(params.uid));
-        if (params.populate !== undefined)
-            query.set('populate', String(params.populate));
+        if (args.ids !== undefined)
+            query.set('ids', String(args.ids));
+        if (args.uid !== undefined)
+            query.set('uid', String(args.uid));
+        if (args.populate !== undefined)
+            query.set('populate', String(args.populate));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
             headers: extra.headers,

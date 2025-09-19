@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -90,20 +90,20 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${params.collectionId}/public-documentations`;
+        const endpoint = `/collections/${args.collectionId}/public-documentations`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.environmentUid !== undefined)
-            bodyPayload.environmentUid = params.environmentUid;
-        if (params.customColor !== undefined)
-            bodyPayload.customColor = params.customColor;
-        if (params.documentationLayout !== undefined)
-            bodyPayload.documentationLayout = params.documentationLayout;
-        if (params.customization !== undefined)
-            bodyPayload.customization = params.customization;
+        if (args.environmentUid !== undefined)
+            bodyPayload.environmentUid = args.environmentUid;
+        if (args.customColor !== undefined)
+            bodyPayload.customColor = args.customColor;
+        if (args.documentationLayout !== undefined)
+            bodyPayload.documentationLayout = args.documentationLayout;
+        if (args.customization !== undefined)
+            bodyPayload.customization = args.customization;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

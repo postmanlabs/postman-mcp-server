@@ -1,6 +1,11 @@
 import { z } from 'zod';
-import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { PostmanAPIClient, ContentType } from '../clients/postman.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -17,6 +22,61 @@ export const parameters = z.object({
       "The element's ID or UUID. For Postman Collections you must pass the collection's UID (`userId`-`collectionId`) value."
     ),
   elementType: z.enum(['api', 'folder', 'collection', 'workspace']).describe('The element type.'),
+  body: z.union([
+    z.object({
+      api: z
+        .object({
+          parentFolderId: z.number().int().describe("The API's new parent folder ID.").optional(),
+        })
+        .optional(),
+    }),
+    z.object({
+      collection: z
+        .object({
+          parentFolderId: z
+            .number()
+            .int()
+            .describe("The collection's new parent folder ID.")
+            .optional(),
+          environments: z
+            .object({
+              $add: z
+                .array(z.string().describe('The ID of environment to add to the collection.'))
+                .optional(),
+              $remove: z
+                .array(z.string().describe('The ID of environment to remove from the collection.'))
+                .optional(),
+            })
+            .describe("The collection's updated environments.")
+            .optional(),
+        })
+        .optional(),
+    }),
+    z.object({
+      workspace: z
+        .object({
+          parentFolderId: z
+            .number()
+            .int()
+            .describe("The workspace's new parent folder ID.")
+            .optional(),
+        })
+        .optional(),
+    }),
+    z.object({
+      folder: z
+        .object({
+          name: z.string().describe("The folder's new name.").optional(),
+          description: z.string().describe("The folder's updated description.").optional(),
+          parentFolderId: z
+            .number()
+            .int()
+            .describe("The folder's new parent folder ID.")
+            .optional(),
+        })
+        .optional(),
+    }),
+  ]),
 });
 export const annotations = {
   title:
@@ -27,14 +87,17 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
-    const endpoint = `/network/private/${params.elementType}/${params.elementId}`;
+    const endpoint = `/network/private/${args.elementType}/${args.elementId}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
+    const bodyPayload = args.body;
     const options: any = {
+      body: JSON.stringify(bodyPayload),
+      contentType: ContentType.Json,
       headers: extra.headers,
     };
     const result = await extra.client.put(url, options);

@@ -1,6 +1,11 @@
 import { z } from 'zod';
-import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { PostmanAPIClient, ContentType } from '../clients/postman.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -10,7 +15,55 @@ function asMcpError(error: unknown): McpError {
 export const method = 'postPanElementOrFolder';
 export const description =
   "Publishes a element or creates a folder in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/). An element is a Postman API, collection, or workspace.\n\n**Note:**\n\nYou can only pass one element object type per call. For example, you cannot pass both \\`api\\` and \\`collection\\` in a single request.\n";
-export const parameters = z.object({});
+export const parameters = z.object({
+  body: z.union([
+    z.object({
+      api: z
+        .object({
+          id: z.string().describe("The API's ID."),
+          parentFolderId: z.number().int().describe("The API's parent folder ID."),
+        })
+        .optional(),
+    }),
+    z.object({
+      collection: z
+        .object({
+          id: z.string().describe("The collection's ID."),
+          parentFolderId: z.number().int().describe("The collection's parent folder ID."),
+          environments: z
+            .array(z.string().describe("An environment's UID."))
+            .describe(
+              'A list of environment UIDs (`userId`-`environmentId`) to add to the collection.'
+            )
+            .optional(),
+        })
+        .optional(),
+    }),
+    z.object({
+      workspace: z
+        .object({
+          id: z.string().describe("The workspace's ID."),
+          parentFolderId: z.number().int().describe("The workspace's parent folder ID."),
+        })
+        .optional(),
+    }),
+    z.object({
+      folder: z
+        .object({
+          name: z.string().describe("The folder's name."),
+          description: z.string().describe("The folder's description.").optional(),
+          parentFolderId: z
+            .number()
+            .int()
+            .describe(
+              "The folder's parent folder ID. This value defaults to `0`. To create a folder at the root level, omit this property."
+            )
+            .default(0),
+        })
+        .optional(),
+    }),
+  ]),
+});
 export const annotations = {
   title:
     "Publishes a element or creates a folder in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/). An element is a Postman API, collection, or workspace.\n\n**Note:**\n\nYou can only pass one element object type per call. For example, you cannot pass both \\`api\\` and \\`collection\\` in a single request.\n",
@@ -20,14 +73,17 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/network/private`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
+    const bodyPayload = args.body;
     const options: any = {
+      body: JSON.stringify(bodyPayload),
+      contentType: ContentType.Json,
       headers: extra.headers,
     };
     const result = await extra.client.post(url, options);

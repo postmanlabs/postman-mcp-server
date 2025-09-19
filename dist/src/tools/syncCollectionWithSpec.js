@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -16,12 +16,12 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${params.collectionUid}/synchronizations`;
+        const endpoint = `/collections/${args.collectionUid}/synchronizations`;
         const query = new URLSearchParams();
-        if (params.specId !== undefined)
-            query.set('specId', String(params.specId));
+        if (args.specId !== undefined)
+            query.set('specId', String(args.specId));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
             headers: extra.headers,

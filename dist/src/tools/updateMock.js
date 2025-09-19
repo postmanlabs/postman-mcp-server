@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
 }
 export const method = 'updateMock';
-export const description = 'Updates a mock server.';
+export const description = 'Updates a mock server.\n- Resource: Mock server entity associated with a collection UID.\n- Use this to change name, environment, privacy, or default server response.\n';
 export const parameters = z.object({
     mockId: z.string().describe("The mock's ID."),
     mock: z
@@ -33,19 +33,19 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Updates a mock server.',
+    title: 'Updates a mock server.\n- Resource: Mock server entity associated with a collection UID.\n- Use this to change name, environment, privacy, or default server response.\n',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${params.mockId}`;
+        const endpoint = `/mocks/${args.mockId}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.mock !== undefined)
-            bodyPayload.mock = params.mock;
+        if (args.mock !== undefined)
+            bodyPayload.mock = args.mock;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

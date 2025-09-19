@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -21,18 +21,18 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: false,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
         const endpoint = `/collections/merge`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.destination !== undefined)
-            bodyPayload.destination = params.destination;
-        if (params.source !== undefined)
-            bodyPayload.source = params.source;
-        if (params.strategy !== undefined)
-            bodyPayload.strategy = params.strategy;
+        if (args.destination !== undefined)
+            bodyPayload.destination = args.destination;
+        if (args.source !== undefined)
+            bodyPayload.source = args.source;
+        if (args.strategy !== undefined)
+            bodyPayload.strategy = args.strategy;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

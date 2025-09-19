@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -8,21 +13,23 @@ function asMcpError(error: unknown): McpError {
 }
 
 export const method = 'getMock';
-export const description = 'Gets information about a mock server.';
+export const description =
+  'Gets information about a mock server.\n- Resource: Mock server entity. Response includes the associated \\`collection\\` UID and \\`mockUrl\\`.\n- Use the \\`collection\\` UID to navigate back to the source collection.\n';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });
 export const annotations = {
-  title: 'Gets information about a mock server.',
+  title:
+    'Gets information about a mock server.\n- Resource: Mock server entity. Response includes the associated \\`collection\\` UID and \\`mockUrl\\`.\n- Use the \\`collection\\` UID to navigate back to the source collection.\n',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
-    const endpoint = `/mocks/${params.mockId}`;
+    const endpoint = `/mocks/${args.mockId}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
