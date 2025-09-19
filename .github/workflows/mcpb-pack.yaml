@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
   build-and-release:
@@ -36,7 +37,7 @@ jobs:
         run: npm ci --omit=dev
 
       - name: Install MCPB
-        run: npm install -g @anthropics-ai/mcpb
+        run: npm install -g @anthropic-ai/mcpb
 
       - name: Package extensions
         run: |
