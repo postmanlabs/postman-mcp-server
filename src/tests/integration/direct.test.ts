@@ -10,7 +10,7 @@ import {
   SpecDataFactory,
   TestSpec,
 } from './factories/dataFactory.js';
-import { PostmanAPIClient } from '../../clients/postman.js';
+import { PostmanAPIClient } from '../../../generated/clients/postman.js';
 import packageJson from '../../../package.json' assert { type: 'json' };
 
 describe('Postman MCP - Direct Integration Tests', () => {
@@ -28,7 +28,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     ) as Record<string, string>;
     cleanEnv.NODE_ENV = 'test';
 
-    serverProcess = spawn('node', ['dist/src/index.js'], {
+    serverProcess = spawn('node', ['dist/generated/stdio.js'], {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: cleanEnv,
     });
@@ -49,7 +49,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
     const transport = new StdioClientTransport({
       command: 'node',
-      args: ['dist/src/index.js', '--full'],
+      args: ['dist/generated/stdio.js', '--full'],
       env: cleanEnv,
     });
 
@@ -104,7 +104,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
       const transport = new StdioClientTransport({
         command: 'node',
-        args: ['dist/src/index.js', '--full'],
+        args: ['dist/generated/stdio.js', '--full'],
         env: {
           ...process.env,
           NODE_ENV: 'test',
@@ -170,7 +170,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
       const transport = new StdioClientTransport({
         command: 'node',
-        args: ['dist/src/index.js', '--full'],
+        args: ['dist/generated/stdio.js', '--full'],
         env: {
           ...process.env,
           NODE_ENV: 'test',
