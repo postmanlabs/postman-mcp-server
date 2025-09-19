@@ -1,4 +1,4 @@
-name: Release DXT
+name: Release MCPB
 
 on:
   push:
@@ -35,8 +35,8 @@ jobs:
       - name: Install dependencies for packaging
         run: npm ci --omit=dev
 
-      - name: Install DXT
-        run: npm install -g @anthropic-ai/dxt
+      - name: Install MCPB
+        run: npm install -g @anthropics/mcpb
 
       - name: Package extensions
         run: |
@@ -44,24 +44,24 @@ jobs:
           
           # Package minimal version
           cp manifest-minimal.json manifest.json
-          dxt pack
-          mv "${current_dir}.dxt" "${current_dir}-minimal.dxt"
+          mcpb pack
+          mv "${current_dir}.mcpb" "${current_dir}-minimal.mcpb"
           
           # Package full version  
           cp manifest-full.json manifest.json
-          dxt pack
-          mv "${current_dir}.dxt" "${current_dir}-full.dxt"
+          mcpb pack
+          mv "${current_dir}.mcpb" "${current_dir}-full.mcpb"
           
           # Set environment variables
-          echo "DXT_MINIMAL_FILENAME=${current_dir}-minimal.dxt" >> $GITHUB_ENV
-          echo "DXT_FULL_FILENAME=${current_dir}-full.dxt" >> $GITHUB_ENV
+          echo "MCPB_MINIMAL_FILENAME=${current_dir}-minimal.mcpb" >> $GITHUB_ENV
+          echo "MCPB_FULL_FILENAME=${current_dir}-full.mcpb" >> $GITHUB_ENV
 
       - name: Upload minimal release asset
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.DXT_MINIMAL_FILENAME }}
-          asset_name: ${{ env.DXT_MINIMAL_FILENAME }}
+          file: ${{ env.MCPB_MINIMAL_FILENAME }}
+          asset_name: ${{ env.MCPB_MINIMAL_FILENAME }}
           tag: ${{ github.ref }}
           overwrite: true
 
@@ -69,7 +69,7 @@ jobs:
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.DXT_FULL_FILENAME }}
-          asset_name: ${{ env.DXT_FULL_FILENAME }}
+          file: ${{ env.MCPB_FULL_FILENAME }}
+          asset_name: ${{ env.MCPB_FULL_FILENAME }}
           tag: ${{ github.ref }}
           overwrite: true
