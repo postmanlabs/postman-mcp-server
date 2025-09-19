@@ -36,7 +36,7 @@ jobs:
         run: npm ci --omit=dev
 
       - name: Install MCPB
-        run: npm install -g @anthropics/mcpb
+        run: npm install -g @anthropics-ai/mcpb
 
       - name: Package extensions
         run: |
