@@ -5,7 +5,7 @@ The Postman MCP Server connects Postman to AI tools, giving AI agents and assist
 Postman supports the following tool configurations:
 
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
-- **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collabration and Postman's Enterprise features.
+- **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collaboration and Postman's Enterprise features.
 
 ### Use Cases
 
@@ -18,19 +18,19 @@ Designed for developers who want to integrate their AI tools with Postman’s co
 
 ### Support for EU
 
-The Postman MCP Server supports the EU region for Streamable HTTP and STDIO:
-- For streamable HTTP, the server is available at `https://mcp.eu.postman.com`.
-- For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu``), or set the `POSTMAN_API_BASE_URL` environment variable directly.
+The Postman MCP Server supports the EU region for remote and local servers:
+- For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`.
+- For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly.
 
 ---
 
 ### Contents
 
-- [**Streamable HTTP**](#streamable-http)
+- [**Remote server**](#remote-server)
   - [**Prerequisites**](#prerequisites)
   - [**VS Code**](#install-in-vs-code)
   - [**Cursor**](#install-in-cursor)
-- [**STDIO**](#stdio)
+- [**Local server**](#local-server)
   - [**Prerequisites**](#prerequisites-1)
   - [**Configuration**](#configuration)
   - [**VS Code**](#install-in-vs-code-1)
@@ -41,16 +41,16 @@ The Postman MCP Server supports the EU region for Streamable HTTP and STDIO:
 
 ---
 
-## Streamable HTTP
+## Remote server
 
-The streamable HTTP Postman MCP Server is hosted by Postman and provides the easiest method for getting started. If your MCP host doesn't support remote MCP servers, you can use the [STDIO version of the Postman MCP Server](#stdio).
+The remote Postman MCP Server is hosted by Postman over streamable HTTP and provides the easiest method for getting started. If your MCP host doesn't support remote MCP servers, you can use the [local Postman MCP Server](#local-server).
 
-The streamable HTTP server supports the following tool configurations:
+The remote server supports the following tool configurations:
 
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`.
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
-**Note:** The streamable EU HTTP server is available at `https://mcp.eu.postman.com`.
+**Note:** The remote EU HTTP server is available at `https://mcp.eu.postman.com`.
 
 ### Prerequisites
 
@@ -60,13 +60,13 @@ Before getting started, make certain you have a valid [Postman API Key](https://
 
 [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=postman_mcp_server&config=%7B%22type%22%3A%20%22http%22%2C%22url%22%3A%20%22https%3A%2F%2Fmcp.postman.com%2Fminimal%22%2C%22headers%22%3A%7B%22Authorization%22%3A%22Bearer%20YOUR_API_KEY%22%7D%7D)
 
-To install the streamable HTTP Postman MCP Server in Visual Studio Code, click the install button or use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode).
+To install the remote Postman MCP Server in Visual Studio Code, click the install button or use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode).
 
 **Note:** By default, the server provides 37 tools. Use full mode (`https://mcp.postman.com/mcp`) to access all 106 tools.
 
 #### Manual configuration
 
-To manually configure the streamable HTTP Postman MCP Server in VS Code, add the following JSON block to the *.vscode/mcp.json* file:
+To manually configure the remote Postman MCP Server in VS Code, add the following JSON block to the *.vscode/mcp.json* file:
 
 ```json
 {
@@ -101,7 +101,7 @@ To install the remote Postman MCP Server in Cursor, click the install button.
 
 ---
 
-## STDIO
+## Local server
 
 If remote MCP servers aren't supported by your MCP host, you can install the Postman MCP Server to your local machine.
 
@@ -111,7 +111,7 @@ STDIO is a lightweight solution that's ideal for integration with editors and to
 
 **Note:** For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
 
-STDIO supports the following tool configurations:
+The local server supports the following tool configurations:
 
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 - **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
@@ -181,7 +181,12 @@ To install the local Postman MCP Server in Cursor, click the install button.
 
 ### Claude integration
 
-To integrate the MCP server with Claude, check the latest [Postman MCP Server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.mcpb` file. For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
+To integrate the MCP server with Claude, check the latest [Postman MCP Server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.mcpb` file.
+
+* `postman-api-mcp-minimal.mcpb` - Contains the 37 essential tools for common Postman operations.
+* `postman-api-mcp-full.mcpb` - Contains all available Postman tools.
+
+For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
 
 ---
 
@@ -204,4 +209,4 @@ If you're migrating from Postman MCP Server version 1.x to 2.x, be aware of the 
 - See the [Postman Agent Generator](https://postman.com/explore/agent-generator) page for updates and new capabilities.
 - See [Add your MCP requests to your collections](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/) to learn how to use Postman to perform MCP requests.
 - Visit the [Postman Community](https://community.postman.com/) to share what you've built, ask questions, and get help.
-- You can connect to both HTTP and STDIO servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
+- You can connect to both the remote and local servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
