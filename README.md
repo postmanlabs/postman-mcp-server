@@ -125,8 +125,6 @@ If remote MCP servers aren't supported by your MCP host, you can install the Pos
 
 STDIO is a lightweight solution that's ideal for integration with editors and tools like Visual Studio Code. Install an MCP-compatible VS Code extension, such as GitHub Copilot, Claude for VS Code, or other AI assistants that support MCP.
 
-[![Install GitHub Copilot](https://img.shields.io/badge/Install-GitHub%20Copilot-black?style=for-the-badge&logo=github)](vscode:extension/GitHub.copilot) [![Install Claude for VS Code](https://img.shields.io/badge/Install-Claude%20for%20VS%20Code-orange?style=for-the-badge&logo=anthropic)](vscode:extension/Anthropic.claude-dev)
-
 **Note:** For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
 
 The local server supports the following tool configurations:
