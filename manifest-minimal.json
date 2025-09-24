@@ -1,6 +1,6 @@
 {
   "manifest_version": "0.1",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "name": "postman-mcp-server-minimal",
   "display_name": "Postman MCP Server (Minimal)",
   "description": "Connect your AI to your APIs on Postman",
