@@ -9,10 +9,10 @@ Postman supports the following tool configurations:
 
 ### Use Cases
 
-- **Code synchronization** - Effortlessly keep your code in sync with your Postman collections and specs.
-- **Collection management** - Create and tag collections, update collection and request documentation, add comments, or perform actions across multiple collections without leaving your editor.
-- **Workspace and environment management** - Create workspaces and environments, plus manage your environment variables.
-- **Automatic spec creation** - Create [specs](https://learning.postman.com/docs/design-apis/specifications/overview/) from your code and use them to generate Postman collections.
+- **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
+- **Collection management** - Create and [tag](https://learning.postman.com/docs/collections/use-collections/collaborate-with-collections/#tag-a-collection) collections, update collection and request [documentation](https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/), add [comments](https://learning.postman.com/docs/collaborating-in-postman/comments/), or perform actions across multiple collections without leaving your editor.
+- **Workspace and environment management** - Create [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/overview/) and [environments](https://learning.postman.com/docs/sending-requests/variables/managing-environments/), plus manage your environment variables.
+- **Automatic spec creation** - Create [specs](https://learning.postman.com/docs/design-apis/specifications/overview/) from your code and use them to generate collections.
 
 Designed for developers who want to integrate their AI tools with Postman’s context and features. Supports quick natural language queries queries to advanced agent workflows.
 
@@ -76,7 +76,9 @@ To manually configure the remote Postman MCP Server in VS Code, add the followin
     "servers": {
         "postman-api-http-server": {
             "type": "http",
-            "url": "https://mcp.postman.com/{minimal | mcp}", // use "minimal" (default) or "mcp" (full)
+            "url": "https://mcp.postman.com/{minimal OR mcp}",
+            // Use "https://mcp.postman.com/mcp" for full or "https://mcp.postman.com/minimal" for minimal mode.
+            // For the EU server, use the "https://mcp.eu.postman.com" URL.
             "headers": {
                 "Authorization": "Bearer ${input:postman-api-key}"
             }
@@ -140,7 +142,7 @@ Before getting started, you'll need the following:
 1. A valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
 ### Configuration
-
+<!-- Should this section reside in the Manual config section? -->
 To configure the extension to use the local Postman MCP Server, do the following:
 
 1. Clone the **postman-mcp-server** repository.
@@ -170,7 +172,8 @@ You can manually integrate your MCP server with VS Code to use it with extension
             "command": "npx",
             "args": [
                 "@postman/postman-mcp-server",
-                "--full" // (optional) Use this flag to enable full mode
+                "--full" // (optional) Use this flag to enable full mode.
+                "--region us" // (optional) Use this flag to specify the Postman API region (us or eu). Defaults to us.
             ],
             "env": {
                 "POSTMAN_API_KEY": "${input:postman-api-key}"
@@ -188,8 +191,6 @@ You can manually integrate your MCP server with VS Code to use it with extension
 ```
 
 ### Install in Cursor
-
-<!-- Does this section require further set up instruction? -->
 
 [![Install with Node in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman-api-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyJAcG9zdG1hbi9wb3N0bWFuLW1jcC1zZXJ2ZXIiLCItLWZ1bGwiXSwiZW52Ijp7IlBPU1RNQU5fQVBJX0tFWSI6IllPVVJfQVBJX0tFWSJ9fQ%3D%3D)
 
