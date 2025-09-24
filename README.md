@@ -65,7 +65,7 @@ Before getting started, make certain you have a valid [Postman API Key](https://
 
 To install the remote Postman MCP Server in Visual Studio Code, click the install button or use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode).
 
-**Note:** By default, the server provides 37 tools. Use full mode (`https://mcp.postman.com/mcp`) to access all 106 tools.
+**Note:** By default, the server provides 37 tools. Use full mode (`https://mcp.postman.com/mcp`) to access all tools.
 
 #### Manual configuration
 
@@ -157,7 +157,7 @@ To configure the extension to use the local Postman MCP Server, do the following
 To install the local Postman MCP Server in Visual Studio Code, click the install button.
 
 **Note:**
-- By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all 106 tools.
+- By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all tools.
 - Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
 
 #### Manual configuration
@@ -240,7 +240,7 @@ If you're migrating from Postman MCP Server version 1.x to 2.x, be aware of the 
   - `delete-environment` → `deleteEnvironment`
 - **Tool availability changes**
   - The default (minimal) behavior provides only 37 essential tools.
-  - The `--full` flag provides access to all 106 tools.
+  - The `--full` flag provides access to all tools.
 
 ---
 
