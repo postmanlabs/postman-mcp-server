@@ -190,9 +190,12 @@ To integrate the MCP server with Claude, check the latest [Postman MCP Server re
 For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
 
 ### Use as a Gemini CLI extension
+
 To install the MCP server as a Gemini CLI extension, run the following command in your terminal:
 
-```gemini extensions install https://github.com/postmanlabs/postman-mcp-server```
+```bash
+gemini extensions install https://github.com/postmanlabs/postman-mcp-server
+```
 
 ---
 
