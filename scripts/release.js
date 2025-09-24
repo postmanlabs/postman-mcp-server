@@ -83,7 +83,7 @@ try {
     console.log('📤 Committing and tagging...');
     execSync('git add .', { stdio: 'inherit' });
     execSync(`git commit -m "chore: v${newVersion}"`, { stdio: 'inherit' });
-    execSync(`git tag v${newVersion}`, { stdio: 'inherit' });
+    execSync(`git tag -a v${newVersion} -m "v${newVersion}"`, { stdio: 'inherit' });
 
     console.log(`✅ Released version ${newVersion}`);
     console.log(`🚀 Push with: git push origin main --tags`);
