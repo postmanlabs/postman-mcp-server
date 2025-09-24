@@ -37,6 +37,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
   - [**VS Code**](#install-in-vs-code-1)
   - [**Cursor**](#install-in-cursor-1)
   - [**Claude**](#claude-integration)
+  - [**Claude Code**](#install-in-claude-code-1)
   - [**Gemini CLI**](#use-as-a-gemini-cli-extension)
 - [**Questions and support**](#questions-and-support)
 - [**Migration from Postman MCP Server v1 to v2**](#migration-from-v1x-to-v2x)
