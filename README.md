@@ -30,6 +30,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
   - [**Prerequisites**](#prerequisites)
   - [**VS Code**](#install-in-vs-code)
   - [**Cursor**](#install-in-cursor)
+  - [**Claude Code**](#install-in-claude-code)
 - [**Local server**](#local-server)
   - [**Prerequisites**](#prerequisites-1)
   - [**Configuration**](#configuration)
@@ -99,6 +100,16 @@ When prompted, enter your Postman API key. Afterwards, the agent performs calls 
 To install the remote Postman MCP Server in Cursor, click the install button.
 
 **Note:** Ensure that the Authorization header uses the `Bearer <YOUR_API_KEY>` format.
+
+### Install in Claude code
+
+To install the remote Postman MCP Server in Claude Code,run the following command in your terminal:
+
+* Minimal
+```claude mcp add --transport http postman https://mcp.postman.com/minimal```
+* Full
+```claude mcp add --transport http postman https://mcp.postman.com/mcp```
+
 
 ---
 
@@ -188,6 +199,15 @@ To integrate the MCP server with Claude, check the latest [Postman MCP Server re
 * `postman-api-mcp-full.mcpb` - Contains all available Postman tools.
 
 For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
+
+### Install in Claude code
+
+To install the local Postman MCP Server in Claude Code, run the following command in your terminal:
+
+* Minimal
+```claude mcp add postman -- npx @postman/mcp-server@latest```
+* Full
+```claude mcp add postman -- npx @postman/mcp-server@latest --full```
 
 ### Use as a Gemini CLI extension
 
