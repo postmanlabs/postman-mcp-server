@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
@@ -45,20 +45,20 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: false,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
         const endpoint = `/collection-folders-transfers`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.ids !== undefined)
-            bodyPayload.ids = params.ids;
-        if (params.mode !== undefined)
-            bodyPayload.mode = params.mode;
-        if (params.target !== undefined)
-            bodyPayload.target = params.target;
-        if (params.location !== undefined)
-            bodyPayload.location = params.location;
+        if (args.ids !== undefined)
+            bodyPayload.ids = args.ids;
+        if (args.mode !== undefined)
+            bodyPayload.mode = args.mode;
+        if (args.target !== undefined)
+            bodyPayload.target = args.target;
+        if (args.location !== undefined)
+            bodyPayload.location = args.location;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
 function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
 }
 export const method = 'createMock';
-export const description = 'Creates a mock server in a collection.\n\n**Note:**\n\n- You cannot create mocks for collections added to an API definition.\n- If you do not include the \\`workspaceId\\` query parameter, the system creates the mock server in the oldest personal Internal workspace you own.\n';
+export const description = 'Creates a mock server in a collection.\n\n- Pass the collection UID (ownerId-collectionId), not the bare collection ID.\n- If you only have a \\`collectionId\\`, resolve the UID first:\n  1) Prefer GET \\`/collections/{collectionId}\\` and read \\`uid\\`, or\n  2) Construct \\`{ownerId}-{collectionId}\\` using ownerId from GET \\`/me\\`:\n    - For team-owned collections: \\`ownerId = me.teamId\\`\n    - For personal collections: \\`ownerId = me.user.id\\`\n- Use the \\`workspace\\` query to place the mock in a specific workspace. Prefer explicit workspace scoping.\n';
 export const parameters = z.object({
     workspace: z.string().describe("The workspace's ID."),
     mock: z
@@ -25,21 +25,21 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a mock server in a collection.\n\n**Note:**\n\n- You cannot create mocks for collections added to an API definition.\n- If you do not include the \\`workspaceId\\` query parameter, the system creates the mock server in the oldest personal Internal workspace you own.\n',
+    title: 'Creates a mock server in a collection.\n\n- Pass the collection UID (ownerId-collectionId), not the bare collection ID.\n- If you only have a \\`collectionId\\`, resolve the UID first:\n  1) Prefer GET \\`/collections/{collectionId}\\` and read \\`uid\\`, or\n  2) Construct \\`{ownerId}-{collectionId}\\` using ownerId from GET \\`/me\\`:\n    - For team-owned collections: \\`ownerId = me.teamId\\`\n    - For personal collections: \\`ownerId = me.user.id\\`\n- Use the \\`workspace\\` query to place the mock in a specific workspace. Prefer explicit workspace scoping.\n',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
         const endpoint = `/mocks`;
         const query = new URLSearchParams();
-        if (params.workspace !== undefined)
-            query.set('workspace', String(params.workspace));
+        if (args.workspace !== undefined)
+            query.set('workspace', String(args.workspace));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.mock !== undefined)
-            bodyPayload.mock = params.mock;
+        if (args.mock !== undefined)
+            bodyPayload.mock = args.mock;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -9,28 +14,38 @@ function asMcpError(error: unknown): McpError {
 
 export const method = 'getMocks';
 export const description =
-  'Gets all active mock servers. By default, this endpoint returns only mock servers you created across all workspaces.\n\n**Note:**\n\nIf you pass both the \\`teamId\\` and \\`workspace\\` query parameters, this endpoint only accepts the \\`workspace\\` query.\n';
+  'Gets all active mock servers. By default, returns only mock servers you created across all workspaces.\n\n- Always pass either the \\`workspace\\` or \\`teamId\\` query to scope results. Prefer \\`workspace\\` when known.\n- If you need team-scoped results, set \\`teamId\\` from the current user: call GET \\`/me\\` and use \\`me.teamId\\`.\n- If both \\`teamId\\` and \\`workspace\\` are passed, only \\`workspace\\` is used.\n';
 export const parameters = z.object({
-  teamId: z.string().describe('Return only results that belong to the given team ID.').optional(),
-  workspace: z.string().describe('Return only results found in the given workspace ID.').optional(),
+  teamId: z
+    .string()
+    .describe(
+      'Return only results that belong to the given team ID.\n- For team-scoped requests, set this from GET `/me` (`me.teamId`).\n'
+    )
+    .optional(),
+  workspace: z
+    .string()
+    .describe(
+      'Return only results found in the given workspace ID.\n- Prefer this parameter when the user mentions a specific workspace.\n'
+    )
+    .optional(),
 });
 export const annotations = {
   title:
-    'Gets all active mock servers. By default, this endpoint returns only mock servers you created across all workspaces.\n\n**Note:**\n\nIf you pass both the \\`teamId\\` and \\`workspace\\` query parameters, this endpoint only accepts the \\`workspace\\` query.\n',
+    'Gets all active mock servers. By default, returns only mock servers you created across all workspaces.\n\n- Always pass either the \\`workspace\\` or \\`teamId\\` query to scope results. Prefer \\`workspace\\` when known.\n- If you need team-scoped results, set \\`teamId\\` from the current user: call GET \\`/me\\` and use \\`me.teamId\\`.\n- If both \\`teamId\\` and \\`workspace\\` are passed, only \\`workspace\\` is used.\n',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/mocks`;
     const query = new URLSearchParams();
-    if (params.teamId !== undefined) query.set('teamId', String(params.teamId));
-    if (params.workspace !== undefined) query.set('workspace', String(params.workspace));
+    if (args.teamId !== undefined) query.set('teamId', String(args.teamId));
+    if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,

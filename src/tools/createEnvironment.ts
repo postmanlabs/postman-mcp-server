@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -47,16 +52,16 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
     const endpoint = `/environments`;
     const query = new URLSearchParams();
-    if (params.workspace !== undefined) query.set('workspace', String(params.workspace));
+    if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
-    if (params.environment !== undefined) bodyPayload.environment = params.environment;
+    if (args.environment !== undefined) bodyPayload.environment = args.environment;
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,

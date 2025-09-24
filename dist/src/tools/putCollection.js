@@ -6,7 +6,7 @@ function asMcpError(error) {
     return new McpError(ErrorCode.InternalError, cause);
 }
 export const method = 'putCollection';
-export const description = "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\nTo perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n\n> The maximum collection size this endpoint accepts cannot exceed 100 MB.\n\nFor a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n- \\`info\\` object — Refer to the **Information** entry.\n- \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n\n**Note:**\n\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n";
+export const description = "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\nTo perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- The maximum collection size this endpoint accepts cannot exceed 100 MB.\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n";
 export const parameters = z.object({
     collectionId: z
         .string()
@@ -60,16 +60,16 @@ export const parameters = z.object({
                 key: z.string().describe("The variable's key (name).").optional(),
                 description: z
                     .string()
-                    .describe("The variable's description. Doesn't apply to collection-level variables.")
+                    .max(512)
+                    .describe("The variable's description.")
                     .optional(),
-                value: z.string().describe("The key's value.").optional(),
-                type: z
-                    .enum(['string', 'boolean', 'integer'])
-                    .describe("The variable's type.")
+                value: z
+                    .union([z.string(), z.boolean(), z.number().int()])
+                    .describe("The key's value.")
                     .optional(),
                 disabled: z
                     .boolean()
-                    .describe('If true, the variable is not enabled. Applies only to query parameter variables.')
+                    .describe("If true, the variable is not enabled. Doesn't apply to path parameter variables.")
                     .default(false),
             })
                 .describe('Information about the variable.'))
@@ -581,18 +581,14 @@ export const parameters = z.object({
                 .describe("The variable's ID. Doesn't apply to collection-level variables.")
                 .optional(),
             key: z.string().describe("The variable's key (name).").optional(),
-            description: z
-                .string()
-                .describe("The variable's description. Doesn't apply to collection-level variables.")
-                .optional(),
-            value: z.string().describe("The key's value.").optional(),
-            type: z
-                .enum(['string', 'boolean', 'integer'])
-                .describe("The variable's type.")
+            description: z.string().max(512).describe("The variable's description.").optional(),
+            value: z
+                .union([z.string(), z.boolean(), z.number().int()])
+                .describe("The key's value.")
                 .optional(),
             disabled: z
                 .boolean()
-                .describe('If true, the variable is not enabled. Applies only to query parameter variables.')
+                .describe("If true, the variable is not enabled. Doesn't apply to path parameter variables.")
                 .default(false),
         })
             .describe('Information about the variable.'))
@@ -881,7 +877,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\nTo perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n\n> The maximum collection size this endpoint accepts cannot exceed 100 MB.\n\nFor a complete list of available property values for this endpoint, use the following references available in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html):\n- \\`info\\` object — Refer to the **Information** entry.\n- \\`item\\` object — Refer to the **Items** entry.\n- For all other possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n\n**Note:**\n\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n",
+    title: "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\nTo perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- The maximum collection size this endpoint accepts cannot exceed 100 MB.\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n",
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,

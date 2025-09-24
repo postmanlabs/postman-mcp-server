@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
-import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import {
+  IsomorphicHeaders,
+  McpError,
+  ErrorCode,
+  CallToolResult,
+} from '@modelcontextprotocol/sdk/types.js';
 
 function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
@@ -137,15 +142,15 @@ export const annotations = {
 };
 
 export async function handler(
-  params: z.infer<typeof parameters>,
+  args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
-): Promise<{ content: Array<{ type: string; text: string } & Record<string, unknown>> }> {
+): Promise<CallToolResult> {
   try {
-    const endpoint = `/monitors/${params.monitorId}`;
+    const endpoint = `/monitors/${args.monitorId}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
-    if (params.monitor !== undefined) bodyPayload.monitor = params.monitor;
+    if (args.monitor !== undefined) bodyPayload.monitor = args.monitor;
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
