@@ -1,9 +1,9 @@
 {
-  "manifest_version": "0.1",
-  "version": "2.3.4",
+  "manifest_version": "0.2",
+  "version": "2.3.3",
   "name": "postman-mcp-server-full",
   "display_name": "Postman MCP Server (Full)",
-  "description": "A comprehensive MCP server with all available Postman API tools (106+ tools).",
+  "description": "Connect your AI to your APIs on Postman.",
   "long_description": "This extension enables AI assistants to interact with the Postman API through Model Context Protocol (MCP). This full version provides access to all available Postman API tools including advanced features like collection forks, comments, monitors, PAN operations, and more. All secured with your Postman API key.",
   "author": {
     "name": "Postman, Inc.",

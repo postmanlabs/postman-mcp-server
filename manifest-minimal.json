@@ -1,9 +1,9 @@
 {
-  "manifest_version": "0.1",
-  "version": "2.3.4",
+  "manifest_version": "0.2",
+  "version": "2.3.3",
   "name": "postman-mcp-server-minimal",
   "display_name": "Postman MCP Server (Minimal)",
-  "description": "Connect your AI to your APIs on Postman",
+  "description": "Connect your AI to your APIs on Postman.",
   "long_description": "This extension enables AI assistants to interact with the Postman API through Model Context Protocol (MCP). This minimal version includes only the essential tools for basic Postman operations, providing faster performance and simplifying use for common workflows. All secured with your Postman API key.",
   "author": {
     "name": "Postman, Inc.",
