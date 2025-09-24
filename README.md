@@ -9,10 +9,10 @@ Postman supports the following tool configurations:
 
 ### Use Cases
 
+- **Code synchronization** - Effortlessly keep your code in sync with your Postman collections and specs.
 - **Collection management** - Create and tag collections, update collection and request documentation, add comments, or perform actions across multiple collections without leaving your editor.
 - **Workspace and environment management** - Create workspaces and environments, plus manage your environment variables.
 - **Automatic spec creation** - Create [specs](https://learning.postman.com/docs/design-apis/specifications/overview/) from your code and use them to generate Postman collections.
-- **Code synchronization** - Effortlessly keep your code up to date based on changes made to your Postman collections and specs.
 
 Designed for developers who want to integrate their AI tools with Postman’s context and features. Supports quick natural language queries queries to advanced agent workflows.
 
@@ -36,6 +36,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
   - [**VS Code**](#install-in-vs-code-1)
   - [**Cursor**](#install-in-cursor-1)
   - [**Claude**](#claude-integration)
+  - [**Gemini CLI**](#use-as-a-gemini-cli-extension)
 - [**Questions and support**](#questions-and-support)
 - [**Migration from Postman MCP Server v1 to v2**](#migration-from-v1x-to-v2x)
 
@@ -187,6 +188,11 @@ To integrate the MCP server with Claude, check the latest [Postman MCP Server re
 * `postman-api-mcp-full.mcpb` - Contains all available Postman tools.
 
 For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
+
+### Use as a Gemini CLI extension
+To install the MCP server as a Gemini CLI extension, run the following command in your terminal:
+
+```gemini extensions install https://github.com/postmanlabs/postman-mcp-server```
 
 ---
 
