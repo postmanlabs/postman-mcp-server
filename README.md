@@ -141,15 +141,6 @@ Before getting started, you'll need the following:
 1. To run the server as a Node application, install [Node.js](https://nodejs.org/en).
 1. A valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
-### Configuration
-<!-- Should this section reside in the Manual config section? -->
-To configure the extension to use the local Postman MCP Server, do the following:
-
-1. Clone the **postman-mcp-server** repository.
-1. In the repository's root folder, run the `npm install` command. This installs all the required dependencies.
-1. Replace `${workspaceFolder}` in the *mcp.json* file with the full path to the Postman MCP repository.
-1. When prompted, enter your Postman API key.
-
 ### Install in VS Code
 
 [![Install with Node in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=postman-api-mcp&inputs=%5B%7B%22id%22%3A%22postman-api-key%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Enter%20your%20Postman%20API%20key%22%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40postman%2Fpostman-mcp-server%22%2C%22--full%22%5D%2C%22env%22%3A%7B%22POSTMAN_API_KEY%22%3A%22%24%7Binput%3Apostman-api-key%7D%22%7D%7D)
