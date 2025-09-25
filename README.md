@@ -7,6 +7,8 @@ Postman supports the following tool configurations:
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
 - **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collaboration and Postman's Enterprise features.
 
+For a complete list of the Postman MCP Server's tools, see the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
+
 ### Use Cases
 
 - **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
@@ -28,13 +30,13 @@ The Postman MCP Server supports the EU region for remote and local servers:
 
 - [**Remote server**](#remote-server)
   - [**Prerequisites**](#prerequisites)
-  - [**VS Code**](#install-in-vs-code)
+  - [**VS Code**](#install-in-visual-studio-code)
   - [**Cursor**](#install-in-cursor)
   - [**Claude Code**](#install-in-claude-code)
 - [**Local server**](#local-server)
   - [**Prerequisites**](#prerequisites-1)
   - [**Configuration**](#configuration)
-  - [**VS Code**](#install-in-vs-code-1)
+  - [**VS Code**](#install-in-visual-studio-code-1)
   - [**Cursor**](#install-in-cursor-1)
   - [**Claude**](#claude-integration)
   - [**Claude Code**](#install-in-claude-code-1)
@@ -53,23 +55,33 @@ The remote server supports the following tool configurations:
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`.
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
-**Note:** The remote EU HTTP server is available at `https://mcp.eu.postman.com`.
+**Note:** The remote EU server is available at `https://mcp.eu.postman.com`.
 
 ### Prerequisites
 
-Before getting started, make certain you have a valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
+Before getting started, ensure that you have a valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
-### Install in VS Code
+### Install in Cursor
+
+[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman_mcp_server&config=eyJ1cmwiOiJodHRwczovL21jcC5wb3N0bWFuLmNvbS9taW5pbWFsIiwiaGVhZGVycyI6eyJBdXRob3JpemF0aW9uIjoiQmVhcmVyIFlPVVJfQVBJX0tFWSJ9fQ%3D%3D)
+
+To install the remote Postman MCP Server in Cursor, click the install button.
+
+**Note:** Ensure that the Authorization header uses the `Bearer <YOUR_API_KEY>` format.
+
+By default, the server uses **Minimal** mode. To access **Full** mode, change the `url` value to `https://mcp.postman.com/mcp` in the `mcp.json` file.
+
+### Install in Visual Studio Code
 
 [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=postman_mcp_server&config=%7B%22type%22%3A%20%22http%22%2C%22url%22%3A%20%22https%3A%2F%2Fmcp.postman.com%2Fminimal%22%2C%22headers%22%3A%7B%22Authorization%22%3A%22Bearer%20YOUR_API_KEY%22%7D%7D)
 
-To install the remote Postman MCP Server in Visual Studio Code, click the install button or use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode).
+To install the remote Postman MCP Server in VS Code, click the install button or use the [Postman VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Postman.postman-for-vscode).
 
-**Note:** By default, the server provides 37 tools. Use full mode (`https://mcp.postman.com/mcp`) to access all tools.
+By default, the server uses **Minimal** mode. To access **Full** mode, change the `url` value to `https://mcp.postman.com/mcp` in the `mcp.json` file.
 
 #### Manual configuration
 
-To manually configure the remote Postman MCP Server in VS Code, add the following JSON block to the *.vscode/mcp.json* file:
+To manually configure the remote Postman MCP Server in VS Code, add the following JSON block to the `.vscode/mcp.json` file:
 
 ```json
 {
@@ -96,25 +108,18 @@ To manually configure the remote Postman MCP Server in VS Code, add the followin
 
 When prompted, enter your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server at `https://mcp.postman.com`.
 
-### Install in Cursor
-
-[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman_mcp_server&config=eyJ1cmwiOiJodHRwczovL21jcC5wb3N0bWFuLmNvbS9taW5pbWFsIiwiaGVhZGVycyI6eyJBdXRob3JpemF0aW9uIjoiQmVhcmVyIFlPVVJfQVBJX0tFWSJ9fQ%3D%3D)
-
-To install the remote Postman MCP Server in Cursor, click the install button.
-
-**Note:** Ensure that the Authorization header uses the `Bearer <YOUR_API_KEY>` format.
-
 ### Install in Claude Code
 
 To install the MCP server in Claude Code, run the following command in your terminal:
 
-**Minimal**
+For **Minimal** mode:
 
 ```bash
 claude mcp add --transport http postman https://mcp.postman.com/minimal
 ```
 
-**Full**
+For **Full** mode:
+
 ```bash
 claude mcp add --transport http postman https://mcp.postman.com/mcp
 ```
@@ -134,6 +139,8 @@ The local server supports the following tool configurations:
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 - **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
 
+**Note:** Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
+
 ### Prerequisites
 
 Before getting started, you'll need the following:
@@ -141,15 +148,13 @@ Before getting started, you'll need the following:
 1. To run the server as a Node application, install [Node.js](https://nodejs.org/en).
 1. A valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
-### Install in VS Code
+### Install in Visual Studio Code
 
 [![Install with Node in VS Code](https://img.shields.io/badge/VS_Code-Install_Server-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=postman-api-mcp&inputs=%5B%7B%22id%22%3A%22postman-api-key%22%2C%22type%22%3A%22promptString%22%2C%22description%22%3A%22Enter%20your%20Postman%20API%20key%22%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22%40postman%2Fpostman-mcp-server%22%2C%22--full%22%5D%2C%22env%22%3A%7B%22POSTMAN_API_KEY%22%3A%22%24%7Binput%3Apostman-api-key%7D%22%7D%7D)
 
-To install the local Postman MCP Server in Visual Studio Code, click the install button.
+To install the local Postman MCP Server in VS Code, click the install button.
 
-**Note:**
-- By default, this server provides 37 tools (minimal mode). Use the `--full` flag to access all tools.
-- Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
+By default, the server uses **Full** mode. To access **Minimal** mode, remove the `--full` flag from the `mcp.json` configuration file.
 
 #### Manual configuration
 
@@ -186,6 +191,8 @@ You can manually integrate your MCP server with VS Code to use it with extension
 [![Install with Node in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=postman-api-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyJAcG9zdG1hbi9wb3N0bWFuLW1jcC1zZXJ2ZXIiLCItLWZ1bGwiXSwiZW52Ijp7IlBPU1RNQU5fQVBJX0tFWSI6IllPVVJfQVBJX0tFWSJ9fQ%3D%3D)
 
 To install the local Postman MCP Server in Cursor, click the install button.
+
+By default, the server uses **Full** mode. To access **Minimal** mode, remove the `--full` flag from the `mcp.json` configuration file.
 
 ### Claude integration
 
