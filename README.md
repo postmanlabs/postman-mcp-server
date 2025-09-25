@@ -52,10 +52,8 @@ The remote Postman MCP Server is hosted by Postman over streamable HTTP and prov
 
 The remote server supports the following tool configurations:
 
-* **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`.
-* **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
-
-**Note:** The remote EU server is available at `https://mcp.eu.postman.com`.
+* **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal` and `https://mcp.eu.postman.com/minimal` for EU users.
+* **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp` and `https://mcp.eu.postman.com/mcp` for EU users.
 
 ### Install in Cursor
 
@@ -128,14 +126,14 @@ If remote MCP servers aren't supported by your MCP host, you can install the Pos
 
 STDIO is a lightweight solution that's ideal for integration with editors and tools like Visual Studio Code. Install an MCP-compatible VS Code extension, such as GitHub Copilot, Claude for VS Code, or other AI assistants that support MCP.
 
+**Note:** To run the server as a Node application, install [Node.js](https://nodejs.org/en).
+
 The local server supports the following tool configurations:
 
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 * **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
 
-**Note:**
-* Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
-* To run the server as a Node application, install [Node.js](https://nodejs.org/en).
+**Note:** Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
 
 
 ### Install in Visual Studio Code
@@ -197,13 +195,14 @@ For more information, see the [Claude Desktop Extensions](https://www.anthropic.
 
 To install the MCP server in Claude Code, run the following command in your terminal:
 
-**Minimal**
+For **Minimal** mode:
 
 ```bash
 claude mcp add postman -- npx @postman/mcp-server@latest
 ```
 
-**Full**
+For **Full** mode:
+
 ```bash
 claude mcp add postman -- npx @postman/mcp-server@latest --full
 ```
