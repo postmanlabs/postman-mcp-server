@@ -22,6 +22,14 @@ The Postman MCP Server supports the EU region for remote and local servers:
 - For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`.
 - For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly.
 
+### Logging Configuration
+
+The server uses minimal logging by default for compatibility with MCP clients and Docker MCP Gateway:
+- **Default**: Error-level logging only
+- **Verbose mode**: Use `--verbose` flag or `LOG_LEVEL=info` for detailed logs
+- **Quiet mode**: Use `--quiet` flag or `LOG_LEVEL=silent` to suppress all logs
+- **Custom levels**: Set `LOG_LEVEL` to `debug`, `info`, `warn`, `error`, or `silent`
+
 ---
 
 ### Contents

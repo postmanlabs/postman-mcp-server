@@ -12,7 +12,7 @@ import {
   CallToolResult,
 } from '@modelcontextprotocol/sdk/types.js';
 
-import packageJson from '../package.json' with { type: 'json' };
+import packageJson from '../package.json' assert { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -38,7 +38,34 @@ function setRegionEnvironment(region: string): void {
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
+// Global logging configuration - default to minimal logging for MCP compatibility
+let isQuietMode = false;
+let logLevel: LogLevel = 'error'; // Default to error-only to avoid stdio pollution
+
+function parseLogLevel(level: string): LogLevel {
+  const normalizedLevel = level.toLowerCase();
+  if (['debug', 'info', 'warn', 'error', 'silent'].includes(normalizedLevel)) {
+    return normalizedLevel === 'silent' ? 'error' : (normalizedLevel as LogLevel);
+  }
+  return 'info';
+}
+
+function shouldLog(level: LogLevel): boolean {
+  if (isQuietMode) return false;
+
+  const levels: Record<LogLevel, number> = {
+    debug: 0,
+    info: 1,
+    warn: 2,
+    error: 3
+  };
+
+  return levels[level] >= levels[logLevel];
+}
+
 function log(level: LogLevel, message: string, context?: Record<string, unknown>) {
+  if (!shouldLog(level)) return;
+
   const timestamp = new Date().toISOString();
   const suffix = context ? ` ${JSON.stringify(context)}` : '';
   console.error(`[${timestamp}] [${level.toUpperCase()}] ${message}${suffix}`);
@@ -147,6 +174,24 @@ async function run() {
   const args = process.argv.slice(2);
   const useFull = args.includes('--full');
 
+  // Parse logging flags
+  isQuietMode = args.includes('--quiet');
+  const verbose = args.includes('--verbose');
+
+  // If verbose flag is used, enable detailed logging
+  if (verbose) {
+    logLevel = 'info';
+  }
+
+  // Parse log level from environment variable (overrides flags)
+  const envLogLevel = process.env.LOG_LEVEL;
+  if (envLogLevel) {
+    logLevel = parseLogLevel(envLogLevel);
+    if (envLogLevel.toLowerCase() === 'silent') {
+      isQuietMode = true;
+    }
+  }
+
   const regionIndex = args.findIndex((arg) => arg === '--region');
   if (regionIndex !== -1 && regionIndex + 1 < args.length) {
     const region = args[regionIndex + 1];
@@ -158,7 +203,9 @@ async function run() {
       });
     } else {
       log('error', `Invalid region: ${region}`);
-      console.error(`Supported regions: ${Object.keys(SUPPORTED_REGIONS).join(', ')}`);
+      if (!isQuietMode) {
+        console.error(`Supported regions: ${Object.keys(SUPPORTED_REGIONS).join(', ')}`);
+      }
       process.exit(1);
     }
   }

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol/sdk/types.js';
-import packageJson from '../package.json' with { type: 'json' };
+import packageJson from '../package.json' assert { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,7 +22,29 @@ function setRegionEnvironment(region) {
     }
     process.env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
 }
+let isQuietMode = false;
+let logLevel = 'error';
+function parseLogLevel(level) {
+    const normalizedLevel = level.toLowerCase();
+    if (['debug', 'info', 'warn', 'error', 'silent'].includes(normalizedLevel)) {
+        return normalizedLevel === 'silent' ? 'error' : normalizedLevel;
+    }
+    return 'info';
+}
+function shouldLog(level) {
+    if (isQuietMode)
+        return false;
+    const levels = {
+        debug: 0,
+        info: 1,
+        warn: 2,
+        error: 3
+    };
+    return levels[level] >= levels[logLevel];
+}
 function log(level, message, context) {
+    if (!shouldLog(level))
+        return;
     const timestamp = new Date().toISOString();
     const suffix = context ? ` ${JSON.stringify(context)}` : '';
     console.error(`[${timestamp}] [${level.toUpperCase()}] ${message}${suffix}`);
@@ -91,6 +113,18 @@ let clientInfo = undefined;
 async function run() {
     const args = process.argv.slice(2);
     const useFull = args.includes('--full');
+    isQuietMode = args.includes('--quiet');
+    const verbose = args.includes('--verbose');
+    if (verbose) {
+        logLevel = 'info';
+    }
+    const envLogLevel = process.env.LOG_LEVEL;
+    if (envLogLevel) {
+        logLevel = parseLogLevel(envLogLevel);
+        if (envLogLevel.toLowerCase() === 'silent') {
+            isQuietMode = true;
+        }
+    }
     const regionIndex = args.findIndex((arg) => arg === '--region');
     if (regionIndex !== -1 && regionIndex + 1 < args.length) {
         const region = args[regionIndex + 1];
@@ -103,7 +137,9 @@ async function run() {
         }
         else {
             log('error', `Invalid region: ${region}`);
-            console.error(`Supported regions: ${Object.keys(SUPPORTED_REGIONS).join(', ')}`);
+            if (!isQuietMode) {
+                console.error(`Supported regions: ${Object.keys(SUPPORTED_REGIONS).join(', ')}`);
+            }
             process.exit(1);
         }
     }
