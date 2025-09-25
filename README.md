@@ -9,6 +9,8 @@ Postman supports the following tool configurations:
 
 For a complete list of the Postman MCP Server's tools, see the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
 
+**Note:** Before getting started, ensure that you have a valid [Postman API key](https://postman.postman.co/settings/me/api-keys).
+
 ### Use Cases
 
 - **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
@@ -29,18 +31,16 @@ The Postman MCP Server supports the EU region for remote and local servers:
 ### Contents
 
 - [**Remote server**](#remote-server)
-  - [**Prerequisites**](#prerequisites)
   - [**VS Code**](#install-in-visual-studio-code)
   - [**Cursor**](#install-in-cursor)
   - [**Claude Code**](#install-in-claude-code)
 - [**Local server**](#local-server)
-  - [**Prerequisites**](#prerequisites-1)
-  - [**Configuration**](#configuration)
   - [**VS Code**](#install-in-visual-studio-code-1)
   - [**Cursor**](#install-in-cursor-1)
   - [**Claude**](#claude-integration)
   - [**Claude Code**](#install-in-claude-code-1)
   - [**Gemini CLI**](#use-as-a-gemini-cli-extension)
+  - [**Docker**](#install-in-docker)
 - [**Questions and support**](#questions-and-support)
 - [**Migration from Postman MCP Server v1 to v2**](#migration-from-v1x-to-v2x)
 
@@ -56,10 +56,6 @@ The remote server supports the following tool configurations:
 - **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
 **Note:** The remote EU server is available at `https://mcp.eu.postman.com`.
-
-### Prerequisites
-
-Before getting started, ensure that you have a valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
 ### Install in Cursor
 
@@ -81,7 +77,7 @@ By default, the server uses **Minimal** mode. To access **Full** mode, change th
 
 #### Manual configuration
 
-To manually configure the remote Postman MCP Server in VS Code, add the following JSON block to the `.vscode/mcp.json` file:
+You can use the Postman MCP Server with MCP-compatible extensions in VS Code, such as GitHub Copilot, Claude for VS Code, or other AI assistants that support MCP. To do so, add the following JSON block to the `.vscode/mcp.json` configuration file:
 
 ```json
 {
@@ -106,7 +102,7 @@ To manually configure the remote Postman MCP Server in VS Code, add the followin
 }
 ```
 
-When prompted, enter your Postman API key. Afterwards, the agent performs calls to the Postman cloud MCP server at `https://mcp.postman.com`.
+When prompted, enter your Postman API key.
 
 ### Install in Claude Code
 
@@ -132,21 +128,15 @@ If remote MCP servers aren't supported by your MCP host, you can install the Pos
 
 STDIO is a lightweight solution that's ideal for integration with editors and tools like Visual Studio Code. Install an MCP-compatible VS Code extension, such as GitHub Copilot, Claude for VS Code, or other AI assistants that support MCP.
 
-**Note:** For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
-
 The local server supports the following tool configurations:
 
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 - **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
 
-**Note:** Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
+**Note:**
+- Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
+- To run the server as a Node application, install [Node.js](https://nodejs.org/en).
 
-### Prerequisites
-
-Before getting started, you'll need the following:
-
-1. To run the server as a Node application, install [Node.js](https://nodejs.org/en).
-1. A valid [Postman API Key](https://postman.postman.co/settings/me/api-keys).
 
 ### Install in Visual Studio Code
 
@@ -225,6 +215,10 @@ To install the MCP server as a Gemini CLI extension, run the following command i
 ```bash
 gemini extensions install https://github.com/postmanlabs/postman-mcp-server
 ```
+
+### Install in Docker
+
+For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
 
 ---
 
