@@ -188,10 +188,10 @@ By default, the server uses **Full** mode. To access **Minimal** mode, remove th
 
 To integrate the MCP server with Claude, check the latest [Postman MCP Server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.mcpb` file.
 
-* `postman-api-mcp-minimal.mcpb` - Contains the 37 essential tools for common Postman operations.
-* `postman-api-mcp-full.mcpb` - Contains all available Postman tools.
+* **Minimal** - `postman-api-mcp-minimal.mcpb`
+* **Full** - `postman-api-mcp-full.mcpb`
 
-For more information, see Anthropic's [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
+For more information, see the [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
 
 ### Install in Claude Code
 
