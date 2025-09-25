@@ -4,8 +4,8 @@ The Postman MCP Server connects Postman to AI tools, giving AI agents and assist
 
 Postman supports the following tool configurations:
 
-- **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
-- **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collaboration and Postman's Enterprise features.
+* **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
+* **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collaboration and Postman's Enterprise features.
 
 For a complete list of the Postman MCP Server's tools, see the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
 
@@ -13,18 +13,18 @@ For a complete list of the Postman MCP Server's tools, see the [Postman MCP Serv
 
 ### Use Cases
 
-- **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
-- **Collection management** - Create and [tag](https://learning.postman.com/docs/collections/use-collections/collaborate-with-collections/#tag-a-collection) collections, update collection and request [documentation](https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/), add [comments](https://learning.postman.com/docs/collaborating-in-postman/comments/), or perform actions across multiple collections without leaving your editor.
-- **Workspace and environment management** - Create [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/overview/) and [environments](https://learning.postman.com/docs/sending-requests/variables/managing-environments/), plus manage your environment variables.
-- **Automatic spec creation** - Create [specs](https://learning.postman.com/docs/design-apis/specifications/overview/) from your code and use them to generate collections.
+* **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
+* **Collection management** - Create and [tag](https://learning.postman.com/docs/collections/use-collections/collaborate-with-collections/#tag-a-collection) collections, update collection and request [documentation](https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/), add [comments](https://learning.postman.com/docs/collaborating-in-postman/comments/), or perform actions across multiple collections without leaving your editor.
+* **Workspace and environment management** - Create [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/overview/) and [environments](https://learning.postman.com/docs/sending-requests/variables/managing-environments/), plus manage your environment variables.
+* **Automatic spec creation** - Create [specs](https://learning.postman.com/docs/design-apis/specifications/overview/) from your code and use them to generate collections.
 
 Designed for developers who want to integrate their AI tools with Postman’s context and features. Supports quick natural language queries queries to advanced agent workflows.
 
 ### Support for EU
 
 The Postman MCP Server supports the EU region for remote and local servers:
-- For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`.
-- For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly.
+* For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`.
+* For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly.
 
 ---
 
@@ -52,8 +52,8 @@ The remote Postman MCP Server is hosted by Postman over streamable HTTP and prov
 
 The remote server supports the following tool configurations:
 
-- **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`.
-- **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
+* **Minimal** — (Default) Only includes essential tools for basic Postman operations, available at `https://mcp.postman.com/minimal`.
+* **Full** — Includes all available Postman API tools (100+ tools), available at `https://mcp.postman.com/mcp`.
 
 **Note:** The remote EU server is available at `https://mcp.eu.postman.com`.
 
@@ -130,12 +130,12 @@ STDIO is a lightweight solution that's ideal for integration with editors and to
 
 The local server supports the following tool configurations:
 
-- **Minimal** — (Default) Only includes essential tools for basic Postman operations.
-- **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
+* **Minimal** — (Default) Only includes essential tools for basic Postman operations.
+* **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
 
 **Note:**
-- Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
-- To run the server as a Node application, install [Node.js](https://nodejs.org/en).
+* Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
+* To run the server as a Node application, install [Node.js](https://nodejs.org/en).
 
 
 ### Install in Visual Studio Code
@@ -148,7 +148,7 @@ By default, the server uses **Full** mode. To access **Minimal** mode, remove th
 
 #### Manual configuration
 
-You can manually integrate your MCP server with VS Code to use it with extensions that support MCP. To do this, create a *.vscode/mcp.json* file in your project and add the following JSON block to it:
+You can manually integrate your MCP server with VS Code to use it with extensions that support MCP. To do this, create a `.vscode/mcp.json` file in your project and add the following JSON block to it:
 
 ```json
 {
@@ -226,19 +226,19 @@ For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
 
 If you're migrating from Postman MCP Server version 1.x to 2.x, be aware of the following:
 
-- **Tool naming changes** - All tool names changed from kebab-case to camelCase. For example:
-  - `create-collection` → `createCollection`
-  - `get-workspaces` → `getWorkspaces`
-  - `delete-environment` → `deleteEnvironment`
-- **Tool availability changes**
-  - The default (minimal) behavior provides only 37 essential tools.
-  - The `--full` flag provides access to all tools.
+* **Tool naming changes** - All tool names changed from kebab-case to camelCase. For example:
+  * `create-collection` → `createCollection`
+  * `get-workspaces` → `getWorkspaces`
+  * `delete-environment` → `deleteEnvironment`
+* **Tool availability changes**
+  * The default (minimal) behavior provides only 37 essential tools.
+  * The `--full` flag provides access to all tools.
 
 ---
 
 ## Questions and support
 
-- See the [Postman Agent Generator](https://postman.com/explore/agent-generator) page for updates and new capabilities.
-- See [Add your MCP requests to your collections](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/) to learn how to use Postman to perform MCP requests.
-- Visit the [Postman Community](https://community.postman.com/) to share what you've built, ask questions, and get help.
-- You can connect to both the remote and local servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
+* See the [Postman Agent Generator](https://postman.com/explore/agent-generator) page for updates and new capabilities.
+* See [Add your MCP requests to your collections](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/) to learn how to use Postman to perform MCP requests.
+* Visit the [Postman Community](https://community.postman.com/) to share what you've built, ask questions, and get help.
+* You can connect to both the remote and local servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
