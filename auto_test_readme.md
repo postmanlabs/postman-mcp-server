@@ -24,7 +24,7 @@ docker run -v "$(pwd)/build/reports/specmatic:/usr/src/app/build/reports/specmat
   --url http://localhost:3000 \
   --bearer-token <API_KEY> \
   --dictionary-file dictionary.json \
-  --skip-tools createCollectionResponse,createMock,createSpecFile,generateSpecFromCollection,getTaggedEntities,getCollection
+  --skip-tools createCollectionResponse,createMock,createSpecFile,generateSpecFromCollection,getTaggedEntities,getCollection,updateSpecProperties,createCollectionRequest,generateCollection,getMock,getSpecCollections,publishMock,syncCollectionWithSpec,syncSpecWithCollection,createCollectionRequest
 ```
 
 Note - The server has to be restarted for every test run.

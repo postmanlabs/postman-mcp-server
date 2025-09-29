@@ -105,7 +105,8 @@
     "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
   },
   "getCollections": {
-    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "name": "dummy"
   },
   "putCollection": {
     "collectionId": "b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
@@ -173,9 +174,9 @@
   "createWorkspace": {
     "workspace": {
       "name": [
-        "workspace#600", 
-        "workspace#601", 
-        "workspace#602", 
+        "workspace#600",
+        "workspace#601",
+        "workspace#602",
         "workspace#603",
         "workspace#633",
         "workspace#605",
@@ -184,5 +185,94 @@
       "description": "dummy",
       "about": "dummy"
     }
+  },
+  "getEnvironment": {
+    "environmentId": "74b59b60-b497-4636-83ca-110b25559b5e"
+  },
+  "getEnvironments": {
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
+  },
+  "getMock": {
+    "mockId": "KCLQV"
+  },
+  "getMocks": {
+    "teamId": "999928",
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
+  },
+  "getSpec": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f"
+  },
+  "getSpecDefinition": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f"
+  },
+  "getSpecFile": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f",
+    "filePath": "openapi.yaml"
+  },
+  "getSpecFiles": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f"
+  },
+  "getStatusOfAnAsyncApiTask": {
+    "apiId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f",
+    "taskId": "11289221-86361ccd-fd8f-4d60-9765-6b1a9562497b"
+  },
+  "getWorkspace": {
+    "workspaceId": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "include": "mocks:deactivated"
+  },
+  "getWorkspaces": {
+    "type": "personal",
+    "createdBy": 11289221,
+    "include": "mocks:deactivated"
+  },
+  "publishMock": {
+    "mockId": "KCLQV"
+  },
+  "putEnvironment": {
+    "environmentId": "74b59b60-b497-4636-83ca-110b25559b5e",
+    "environment": {
+      "name": "Production Environment Updated",
+      "values": [
+        {
+          "enabled": true,
+          "key": "OBOEY",
+          "value": "TDRVM",
+          "type": "secret",
+          "description": "EQGTM"
+        }
+      ]
+    }
+  },
+  "syncCollectionWithSpec": {
+    "collectionUid": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f"
+  },
+  "syncSpecWithCollection": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f",
+    "collectionUid": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb"
+  },
+  "updateMock": {
+    "mockId": "dummy",
+    "mock": {
+      "name": "dummy",
+      "environment": "74b59b60-b497-4636-83ca-110b25559b5e",
+      "description": "",
+      "private": false,
+      "versionTag": "1.0.0",
+      "config": {
+        "serverResponseId": "random"
+      },
+      "collection": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb"
+    }
+  },
+  "updateSpecFile": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f",
+    "filePath": "openapi.yaml",
+    "content": "openapi: 3.0.0\ninfo:\n  title: Products API Updated\n  version: 1.0.1\npaths:\n  /products:\n    get:\n      summary: Get all products\n      responses:\n        '200':\n          description: Successful response",
+    "name": "dummy"
+  },
+  "updateSpecProperties": {
+    "specId": "a47f8bd4-37ac-4b67-9b68-0952da95df8f",
+    "name": "products_api_spec_updated"
   }
 }
