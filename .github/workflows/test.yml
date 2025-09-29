@@ -28,3 +28,18 @@ jobs:
     - run: npm test
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+    - name: Run MCP Auto Test
+      env:
+        POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+      run: |
+        node dist/src/index.js --http
+        docker run \
+          -v "$(pwd)/build/reports/specmatic:/usr/src/app/build/reports/specmatic" \
+          -v "$(pwd)/auto_test_dictionary.json:/usr/src/app/dictionary.json" \
+          --network host \
+          specmatic/specmatic mcp test \
+          --url http://localhost:3000 \
+          --bearer-token "$POSTMAN_API_KEY" \
+          --dictionary-file dictionary.json \
+          --skip-tools createCollectionResponse,createMock,createSpecFile,generateSpecFromCollection,getTaggedEntities,getCollection,updateSpecProperties,createCollectionRequest,generateCollection,getMock,getSpecCollections,publishMock,syncCollectionWithSpec,syncSpecWithCollection,createCollectionRequest
+
