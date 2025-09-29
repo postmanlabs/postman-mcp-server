@@ -7,7 +7,9 @@ Postman supports the following tool configurations:
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
 * **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collaboration and Postman's Enterprise features.
 
-For a complete list of the Postman MCP Server's tools, see the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
+For a complete list of the Postman MCP Server's tools, see the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7). This collection offers both the remote [full](https://www.postman.com/postman/postman-public-workspace/mcp-request/6821a76b17ccb90a86df48d3) and [minimal](https://www.postman.com/postman/postman-public-workspace/mcp-request/689e1c635be722a98b723238) servers, and the [local server](https://www.postman.com/postman/postman-public-workspace/mcp-request/6866a655b36c67cc435b5033).
+
+Postman also offers servers as an [npm package](https://www.npmjs.com/package/@postman/postman-mcp-server).
 
 **Note:** Before getting started, ensure that you have a valid [Postman API key](https://postman.postman.co/settings/me/api-keys).
 
