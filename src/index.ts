@@ -3,6 +3,7 @@
 import dotenv from 'dotenv';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { InitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import {
   ErrorCode,
@@ -146,6 +147,7 @@ let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefine
 async function run() {
   const args = process.argv.slice(2);
   const useFull = args.includes('--full');
+  const useHttp = args.includes('--http');
 
   const regionIndex = args.findIndex((arg) => arg === '--region');
   if (regionIndex !== -1 && regionIndex + 1 < args.length) {
@@ -163,10 +165,10 @@ async function run() {
     }
   }
 
-  // For STDIO mode, validate API key is available in environment
+  // Validate API key for both modes
   const apiKey = process.env.POSTMAN_API_KEY;
   if (!apiKey) {
-    log('error', 'POSTMAN_API_KEY environment variable is required for STDIO mode');
+    log('error', 'POSTMAN_API_KEY environment variable is required');
     process.exit(1);
   }
 
@@ -198,7 +200,7 @@ async function run() {
     process.exit(0);
   });
 
-  // Create a client instance with the API key for STDIO mode
+  // Create a client instance with the API key
   const client = new PostmanAPIClient(apiKey);
 
   log('info', 'Registering tools with McpServer');
@@ -212,12 +214,9 @@ async function run() {
       tool.annotations || {},
       async (args, extra) => {
         const toolName = tool.method;
-        // Keep start event on stderr only to reduce client noise
         log('info', `Tool invocation started: ${toolName}`, { toolName });
-
         try {
           const start = Date.now();
-
           const result = await tool.handler(args, {
             client,
             headers: {
@@ -225,9 +224,7 @@ async function run() {
               'user-agent': clientInfo?.name,
             },
           });
-
           const durationMs = Date.now() - start;
-          // Completion: stderr only to avoid spamming client logs
           log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
             toolName,
             durationMs,
@@ -235,7 +232,6 @@ async function run() {
           return result;
         } catch (error: any) {
           const errMsg = String(error?.message || error);
-          // Failures: notify both server stderr and client
           logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
           if (error instanceof McpError) throw error;
           throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
@@ -244,7 +240,22 @@ async function run() {
     );
   }
 
-  // API key validation is handled by the singleton client
+  if (useHttp) {
+    startMcpServerInStreamableHTTPMode({ server, tools, useFull });
+  } else {
+    startMcpServerInSTDIOMode({ server, tools, useFull });
+  }
+}
+
+run().catch((error: unknown) => {
+  log('error', 'Unhandled error during server execution', {
+    error: String((error as any)?.message || error),
+  });
+  process.exit(1);
+});
+
+const startMcpServerInSTDIOMode = async ({ server, tools, useFull }) => {
+  // STDIO mode
   log('info', 'Starting stdio transport');
   const transport = new StdioServerTransport();
   transport.onmessage = (message) => {
@@ -259,11 +270,54 @@ async function run() {
     'info',
     `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`
   );
-}
+};
 
-run().catch((error: unknown) => {
-  log('error', 'Unhandled error during server execution', {
-    error: String((error as any)?.message || error),
+const startMcpServerInStreamableHTTPMode = async ({ server, tools, useFull }) => {
+  log('info', 'Starting streamable HTTP transport');
+  const express = (await import('express')).default;
+  const app = express();
+  const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+  app.use(express.json());
+
+  const transport = new StreamableHTTPServerTransport({
+    sessionIdGenerator: () => Math.random().toString(36).substring(2, 15),
   });
-  process.exit(1);
-});
+
+  transport.onmessage = (message) => {
+    if (isInitializeRequest(message)) {
+      clientInfo = message.params.clientInfo;
+      log('debug', '📥 Received MCP initialize request', { clientInfo });
+    }
+  };
+  await server.connect(transport);
+
+  app.get('/health', (req, res) => {
+    res.send('OK');
+  });
+
+  app.post('/', async (req, res) => {
+    try {
+      await transport.handleRequest(req, res, req.body);
+    } catch (error) {
+      log('error', 'Error handling request', { error: String(error) });
+      if (!res.headersSent) {
+        res.status(500).json({
+          jsonrpc: '2.0',
+          error: {
+            code: -32603,
+            message: 'Internal server error',
+          },
+          id: null,
+        });
+      }
+    }
+  });
+
+  app.listen(port, () => {
+    logBoth(
+      server,
+      'info',
+      `Server connected and ready (HTTP): ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'}) on port ${port}`
+    );
+  });
+};

@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
@@ -91,6 +92,7 @@ let clientInfo = undefined;
 async function run() {
     const args = process.argv.slice(2);
     const useFull = args.includes('--full');
+    const useHttp = args.includes('--http');
     const regionIndex = args.findIndex((arg) => arg === '--region');
     if (regionIndex !== -1 && regionIndex + 1 < args.length) {
         const region = args[regionIndex + 1];
@@ -109,7 +111,7 @@ async function run() {
     }
     const apiKey = process.env.POSTMAN_API_KEY;
     if (!apiKey) {
-        log('error', 'POSTMAN_API_KEY environment variable is required for STDIO mode');
+        log('error', 'POSTMAN_API_KEY environment variable is required');
         process.exit(1);
     }
     const allGeneratedTools = await loadAllTools();
@@ -162,6 +164,20 @@ async function run() {
             }
         });
     }
+    if (useHttp) {
+        startMcpServerInStreamableHTTPMode({ server, tools, useFull });
+    }
+    else {
+        startMcpServerInSTDIOMode({ server, tools, useFull });
+    }
+}
+run().catch((error) => {
+    log('error', 'Unhandled error during server execution', {
+        error: String(error?.message || error),
+    });
+    process.exit(1);
+});
+const startMcpServerInSTDIOMode = async ({ server, tools, useFull }) => {
     log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
     transport.onmessage = (message) => {
@@ -172,10 +188,45 @@ async function run() {
     };
     await server.connect(transport);
     logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`);
-}
-run().catch((error) => {
-    log('error', 'Unhandled error during server execution', {
-        error: String(error?.message || error),
+};
+const startMcpServerInStreamableHTTPMode = async ({ server, tools, useFull }) => {
+    log('info', 'Starting streamable HTTP transport');
+    const express = (await import('express')).default;
+    const app = express();
+    const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+    app.use(express.json());
+    const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: () => Math.random().toString(36).substring(2, 15),
     });
-    process.exit(1);
-});
+    transport.onmessage = (message) => {
+        if (isInitializeRequest(message)) {
+            clientInfo = message.params.clientInfo;
+            log('debug', '📥 Received MCP initialize request', { clientInfo });
+        }
+    };
+    await server.connect(transport);
+    app.get('/health', (req, res) => {
+        res.send('OK');
+    });
+    app.post('/', async (req, res) => {
+        try {
+            await transport.handleRequest(req, res, req.body);
+        }
+        catch (error) {
+            log('error', 'Error handling request', { error: String(error) });
+            if (!res.headersSent) {
+                res.status(500).json({
+                    jsonrpc: '2.0',
+                    error: {
+                        code: -32603,
+                        message: 'Internal server error',
+                    },
+                    id: null,
+                });
+            }
+        }
+    });
+    app.listen(port, () => {
+        logBoth(server, 'info', `Server connected and ready (HTTP): ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'}) on port ${port}`);
+    });
+};
