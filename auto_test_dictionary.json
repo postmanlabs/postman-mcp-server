@@ -1,0 +1,188 @@
+{
+  "createCollectionResponse": {
+    "collectionId": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
+    "name": "products_api_updated",
+    "requestId": "11289221-305a04e2-a6fb-4266-9287-ec38c4b91c52"
+  },
+  "getGeneratedCollectionSpecs": {
+    "elementType": "spec",
+    "collectionUid": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb"
+  },
+  "createEnvironment": {
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "environment": {
+      "name": "Production Environment",
+      "values": [
+        {
+          "key": "base_url",
+          "value": "https://api.example.com",
+          "enabled": true,
+          "type": "default"
+        },
+        {
+          "key": "api_key",
+          "value": "your-api-key-here",
+          "enabled": true,
+          "type": "secret"
+        }
+      ]
+    }
+  },
+  "updateWorkspace": {
+    "workspaceId": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "workspace": {
+      "name": "products_api_updated",
+      "description": "This is an updated description for the workspace.",
+      "type": "public",
+      "about": "This workspace is for the /products APIs"
+    }
+  },
+  "getAllSpecs": {
+    "workspaceId": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "cursor": "",
+    "limit": 1
+  },
+  "getSpecCollections": {
+    "elementType": "collection",
+    "limit": 1,
+    "specId": "11289221-spec-id-example",
+    "cursor": "eyJpZCI6IjEyMzQ1In0"
+  },
+  "generateCollection": {
+    "elementType": "collection",
+    "specId": "11289221-spec-id-example",
+    "name": "products_api_spec",
+    "options": {
+      "requestNameSource": "Fallback",
+      "parametersResolution": "Schema",
+      "folderStrategy": "Paths",
+      "includeAuthInfoInExample": true,
+      "enableOptionalParameters": true,
+      "includeDeprecated": true
+    }
+  },
+  "generateSpecFromCollection": {
+    "elementType": "spec",
+    "type": "OPENAPI:3.0",
+    "collectionUid": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
+    "name": "products_api_spec",
+    "format": "JSON"
+  },
+  "createSpec": {
+    "workspaceId": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "name": "products_api_spec",
+    "type": "OPENAPI:3.0",
+    "files": [
+      {
+        "path": "openapi.yaml",
+        "content": "openapi: 3.0.0\ninfo:\n  title: Products API\n  version: 1.0.0\npaths:\n  /products:\n    get:\n      summary: Get all products\n      responses:\n        '200':\n          description: Successful response"
+      }
+    ]
+  },
+  "createMock": {
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c",
+    "mock": {
+      "collection": "11289221-b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb"
+    }
+  },
+  "createCollection": {
+    "collection": {
+      "info": {
+        "name": "products_api",
+        "description": "A fake collection for product API endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+      },
+      "item": [
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "GET",
+            "header": []
+          }
+        }
+      ]
+    },
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
+  },
+  "getCollections": {
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
+  },
+  "putCollection": {
+    "collectionId": "b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
+    "collection": {
+      "info": {
+        "name": "products_api_updated",
+        "description": "Updated description for products API collection",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+      },
+      "item": [
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.example.com/products",
+              "host": [
+                "api.example.com"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Test Product\", \"price\": 99.99}"
+            },
+            "url": {
+              "raw": "https://api.example.com/products",
+              "host": [
+                "api.example.com"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Prefer": "respond-async"
+  },
+  "duplicateCollection": {
+    "collectionId": "b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
+    "suffix": "_copy",
+    "workspace": "14c2db94-fa11-494d-8e6b-31fdca14185c"
+  },
+  "createCollectionRequest": {
+    "collectionId": "b4e2512b-ff4e-4b9f-9d8f-1f46182abdfb",
+    "name": "Delete Product"
+  },
+  "createWorkspace": {
+    "workspace": {
+      "name": [
+        "workspace#600", 
+        "workspace#601", 
+        "workspace#602", 
+        "workspace#603",
+        "workspace#633",
+        "workspace#605",
+        "workspace#606"
+      ],
+      "description": "dummy",
+      "about": "dummy"
+    }
+  }
+}
