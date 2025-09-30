@@ -19,6 +19,7 @@ export const parameters = z.object({
   mockId: z.string().describe("The mock's ID."),
   mock: z
     .object({
+      collection: z.string().describe("The associated collection's unique ID. This is a mandatory parameter."),
       name: z.string().describe("The mock server's name.").optional(),
       environment: z.string().describe("The associated environment's unique ID.").optional(),
       description: z.string().describe("The mock server's description.").optional(),
