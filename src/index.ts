@@ -135,7 +135,19 @@ async function loadAllTools(): Promise<ToolModule[]> {
   }
 }
 
-dotenv.config();
+const dotEnvOutput = dotenv.config({ quiet: true });
+
+if (dotEnvOutput.error) {
+  if ((dotEnvOutput.error as NodeJS.ErrnoException).code !== 'ENOENT') {
+    log('error', `Error loading .env file: ${dotEnvOutput.error}`);
+    process.exit(1);
+  }
+} else {
+  log(
+    'info',
+    `Environment variables loaded: ${dotEnvOutput.parsed ? Object.keys(dotEnvOutput.parsed).length : 0} environment variables: ${Object.keys(dotEnvOutput.parsed || {}).join(', ')}`
+  );
+}
 
 const SERVER_NAME = packageJson.name;
 const APP_VERSION = packageJson.version;
