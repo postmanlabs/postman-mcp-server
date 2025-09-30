@@ -7,7 +7,7 @@ import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { enabledResources } from './enabledResources.js';
+import { enabledResources } from '../generator/enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 const SUPPORTED_REGIONS = {
     us: 'https://api.postman.com',
@@ -83,7 +83,16 @@ async function loadAllTools() {
         return [];
     }
 }
-dotenv.config();
+const dotEnvOutput = dotenv.config({ quiet: true });
+if (dotEnvOutput.error) {
+    if (dotEnvOutput.error.code !== 'ENOENT') {
+        log('error', `Error loading .env file: ${dotEnvOutput.error}`);
+        process.exit(1);
+    }
+}
+else {
+    log('info', `Environment variables loaded: ${dotEnvOutput.parsed ? Object.keys(dotEnvOutput.parsed).length : 0} environment variables: ${Object.keys(dotEnvOutput.parsed || {}).join(', ')}`);
+}
 const SERVER_NAME = packageJson.name;
 const APP_VERSION = packageJson.version;
 export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
