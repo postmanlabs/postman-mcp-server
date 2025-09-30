@@ -148,7 +148,7 @@ By default, the server uses **Full** mode. To access **Minimal** mode, remove th
 
 #### Manual configuration
 
-You can manually integrate your MCP server with VS Code to use it with extensions that support MCP. To do this, create a `.vscode/mcp.json` file in your project and add the following JSON block to it:
+You can manually integrate your MCP server with Cursor or VS Code to use it with extensions that support MCP. To do this, create a `mcp.json` file in your project and add the following JSON block to it:
 
 ```json
 {
