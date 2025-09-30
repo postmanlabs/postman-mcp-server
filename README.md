@@ -32,19 +32,19 @@ The Postman MCP Server supports the EU region for remote and local servers:
 
 ### Contents
 
-- [**Remote server**](#remote-server)
-  - [**VS Code**](#install-in-visual-studio-code)
-  - [**Cursor**](#install-in-cursor)
-  - [**Claude Code**](#install-in-claude-code)
-- [**Local server**](#local-server)
-  - [**VS Code**](#install-in-visual-studio-code-1)
-  - [**Cursor**](#install-in-cursor-1)
-  - [**Claude**](#claude-integration)
-  - [**Claude Code**](#install-in-claude-code-1)
-  - [**Gemini CLI**](#use-as-a-gemini-cli-extension)
-  - [**Docker**](#install-in-docker)
-- [**Questions and support**](#questions-and-support)
-- [**Migration from Postman MCP Server v1 to v2**](#migration-from-v1x-to-v2x)
+* [**Remote server**](#remote-server)
+  * [**VS Code**](#install-in-visual-studio-code)
+  * [**Cursor**](#install-in-cursor)
+  * [**Claude Code**](#install-in-claude-code)
+* [**Local server**](#local-server)
+  * [**VS Code**](#install-in-visual-studio-code-1)
+  * [**Cursor**](#install-in-cursor-1)
+  * [**Claude**](#claude-integration)
+  * [**Claude Code**](#install-in-claude-code-1)
+  * [**Gemini CLI**](#use-as-a-gemini-cli-extension)
+  * [**Docker**](#install-in-docker)
+* [**Questions and support**](#questions-and-support)
+* [**Migration from Postman MCP Server v1 to v2**](#migration-from-v1x-to-v2x)
 
 ---
 
