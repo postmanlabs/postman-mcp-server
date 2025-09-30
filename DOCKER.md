@@ -1,31 +1,15 @@
-# Docker Build Instructions
+# Docker installation
 
-This project uses a multi-stage Docker build to create a STDIO version of the application.
+This project uses a multi-stage Docker build to create a local Postman MCP Server.
 
-## Building with Docker
+## Installation
 
-Run the following command to build with Docker:
+To use the Postman MCP Server in Docker, you can use one of the following methods:
 
-```bash
-docker build -t postman-api-mcp-stdio .
-```
+* To install the Postman MCP Server in Docker, see the [Postman MCP Server](https://hub.docker.com/mcp/server/postman/overview) at Docker MCP Hub. Click **+ Add to Docker Desktop** to automatically install it.
 
-## Running the Docker container
+* To run the Postman MCP Server image in Docker, run the `docker run -i -e POSTMAN_API_KEY="<your-secret-key>" mcp/postman` command in your terminal. Docker automatically discovers, downloads, and runs the Postman MCP Server image.
 
-Select from the following modes to run the Docker container:
-
-### Minimal mode - 37 Tools (Default)
-
-This default mode is designed to stay within VS Code's 128 tool limit when combined with other MCP servers. It provides 37 essential tools for common Postman operations:
-
-```bash
-docker run -i -e POSTMAN_API_KEY="<your-secret-key>" postman-api-mcp-stdio
-```
-
-### Full Mode - 106 Tools
-
-This mode includes all 106 available tools with the `--full` flag:
-
-```bash
-docker run -i -e POSTMAN_API_KEY="<your-secret-key>" postman-api-mcp-stdio --full
-```
+* To build and run the server in Docker manually, run the `docker build -t postman-api-mcp-stdio .` command. Then, run one of the following commands, replacing `$YOUR-POSTMAN-API-KEY` with your Postman API key:
+    * **Minimal** - `docker run -i -e POSTMAN_API_KEY="<your-secret-key>" postman-api-mcp-stdio`
+    * **Full** - `docker run -i -e POSTMAN_API_KEY="<your-secret-key>" postman-api-mcp-stdio --full`
