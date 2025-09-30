@@ -21,7 +21,9 @@ export const parameters = z.object({
   limit: z
     .number()
     .int()
-    .describe('The maximum number of rows to return in the response.')
+    .min(1)
+    .max(99)
+    .describe('The number of rows to return in the response. Limit must be a positive number less than 100')
     .optional(),
   offset: z
     .number()
