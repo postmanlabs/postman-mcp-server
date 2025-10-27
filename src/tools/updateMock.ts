@@ -41,6 +41,9 @@ export const parameters = z.object({
         })
         .describe("The mock server's configuration settings.")
         .optional(),
+      collection: z
+        .string()
+        .describe("The associated collection's unique ID. This is a mandatory parameter."),
     })
     .optional(),
 });
