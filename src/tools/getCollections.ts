@@ -21,6 +21,8 @@ export const parameters = z.object({
   limit: z
     .number()
     .int()
+    .gte(1)
+    .lte(99)
     .describe('The maximum number of rows to return in the response.')
     .optional(),
   offset: z
