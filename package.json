@@ -2,7 +2,7 @@
   "name": "@postman/postman-mcp-server",
   "version": "2.3.7",
   "description": "A simple MCP server to operate on the Postman API",
-  "mcpName":"com.postman/@postman/postman-mcp-server",
+  "mcpName": "com.postman/@postman/postman-mcp-server",
   "main": "dist/src/index.js",
   "type": "module",
   "scripts": {
