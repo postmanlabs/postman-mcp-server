@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "com.postman/postman-mcp-server",
-  "description": "A simple MCP server to operate on the Postman API",
+  "description": "A basic MCP server to operate on the Postman API.",
   "repository": {
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
