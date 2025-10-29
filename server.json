@@ -17,7 +17,7 @@
       },
       "environmentVariables": [
         {
-          "description": "Your Postman API Key",
+          "description": "A valid Postman API key.",
           "isRequired": true,
           "isSecret": true,
           "name": "POSTMAN_API_KEY"
