@@ -64,7 +64,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer + your API key for authentication",
+          "description": "A Bearer token and a valid Postman API key for authentication.",
           "isRequired": true,
           "isSecret": true
         }
