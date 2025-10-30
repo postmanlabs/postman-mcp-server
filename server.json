@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "com.postman/postman-mcp-server",
-  "description": "A simple MCP server to operate on the Postman API",
+  "description": "A basic MCP server to operate on the Postman API.",
   "repository": {
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
@@ -17,7 +17,7 @@
       },
       "environmentVariables": [
         {
-          "description": "Your Postman API Key",
+          "description": "A valid Postman API key.",
           "isRequired": true,
           "isSecret": true,
           "name": "POSTMAN_API_KEY"
@@ -33,7 +33,7 @@
       },
       "environmentVariables": [
         {
-          "description": "Your Postman API Key",
+          "description": "A valid Postman API key.",
           "isRequired": true,
           "isSecret": true,
           "name": "POSTMAN_API_KEY"
@@ -49,7 +49,7 @@
       },
       "environmentVariables": [
         {
-          "description": "Your Postman API Key",
+          "description": "A valid Postman API key.",
           "isRequired": true,
           "isSecret": true,
           "name": "POSTMAN_API_KEY"
@@ -64,7 +64,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer + your API key for authentication",
+          "description": "A Bearer token and a valid Postman API key for authentication.",
           "isRequired": true,
           "isSecret": true
         }
@@ -76,7 +76,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer + your API key for authentication",
+          "description": "A Bearer token and a valid Postman API key for authentication.",
           "isRequired": true,
           "isSecret": true
         }
@@ -88,7 +88,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer + your API key for authentication",
+          "description": "A Bearer token and a valid Postman API key for authentication.",
           "isRequired": true,
           "isSecret": true
         }
@@ -100,7 +100,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Bearer + your API key for authentication",
+          "description": "A Bearer token and a valid Postman API key for authentication.",
           "isRequired": true,
           "isSecret": true
         }
