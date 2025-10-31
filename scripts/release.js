@@ -79,6 +79,19 @@ try {
     updateManifest('manifest-full.json');
     updateManifest('manifest-minimal.json');
 
+    // Update server.json versions
+    console.log('📝 Updating server.json...');
+    const serverJson = JSON.parse(readFileSync('server.json', 'utf8'));
+    serverJson.version = newVersion;
+    // Also update the version in the npm package entry
+    if (serverJson.packages && Array.isArray(serverJson.packages)) {
+        const npmPackage = serverJson.packages.find(pkg => pkg.registryType === 'npm');
+        if (npmPackage) {
+            npmPackage.version = newVersion;
+        }
+    }
+    writeFileSync('server.json', JSON.stringify(serverJson, null, 2) + '\n');
+
     // Commit and tag
     console.log('📤 Committing and tagging...');
     execSync('git add .', { stdio: 'inherit' });
