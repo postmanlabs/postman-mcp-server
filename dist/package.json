@@ -2,6 +2,7 @@
     "name": "@postman/postman-mcp-server",
     "version": "2.3.7",
     "description": "A simple MCP server to operate on the Postman API",
+    "mcpName": "com.postman/@postman/postman-mcp-server",
     "main": "dist/src/index.js",
     "type": "module",
     "scripts": {
@@ -30,7 +31,8 @@
         "@modelcontextprotocol/sdk": "^1.18.1",
         "dotenv": "^17.2.2",
         "es-toolkit": "^1.39.10",
-        "express": "^5.1.0"
+        "express": "^5.1.0",
+        "newman": "^6.2.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.35.0",
