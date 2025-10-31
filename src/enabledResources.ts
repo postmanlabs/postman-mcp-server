@@ -145,6 +145,7 @@ const full = [
   'getDuplicateCollectionTaskStatus',
   'deleteApiCollectionComment',
   'deleteSpecFile',
+  'runCollection',
 ] as const;
 
 const minimal = [
@@ -186,6 +187,7 @@ const minimal = [
   'createCollectionResponse',
   'duplicateCollection',
   'getStatusOfAnAsyncApiTask',
+  'runCollection',
 ] as const;
 
 const excludedFromGeneration = ['createCollection', 'putCollection'] as const;
