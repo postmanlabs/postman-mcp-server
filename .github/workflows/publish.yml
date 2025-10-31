@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Publish to npm and MCP Registry
 
 on:
   push:
@@ -29,4 +29,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Install MCP Publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Login to MCP Registry
+        run: |
+          echo "${{ secrets.MCP_PRIVATE_KEY }}" > key.pem
+          mcp-publisher login dns --domain postman.com --private-key-file key.pem
+
+      - name: Publish to MCP Registry
+        run: ./mcp-publisher publish
 
