@@ -1,5 +1,5 @@
 {
-  "manifest_version": "0.2",
+  "manifest_version": "0.3",
   "version": "2.4.0",
   "name": "postman-mcp-server-minimal",
   "display_name": "Postman MCP Server (Minimal)",
