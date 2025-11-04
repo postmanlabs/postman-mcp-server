@@ -1,0 +1,45 @@
+{
+  "enabled": true,
+  "name": "API Postman Testing",
+  "description": "Monitors API source code changes across multiple programming languages and automatically runs Postman collection tests to validate functionality",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.js",
+      "*.ts",
+      "*.py",
+      "*.java",
+      "*.cs",
+      "*.go",
+      "*.rs",
+      "*.php",
+      "*.rb",
+      "*.kt",
+      "*.swift",
+      "*.scala",
+      "package.json",
+      "package-lock.json",
+      "requirements.txt",
+      "Pipfile",
+      "pom.xml",
+      "build.gradle",
+      "*.csproj",
+      "go.mod",
+      "Cargo.toml",
+      "composer.json",
+      "Gemfile",
+      "build.sbt",
+      "openapi.yaml",
+      "openapi.yml",
+      "swagger.yaml",
+      "swagger.yml",
+      "api.yaml",
+      "api.yml"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "API source code or configuration has been modified. Please retrieve the contents of the .postman.json file. If the file does not exist or is empty, create a Postman collection for the API. If it exists, get the collection ID and run the collection, showing me the results and propose fixes for any errors found."
+  }
+}

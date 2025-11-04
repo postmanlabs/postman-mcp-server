@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "postman": {
+      "command": "npx",
+      "args": [
+        "@postman/postman-mcp-server@latest"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": "${input:postman-api-key}"
+      }
+    }
+  },
+  "disabled": false,
+  "inputs": [
+    {
+      "id": "postman-api-key",
+      "type": "promptString",
+      "description": "Enter your Postman API key"
+    }
+  ]
+}
