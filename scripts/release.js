@@ -2,6 +2,7 @@
 
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
+import { createHash } from 'crypto';
 
 const versionType = process.argv[2];
 if (!versionType) {
@@ -11,6 +12,18 @@ if (!versionType) {
     console.error('  npm run release-custom minor');
     console.error('  npm run release-custom 2.3.3');
     process.exit(1);
+}
+
+function calculateSHA256(filePath) {
+    try {
+        const fileBuffer = readFileSync(filePath);
+        const hashSum = createHash('sha256');
+        hashSum.update(fileBuffer);
+        return hashSum.digest('hex');
+    } catch (error) {
+        console.warn(`⚠️  Could not calculate SHA256 for ${filePath}: ${error.message}`);
+        return null;
+    }
 }
 
 function incrementVersion(currentVersion, type) {
@@ -83,12 +96,39 @@ try {
     console.log('📝 Updating server.json...');
     const serverJson = JSON.parse(readFileSync('server.json', 'utf8'));
     serverJson.version = newVersion;
+
     // Also update the version in the npm package entry
     if (serverJson.packages && Array.isArray(serverJson.packages)) {
         const npmPackage = serverJson.packages.find(pkg => pkg.registryType === 'npm');
         if (npmPackage) {
             npmPackage.version = newVersion;
         }
+
+        // Update mcpb packages with new identifiers and SHA256 hashes
+        console.log('🔐 Calculating SHA256 hashes for mcpb packages...');
+        const mcpbPackages = serverJson.packages.filter(pkg => pkg.registryType === 'mcpb');
+
+        const mcpbFiles = [
+            { name: 'postman-mcp-server-minimal.mcpb', path: 'postman-mcp-server-minimal.mcpb' },
+            { name: 'postman-mcp-server-full.mcpb', path: 'postman-mcp-server-full.mcpb' }
+        ];
+
+        mcpbFiles.forEach(file => {
+            const mcpbPackage = mcpbPackages.find(pkg => pkg.identifier && pkg.identifier.includes(file.name));
+            if (mcpbPackage) {
+                // Update identifier URL with new version
+                mcpbPackage.identifier = `https://github.com/postmanlabs/postman-mcp-server/releases/download/v${newVersion}/${file.name}`;
+
+                // Calculate and update SHA256 hash
+                const sha256 = calculateSHA256(file.path);
+                if (sha256) {
+                    mcpbPackage.fileSha256 = sha256;
+                    console.log(`   ✓ ${file.name}: ${sha256}`);
+                } else {
+                    console.warn(`   ⚠️  Could not calculate SHA256 for ${file.name}`);
+                }
+            }
+        });
     }
     writeFileSync('server.json', JSON.stringify(serverJson, null, 2) + '\n');
 
