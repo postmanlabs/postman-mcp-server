@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'createMonitor';
 export const description = 'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` query parameter, the system creates the monitor in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({

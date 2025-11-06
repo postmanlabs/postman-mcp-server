@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'resolveCommentThread';
 export const description = 'Resolves a comment and any associated replies. On success, this returns an HTTP \\`204 No Content\\` response.\n\nComment thread IDs return in the GET comments response for [APIs](https://www.postman.com/postman/workspace/postman-public-workspace/request/12959542-2103ea20-f7de-4628-90e6-b823b3084a52), [collections](https://www.postman.com/postman/workspace/postman-public-workspace/request/12959542-a6582e0a-9382-4760-8b91-53a8aa6cb8d7), and [collection items](https://www.postman.com/postman/workspace/postman-public-workspace/folder/12959542-efeda219-66e1-474c-a83b-253d15723bf7).\n';
 export const parameters = z.object({

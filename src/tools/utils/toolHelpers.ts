@@ -1,0 +1,14 @@
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+
+// Re-export McpError for use in tool handlers
+export { McpError };
+
+export interface ServerContext {
+  serverType: 'full' | 'minimal';
+  availableTools: string[];
+}
+
+export function asMcpError(error: unknown): McpError {
+  const cause = (error as any)?.cause ?? String(error);
+  return new McpError(ErrorCode.InternalError, cause);
+}

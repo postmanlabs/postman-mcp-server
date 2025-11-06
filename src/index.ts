@@ -12,13 +12,14 @@ import {
   CallToolResult,
 } from '@modelcontextprotocol/sdk/types.js';
 
-import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
+import { SERVER_NAME, APP_VERSION } from './constants.js';
+import { ServerContext } from './tools/utils/toolHelpers.js';
 
 const SUPPORTED_REGIONS = {
   us: 'https://api.postman.com',
@@ -81,6 +82,7 @@ interface ToolModule {
     extra: {
       client: PostmanAPIClient;
       headers?: IsomorphicHeaders;
+      serverContext?: ServerContext;
     }
   ) => Promise<CallToolResult>;
 }
@@ -149,10 +151,6 @@ if (dotEnvOutput.error) {
   );
 }
 
-const SERVER_NAME = packageJson.name;
-const APP_VERSION = packageJson.version;
-export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
-
 let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefined;
 
 async function run() {
@@ -213,6 +211,12 @@ async function run() {
   // Create a client instance with the API key for STDIO mode
   const client = new PostmanAPIClient(apiKey);
 
+  // Create server context that will be passed to all tools
+  const serverContext: ServerContext = {
+    serverType: useFull ? 'full' : 'minimal',
+    availableTools: tools.map((t) => t.method),
+  };
+
   log('info', 'Registering tools with McpServer');
 
   // Register all tools using the McpServer .tool() method
@@ -236,6 +240,7 @@ async function run() {
               ...extra?.requestInfo?.headers,
               'user-agent': clientInfo?.name,
             },
+            serverContext,
           });
 
           const durationMs = Date.now() - start;
