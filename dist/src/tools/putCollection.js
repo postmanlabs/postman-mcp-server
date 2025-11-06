@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'putCollection';
 export const description = "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\nTo perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- The maximum collection size this endpoint accepts cannot exceed 100 MB.\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n";
 export const parameters = z.object({
@@ -164,7 +160,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -180,7 +176,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -196,7 +192,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -212,7 +208,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -228,7 +224,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -244,7 +240,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -260,7 +256,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -276,7 +272,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -292,7 +288,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -308,7 +304,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -324,7 +320,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -340,7 +336,7 @@ export const parameters = z.object({
                         .object({
                         key: z.string().describe("The auth method's key value."),
                         value: z
-                            .union([z.string(), z.array(z.record(z.any()))])
+                            .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                             .describe("The key's value.")
                             .optional(),
                         type: z
@@ -399,7 +395,7 @@ export const parameters = z.object({
                         .describe('A list of x-www-form-encoded key/value pairs.')
                         .optional(),
                     formdata: z
-                        .array(z.record(z.any()).and(z.union([
+                        .array(z.record(z.string(), z.unknown()).and(z.union([
                         z.object({
                             key: z.string().describe('The key value.').optional(),
                             value: z.string().describe("The key's value.").optional(),
@@ -417,7 +413,7 @@ export const parameters = z.object({
                         z.object({
                             key: z.string().describe('The key value.').optional(),
                             src: z
-                                .any()
+                                .unknown()
                                 .superRefine((x, ctx) => {
                                 const schemas = [z.string().nullable(), z.array(z.string())];
                                 const errors = schemas.reduce((errors, schema) => ((result) => result.error ? [...errors, result.error] : errors)(schema.safeParse(x)), []);
@@ -467,7 +463,7 @@ export const parameters = z.object({
                         .describe('If the `mode` value is `graphql`, an object containing the GraphQL request information.')
                         .optional(),
                     options: z
-                        .record(z.any())
+                        .record(z.string(), z.unknown())
                         .describe('Additional configurations and options set for various modes.')
                         .optional(),
                 })
@@ -475,6 +471,10 @@ export const parameters = z.object({
                     .optional(),
             })
                 .describe('Information about the collection request.')
+                .optional(),
+            response: z
+                .array(z.unknown().describe("Information about the request's response."))
+                .describe("A list of the collection's responses.")
                 .optional(),
             protocolProfileBehavior: z
                 .object({
@@ -617,7 +617,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -633,7 +633,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -649,7 +649,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -665,7 +665,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -681,7 +681,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -697,7 +697,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -713,7 +713,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -729,7 +729,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -745,7 +745,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -761,7 +761,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -777,7 +777,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -793,7 +793,7 @@ export const parameters = z.object({
                 .object({
                 key: z.string().describe("The auth method's key value."),
                 value: z
-                    .union([z.string(), z.array(z.record(z.any()))])
+                    .union([z.string(), z.array(z.record(z.string(), z.unknown()))])
                     .describe("The key's value.")
                     .optional(),
                 type: z
@@ -882,14 +882,14 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-export async function handler(params, extra) {
+export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${params.collectionId}`;
+        const endpoint = `/collections/${args.collectionId}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (params.collection !== undefined)
-            bodyPayload.collection = params.collection;
+        if (args.collection !== undefined)
+            bodyPayload.collection = args.collection;
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceTags';
 export const description = 'Gets all the tags associated with a workspace.';
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });

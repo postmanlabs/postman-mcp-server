@@ -3,12 +3,12 @@ import dotenv from 'dotenv';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol/sdk/types.js';
-import packageJson from '../package.json' with { type: 'json' };
 import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
+import { SERVER_NAME, APP_VERSION } from './constants.js';
 const SUPPORTED_REGIONS = {
     us: 'https://api.postman.com',
     eu: 'https://api.eu.postman.com',
@@ -93,9 +93,6 @@ if (dotEnvOutput.error) {
 else {
     log('info', `Environment variables loaded: ${dotEnvOutput.parsed ? Object.keys(dotEnvOutput.parsed).length : 0} environment variables: ${Object.keys(dotEnvOutput.parsed || {}).join(', ')}`);
 }
-const SERVER_NAME = packageJson.name;
-const APP_VERSION = packageJson.version;
-export const USER_AGENT = `${SERVER_NAME}/${APP_VERSION}`;
 let clientInfo = undefined;
 async function run() {
     const args = process.argv.slice(2);
@@ -141,6 +138,10 @@ async function run() {
         process.exit(0);
     });
     const client = new PostmanAPIClient(apiKey);
+    const serverContext = {
+        serverType: useFull ? 'full' : 'minimal',
+        availableTools: tools.map((t) => t.method),
+    };
     log('info', 'Registering tools with McpServer');
     for (const tool of tools) {
         server.tool(tool.method, tool.description, tool.parameters.shape, tool.annotations || {}, async (args, extra) => {
@@ -154,6 +155,7 @@ async function run() {
                         ...extra?.requestInfo?.headers,
                         'user-agent': clientInfo?.name,
                     },
+                    serverContext,
                 });
                 const durationMs = Date.now() - start;
                 log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
