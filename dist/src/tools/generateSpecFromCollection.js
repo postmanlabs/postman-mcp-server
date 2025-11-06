@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'generateSpecFromCollection';
 export const description = 'Generates an API specification for the given collection. The response contains a polling link to the task status.';
 export const parameters = z.object({

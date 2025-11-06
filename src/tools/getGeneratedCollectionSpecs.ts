@@ -1,16 +1,7 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import {
-  IsomorphicHeaders,
-  McpError,
-  ErrorCode,
-  CallToolResult,
-} from '@modelcontextprotocol/sdk/types.js';
-
-function asMcpError(error: unknown): McpError {
-  const cause = (error as any)?.cause ?? String(error);
-  return new McpError(ErrorCode.InternalError, cause);
-}
+import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getGeneratedCollectionSpecs';
 export const description = 'Gets the API specification generated for the given collection.';
@@ -27,7 +18,7 @@ export const annotations = {
 
 export async function handler(
   args: z.infer<typeof parameters>,
-  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
     const endpoint = `/collections/${args.collectionUid}/generations/${args.elementType}`;
