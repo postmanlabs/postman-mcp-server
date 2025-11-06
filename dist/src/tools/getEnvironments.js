@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getEnvironments';
 export const description = 'Gets information about all of your [environments](https://learning.postman.com/docs/sending-requests/managing-environments/).';
 export const parameters = z.object({

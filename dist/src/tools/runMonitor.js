@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'runMonitor';
 export const description = "Runs a monitor and returns its run results.\n\n**Note:**\n\n- If you pass the \\`async=true\\` query parameter, the response does not return the \\`stats\\`, \\`executions\\`, and \\`failures\\` responses. To get this information for an asynchronous run, call the GET \\`/monitors/{id}\\` endpoint.\n- If the call exceeds 300 seconds, the endpoint returns an HTTP \\`202 Accepted\\` response. Use the GET \\`/monitors/{id}\\` endpoint to check the run's status in the response's \\`lastRun\\` property. To avoid this, it is recommended that you include the \\`async=true\\` query parameter when using this endpoint.\n";
 export const parameters = z.object({

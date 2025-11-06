@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'unpublishMock';
 export const description = 'Unpublishes a mock server. Unpublishing a mock server sets its **Access Control** configuration setting to private.';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });

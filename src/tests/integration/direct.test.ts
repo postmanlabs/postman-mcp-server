@@ -9,6 +9,8 @@ import {
   TestEnvironment,
   SpecDataFactory,
   TestSpec,
+  CollectionDataFactory,
+  TestCollection,
 } from './factories/dataFactory.js';
 import { PostmanAPIClient } from '../../clients/postman.js';
 import packageJson from '../../../package.json' assert { type: 'json' };
@@ -19,6 +21,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
   let createdWorkspaceIds: string[] = [];
   let createdEnvironmentIds: string[] = [];
   let createdSpecIds: string[] = [];
+  let createdCollectionIds: string[] = [];
 
   beforeAll(async () => {
     console.log('🚀 Starting Postman MCP server for integration tests...');
@@ -75,15 +78,18 @@ describe('Postman MCP - Direct Integration Tests', () => {
   beforeEach(() => {
     createdWorkspaceIds = [];
     createdEnvironmentIds = [];
+    createdCollectionIds = [];
   });
 
   afterEach(async () => {
+    await cleanupTestCollections(createdCollectionIds);
     await cleanupTestWorkspaces(createdWorkspaceIds);
     await cleanupTestEnvironments(createdEnvironmentIds);
     await cleanupTestSpecs(createdSpecIds);
     createdWorkspaceIds = [];
     createdEnvironmentIds = [];
     createdSpecIds = [];
+    createdCollectionIds = [];
   });
 
   describe('User-Agent Header Tests', () => {
@@ -255,9 +261,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       try {
         await client.get('/test-endpoint');
 
-        expect(capturedHeaders['user-agent']).toBe(
-          `${expectedPackageName}/${expectedPackageVersion}`
-        );
+        expect(capturedHeaders['user-agent']).toBe(`${expectedPackageName}/${expectedPackageVersion}`);
         expect(capturedHeaders['x-api-key']).toBe('test-api-key');
       } finally {
         global.fetch = originalFetch;
@@ -523,6 +527,197 @@ describe('Postman MCP - Direct Integration Tests', () => {
     });
   });
 
+  describe('Collection Workflow', () => {
+    it('should create, list, get, update, and delete a single collection', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Collection Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionData = CollectionDataFactory.createCollection();
+      const collectionId = await createCollection(collectionData, workspaceId);
+      createdCollectionIds.push(collectionId);
+
+      expect(createdCollectionIds).toHaveLength(1);
+      expect(createdCollectionIds[0]).toBe(collectionId);
+
+      const listResult = await client.callTool(
+        {
+          name: 'getCollections',
+          arguments: {
+            workspace: workspaceId,
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(listResult)).toBe(true);
+      expect((listResult.content as any)[0].text).toContain(collectionId);
+
+      const getResult = await client.callTool(
+        {
+          name: 'getCollection',
+          arguments: { collectionId },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(getResult)).toBe(true);
+      expect((getResult.content as any)[0].text).toContain(collectionData.info.name);
+
+      const collection = CollectionDataFactory.extractCollectionFromResponse(getResult);
+      expect(collection).toBeDefined();
+
+      const updatedName = '[Integration Test] Updated Collection';
+      const updatedCollection = {
+        ...collection,
+        info: {
+          ...collection.info,
+          name: updatedName,
+        },
+      };
+
+      const updateResult = await client.callTool(
+        {
+          name: 'putCollection',
+          arguments: {
+            collectionId,
+            collection: updatedCollection,
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(updateResult)).toBe(true);
+
+      const verifyUpdateResult = await client.callTool(
+        {
+          name: 'getCollection',
+          arguments: {
+            collectionId,
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(verifyUpdateResult)).toBe(true);
+      expect((verifyUpdateResult.content as any)[0].text).toContain(updatedName);
+    });
+
+    it('should create and delete a minimal collection', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Minimal Collection Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionData = CollectionDataFactory.createMinimalCollection();
+      const collectionId = await createCollection(collectionData, workspaceId);
+      createdCollectionIds.push(collectionId);
+
+      const getResult = await client.callTool(
+        {
+          name: 'getCollection',
+          arguments: { collectionId },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(getResult)).toBe(true);
+      expect((getResult.content as any)[0].text).toContain(collectionData.info.name);
+    });
+
+    it('should filter collections by name', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Collection Filter Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collection1 = CollectionDataFactory.createCollection({
+        info: {
+          name: '[Integration Test] Filter Collection Alpha',
+          schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+        },
+      });
+      const collection2 = CollectionDataFactory.createCollection({
+        info: {
+          name: '[Integration Test] Filter Collection Beta',
+          schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+        },
+      });
+
+      const collectionId1 = await createCollection(collection1, workspaceId);
+      const collectionId2 = await createCollection(collection2, workspaceId);
+      createdCollectionIds.push(collectionId1, collectionId2);
+
+      const filterResult = await client.callTool(
+        {
+          name: 'getCollections',
+          arguments: {
+            workspace: workspaceId,
+            name: '[Integration Test] Filter Collection Alpha',
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(filterResult)).toBe(true);
+      const responseText = (filterResult.content as any)[0].text;
+      expect(responseText).toContain('Alpha');
+    });
+
+    it('should paginate collections list', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Collection Pagination Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collections: string[] = [];
+      for (let i = 0; i < 3; i++) {
+        const collection = CollectionDataFactory.createCollection({
+          info: {
+            name: `[Integration Test] Pagination Collection ${i}`,
+            schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+          },
+        });
+        const collectionId = await createCollection(collection, workspaceId);
+        collections.push(collectionId);
+        createdCollectionIds.push(collectionId);
+      }
+
+      const firstPageResult = await client.callTool(
+        {
+          name: 'getCollections',
+          arguments: {
+            workspace: workspaceId,
+            limit: 2,
+            offset: 0,
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(firstPageResult)).toBe(true);
+
+      const secondPageResult = await client.callTool(
+        {
+          name: 'getCollections',
+          arguments: {
+            workspace: workspaceId,
+            limit: 2,
+            offset: 2,
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(secondPageResult)).toBe(true);
+    });
+  });
+
   async function createWorkspace(workspaceData: TestWorkspace): Promise<string> {
     const result = await client.callTool(
       {
@@ -597,6 +792,51 @@ describe('Postman MCP - Direct Integration Tests', () => {
     return specId;
   }
 
+  async function createCollection(
+    collectionData: TestCollection,
+    workspaceId: string
+  ): Promise<string> {
+    const result = await client.callTool(
+      {
+        name: 'createCollection',
+        arguments: {
+          workspace: workspaceId,
+          collection: collectionData,
+        },
+      },
+      undefined,
+      { timeout: 100000 }
+    );
+    if (result.isError) {
+      throw new Error((result.content as any)[0].text);
+    }
+    expect(CollectionDataFactory.validateResponse(result)).toBe(true);
+    const collectionId = CollectionDataFactory.extractIdFromResponse(result);
+    if (!collectionId) {
+      throw new Error(`Collection ID not found in response: ${JSON.stringify(result)}`);
+    }
+    return collectionId;
+  }
+
+  async function cleanupTestCollections(collectionIds: string[]): Promise<void> {
+    for (const collectionId of collectionIds) {
+      try {
+        await client.callTool(
+          {
+            name: 'deleteCollection',
+            arguments: {
+              collectionId,
+            },
+          },
+          undefined,
+          { timeout: 100000 }
+        );
+      } catch (error) {
+        console.warn(`Failed to cleanup collection ${collectionId}:`, String(error));
+      }
+    }
+  }
+
   async function cleanupTestWorkspaces(workspaceIds: string[]): Promise<void> {
     for (const workspaceId of workspaceIds) {
       try {
@@ -656,7 +896,9 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
   async function cleanupAllTestResources(): Promise<void> {
     console.log('Cleaning up all test resources...');
+    await cleanupTestCollections(createdCollectionIds);
     await cleanupTestWorkspaces(createdWorkspaceIds);
     await cleanupTestEnvironments(createdEnvironmentIds);
+    await cleanupTestSpecs(createdSpecIds);
   }
 });
