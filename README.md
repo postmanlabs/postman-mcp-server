@@ -35,7 +35,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
 * [**Remote server**](#remote-server)
   * [**VS Code**](#install-in-visual-studio-code)
   * [**Cursor**](#install-in-cursor)
-  * [**Claude Code**](#install-in-claude-code)readme
+  * [**Claude Code**](#install-in-claude-code)
 * [**Local server**](#local-server)
   * [**VS Code**](#install-in-visual-studio-code-1)
   * [**Cursor**](#install-in-cursor-1)
