@@ -200,13 +200,13 @@ To install the MCP server in Claude Code, run the following command in your term
 For **Minimal** mode:
 
 ```bash
-claude mcp add postman -- npx @postman/mcp-server@latest --env POSTMAN_API_KEY=YOUR_KEY
+claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mcp-server@latest 
 ```
 
 For **Full** mode:
 
 ```bash
-claude mcp add postman -- npx @postman/mcp-server@latest --full --env POSTMAN_API_KEY=YOUR_KEY
+claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mcp-server@latest --full 
 ```
 
 ### Use as a Gemini CLI extension
