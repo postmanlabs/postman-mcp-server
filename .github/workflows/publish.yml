@@ -37,7 +37,7 @@ jobs:
       - name: Login to MCP Registry
         run: |
           echo "${{ secrets.MCP_PRIVATE_KEY }}" > key.pem
-          mcp-publisher login dns --domain postman.com --private-key key.pem
+          ./mcp-publisher login dns --domain postman.com --private-key key.pem
 
       - name: Publish to MCP Registry
         run: ./mcp-publisher publish
