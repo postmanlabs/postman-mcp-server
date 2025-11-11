@@ -146,6 +146,7 @@ const full = [
   'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
+  'runCollection',
 ] as const;
 
 const minimal = [
@@ -191,10 +192,7 @@ const minimal = [
   'getEnabledTools',
 ] as const;
 
-const excludedFromGeneration = [
-  'runCollection',
-  'getEnabledTools',
-] as const;
+const excludedFromGeneration = ['runCollection', 'getEnabledTools'] as const;
 
 export const enabledResources = {
   full,
