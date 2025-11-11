@@ -6,12 +6,12 @@
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
   },
-  "version": "2.4.5",
+  "version": "2.4.6",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@postman/postman-mcp-server",
-      "version": "2.4.5",
+      "version": "2.4.6",
       "transport": {
         "type": "stdio"
       },
@@ -26,8 +26,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.4.5/postman-mcp-server-minimal.mcpb",
-      "fileSha256": "b8fd2ac30c9395a476a2863229fae83691c95aaec8d12ee825bf623cb9d9e9fb",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.4.6/postman-mcp-server-minimal.mcpb",
+      "fileSha256": "4a0e290380490b7877002af7e29e7a01d6a5c7b5417bac8699bc60920d3b41dd",
       "transport": {
         "type": "stdio"
       },
@@ -42,8 +42,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.4.5/postman-mcp-server-full.mcpb",
-      "fileSha256": "48e75f40eaac55c7b002b876b32631b877160984b8c23c7f91cebca2beb10a6c",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.4.6/postman-mcp-server-full.mcpb",
+      "fileSha256": "619836fba4923549e69828f792fb8213a53da9b33c206c981013bacabc8991a6",
       "transport": {
         "type": "stdio"
       },
