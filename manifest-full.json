@@ -1,6 +1,6 @@
 {
   "manifest_version": "0.3",
-  "version": "2.4.4",
+  "version": "2.4.5",
   "name": "postman-mcp-server-full",
   "display_name": "Postman MCP Server (Full)",
   "description": "Connect your AI to your APIs on Postman.",
