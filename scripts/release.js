@@ -92,12 +92,47 @@ try {
     updateManifest('manifest-full.json');
     updateManifest('manifest-minimal.json');
 
-    // Update server.json versions
+    // Build mcpb packages locally to calculate SHA256 hashes
+    console.log('📦 Building mcpb packages for SHA256 calculation...');
+    
+    // Check if mcpb is installed
+    try {
+        execSync('which mcpb', { stdio: 'pipe' });
+    } catch {
+        console.log('⚠️  mcpb not found, installing globally...');
+        execSync('npm install -g @anthropic-ai/mcpb', { stdio: 'inherit' });
+    }
+
+    // Install production dependencies for packaging
+    console.log('📦 Installing production dependencies...');
+    execSync('npm ci --omit=dev', { stdio: 'inherit' });
+
+    // Package minimal version
+    console.log('📦 Packaging minimal version...');
+    execSync('cp manifest-minimal.json manifest.json', { stdio: 'inherit' });
+    execSync('mcpb pack', { stdio: 'inherit' });
+    const currentDir = execSync('basename "$PWD"', { encoding: 'utf8' }).trim();
+    execSync(`mv "${currentDir}.mcpb" "postman-mcp-server-minimal.mcpb"`, { stdio: 'inherit' });
+
+    // Package full version
+    console.log('📦 Packaging full version...');
+    execSync('cp manifest-full.json manifest.json', { stdio: 'inherit' });
+    execSync('mcpb pack', { stdio: 'inherit' });
+    execSync(`mv "${currentDir}.mcpb" "postman-mcp-server-full.mcpb"`, { stdio: 'inherit' });
+
+    // Restore manifest.json (optional, or delete it)
+    execSync('rm manifest.json', { stdio: 'inherit' });
+
+    // Reinstall all dependencies
+    console.log('📦 Reinstalling all dependencies...');
+    execSync('npm ci', { stdio: 'inherit' });
+
+    // Update server.json with versions and SHA256 hashes
     console.log('📝 Updating server.json...');
     const serverJson = JSON.parse(readFileSync('server.json', 'utf8'));
     serverJson.version = newVersion;
 
-    // Also update the version in the npm package entry
+    // Update the version in the npm package entry
     if (serverJson.packages && Array.isArray(serverJson.packages)) {
         const npmPackage = serverJson.packages.find(pkg => pkg.registryType === 'npm');
         if (npmPackage) {
@@ -106,15 +141,14 @@ try {
 
         // Update mcpb packages with new identifiers and SHA256 hashes
         console.log('🔐 Calculating SHA256 hashes for mcpb packages...');
-        const mcpbPackages = serverJson.packages.filter(pkg => pkg.registryType === 'mcpb');
-
         const mcpbFiles = [
             { name: 'postman-mcp-server-minimal.mcpb', path: 'postman-mcp-server-minimal.mcpb' },
             { name: 'postman-mcp-server-full.mcpb', path: 'postman-mcp-server-full.mcpb' }
         ];
 
-        mcpbFiles.forEach(file => {
-            const mcpbPackage = mcpbPackages.find(pkg => pkg.identifier && pkg.identifier.includes(file.name));
+        const mcpbPackages = serverJson.packages.filter(pkg => pkg.registryType === 'mcpb');
+        mcpbFiles.forEach((file, index) => {
+            const mcpbPackage = mcpbPackages[index];
             if (mcpbPackage) {
                 // Update identifier URL with new version
                 mcpbPackage.identifier = `https://github.com/postmanlabs/postman-mcp-server/releases/download/v${newVersion}/${file.name}`;
@@ -131,6 +165,10 @@ try {
         });
     }
     writeFileSync('server.json', JSON.stringify(serverJson, null, 2) + '\n');
+
+    // Clean up mcpb files (they'll be rebuilt by GitHub Action)
+    console.log('🧹 Cleaning up local mcpb packages...');
+    execSync('rm -f postman-mcp-server-minimal.mcpb postman-mcp-server-full.mcpb', { stdio: 'inherit' });
 
     // Commit and tag
     console.log('📤 Committing and tagging...');

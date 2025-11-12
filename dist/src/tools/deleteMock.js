@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteMock';
 export const description = 'Deletes a mock server.\n- Resource: Mock server entity. This is destructive.\n- Ensure you are targeting the correct mock ID.\n';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });

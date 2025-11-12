@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateApiCollectionComment';
 export const description = "Updates a comment on an API's collection.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n";
 export const parameters = z.object({

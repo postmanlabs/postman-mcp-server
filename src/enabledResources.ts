@@ -145,6 +145,7 @@ const full = [
   'getDuplicateCollectionTaskStatus',
   'deleteApiCollectionComment',
   'deleteSpecFile',
+  'getEnabledTools',
   'runCollection',
 ] as const;
 
@@ -188,9 +189,10 @@ const minimal = [
   'duplicateCollection',
   'getStatusOfAnAsyncApiTask',
   'runCollection',
+  'getEnabledTools',
 ] as const;
 
-const excludedFromGeneration = ['createCollection', 'putCollection'] as const;
+const excludedFromGeneration = ['runCollection', 'getEnabledTools'] as const;
 
 export const enabledResources = {
   full,

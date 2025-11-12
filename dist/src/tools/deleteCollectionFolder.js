@@ -1,9 +1,5 @@
 import { z } from 'zod';
-import { McpError, ErrorCode, } from '@modelcontextprotocol/sdk/types.js';
-function asMcpError(error) {
-    const cause = error?.cause ?? String(error);
-    return new McpError(ErrorCode.InternalError, cause);
-}
+import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteCollectionFolder';
 export const description = 'Deletes a folder in a collection.';
 export const parameters = z.object({

@@ -1,18 +1,9 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
-import {
-  IsomorphicHeaders,
-  McpError,
-  ErrorCode,
-  CallToolResult,
-} from '@modelcontextprotocol/sdk/types.js';
+import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import newman from 'newman';
 import { TestTracker, OutputBuilder, buildNewmanOptions } from './utils/runner.js';
-
-function asMcpError(error: unknown): McpError {
-  const cause = (error as any)?.cause ?? String(error);
-  return new McpError(ErrorCode.InternalError, cause);
-}
+import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'runCollection';
 export const description =
@@ -55,7 +46,7 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
     const tracker = new TestTracker();
