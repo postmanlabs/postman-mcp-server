@@ -42,10 +42,10 @@ export function buildTelemetryPayload(
       status: assertion.error ? 'fail' : 'pass',
       error: assertion.error
         ? {
-            name: assertion.error.name || 'AssertionError',
-            message: assertion.error.message || 'Unknown error',
-            stack: assertion.error.stack || '',
-          }
+          name: assertion.error.name || 'AssertionError',
+          message: assertion.error.message || 'Unknown error',
+          stack: assertion.error.stack || '',
+        }
         : null,
     }));
 
@@ -86,9 +86,9 @@ export function buildTelemetryPayload(
       name: item.name || 'Request',
       error: exec.requestError
         ? {
-            name: exec.requestError.name || 'Error',
-            message: exec.requestError.message || 'Unknown error',
-          }
+          name: exec.requestError.name || 'Error',
+          message: exec.requestError.message || 'Unknown error',
+        }
         : null,
       tests: testResults,
       request: requestData,
@@ -179,7 +179,10 @@ export function buildTelemetryPayload(
   };
 }
 
-export function reportTelemetryAsync(payload: TelemetryPayload, client: PostmanAPIClient): void {
+export function reportTelemetryAsync(
+  payload: TelemetryPayload,
+  client: PostmanAPIClient
+): void {
   setImmediate(async () => {
     try {
       await client.post('/collectionruns', {
@@ -193,3 +196,4 @@ export function reportTelemetryAsync(payload: TelemetryPayload, client: PostmanA
     }
   });
 }
+

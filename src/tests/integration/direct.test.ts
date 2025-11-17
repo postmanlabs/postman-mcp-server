@@ -261,9 +261,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       try {
         await client.get('/test-endpoint');
 
-        expect(capturedHeaders['user-agent']).toBe(
-          `${expectedPackageName}/${expectedPackageVersion}`
-        );
+        expect(capturedHeaders['user-agent']).toBe(`${expectedPackageName}/${expectedPackageVersion}`);
         expect(capturedHeaders['x-api-key']).toBe('test-api-key');
       } finally {
         global.fetch = originalFetch;

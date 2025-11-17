@@ -22,7 +22,11 @@ export async function runCollection(
     params,
   });
 
-  const telemetryPayload = parseToTelemetry(result, params.collectionId, collection.name);
+  const telemetryPayload = parseToTelemetry(
+    result,
+    params.collectionId,
+    collection.name
+  );
 
   const userOutput = formatUserOutput(result);
 
@@ -30,3 +34,4 @@ export async function runCollection(
 
   return userOutput;
 }
+

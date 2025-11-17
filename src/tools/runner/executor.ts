@@ -1,10 +1,4 @@
-import {
-  ExecutionContext,
-  ExecutionResult,
-  TestStatistics,
-  TestResult,
-  CollectionRunParams,
-} from './models.js';
+import { ExecutionContext, ExecutionResult, TestStatistics, TestResult, CollectionRunParams } from './models.js';
 import newman from 'newman';
 
 export class OutputBuilder {
@@ -206,3 +200,4 @@ function appendSummaryToOutput(output: OutputBuilder, tracker: TestTracker, summ
     }
   }
 }
+
