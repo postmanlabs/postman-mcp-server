@@ -13,4 +13,3 @@ export function formatUserOutput(result: ExecutionResult): string {
   const durationSec = (result.durationMs / 1000).toFixed(2);
   return `${result.output}\n⏱️  Duration: ${durationSec}s`;
 }
-

@@ -95,4 +95,3 @@ export interface TelemetryPayload {
     };
   };
 }
-
