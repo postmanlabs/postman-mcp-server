@@ -146,7 +146,6 @@ const full = [
   'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
-  'runCollection',
 ] as const;
 
 const minimal = [
