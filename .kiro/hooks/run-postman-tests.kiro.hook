@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Run Postman Tests",
+  "description": "Manually trigger Postman collection test run with comprehensive results",
+  "version": "1",
+  "when": {
+    "type": "manual"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run the Postman collection tests following Pattern 2 from the steering guide:\n\n1. Read .postman.json configuration\n2. Verify collection and environment exist\n3. Confirm with me before running tests\n4. Execute runCollection with environment variables\n5. Display comprehensive test results:\n   - Overall statistics (total, passed, failed, success rate)\n   - Breakdown by endpoint/request\n   - Failed test details with error messages\n   - Performance metrics (response times)\n6. If any tests fail, analyze failures and suggest specific fixes\n\nIf .postman.json doesn't exist, inform me that Postman needs to be configured first."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Setup Postman Workspace",
+  "description": "Manually trigger Postman workspace and collection setup for the project",
+  "version": "1",
+  "when": {
+    "type": "manual"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Set up Postman workspace and collection for this project following Pattern 1 from the steering guide:\n\n**STEP 0: Check for Existing Resources (REQUIRED)**\n1. Check if .postman.json exists\n2. If exists, verify resources still exist and present options\n3. Search my workspaces for similar names\n4. Search collections in workspaces\n5. Present all findings and ask for confirmation\n\n**STEP 1: Analyze API**\n- Look at the API source code and analyze endpoints and structure\n- If not found, ask me about the API structure\n\n**STEP 2-3: Create/Use Workspace and Collection**\n- Based on my choice from STEP 0\n- Validate collection against Postman Collection Format v2.1.0 schema\n- Include comprehensive test scripts for all endpoints\n\n**STEP 4: Create Environment**\n- Set up environment variables following best practices:\n  - API_URL, API_KEY (secret type)\n  - Add descriptions for all variables\n  - Use proper naming conventions (UPPERCASE with underscores)\n\n**STEP 5: Save Configuration**\n- Write all IDs to .postman.json\n- Use version 0.1 format for multi-workspace support\n- Include metadata and timestamps\n\n**STEP 6: Offer to Run Tests**\n- Ask if I want to run the collection tests immediately\n\nNever assume - always ask for confirmation at each step!"
+  }
+}

@@ -1,8 +1,8 @@
 {
   "enabled": true,
   "name": "API Postman Testing",
-  "description": "Monitors API source code changes across multiple programming languages and automatically runs Postman collection tests to validate functionality",
-  "version": "1",
+  "description": "Automatically runs Postman collection tests when source code files are modified (debounced to prevent excessive runs)",
+  "version": "3",
   "when": {
     "type": "fileEdited",
     "patterns": [
@@ -30,16 +30,22 @@
       "composer.json",
       "Gemfile",
       "build.sbt",
+      ".postman.json",
       "openapi.yaml",
       "openapi.yml",
       "swagger.yaml",
       "swagger.yml",
       "api.yaml",
-      "api.yml"
-    ]
+      "api.yml",
+      "postman_collection.json"
+    ],
+    "debounce": {
+      "wait": 5000,
+      "maxWait": 30000
+    }
   },
   "then": {
     "type": "askAgent",
-    "prompt": "API source code or configuration has been modified. Please retrieve the contents of the .postman.json file. If the file does not exist or is empty, create a Postman collection for the API. If it exists, get the collection ID and run the collection, showing me the results and propose fixes for any errors found."
+    "prompt": "The file {{filePath}} has been modified. Follow the Postman steering guide workflow:\n\n1. Read .postman.json to get collection and environment IDs\n2. If .postman.json doesn't exist, inform me that Postman is not configured yet\n3. If it exists, verify the collection and environment still exist\n4. Run the collection tests using runCollection with the environment\n5. Display comprehensive test results with pass/fail breakdown\n6. If any tests fail, analyze the failures and suggest specific fixes\n\nDo NOT create new collections automatically - only run tests if already configured."
   }
 }
