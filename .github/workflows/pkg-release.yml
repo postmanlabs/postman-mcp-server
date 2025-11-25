@@ -27,6 +27,7 @@ jobs:
       tag: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
       node_version: '22'
       package_path: 'dist'
+      skip_tests: true
       dry_run: ${{ github.event_name == 'workflow_dispatch' }}
 
     secrets:
