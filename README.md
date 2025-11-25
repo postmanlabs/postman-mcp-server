@@ -6,6 +6,7 @@ Postman supports the following tool configurations:
 
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations This offers faster performance and simplifies use for those who only need basic Postman operations. Ideal for users who want to modify a single Postman elements, such as collections, workspaces, or environments.
 * **Full** — Includes all available Postman API tools (100+ tools). This configuration is ideal for users who engage in advanced collaboration and Postman's Enterprise features.
+* **Code** — Optimized for code generation workflows with tools specifically designed to extract API specifications, collection structures, and generate language-specific code from Postman collections.
 
 For a complete list of the Postman MCP Server's tools, see the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7). This collection offers both the remote [full](https://www.postman.com/postman/postman-public-workspace/mcp-request/6821a76b17ccb90a86df48d3) and [minimal](https://www.postman.com/postman/postman-public-workspace/mcp-request/689e1c635be722a98b723238) servers, and the [local server](https://www.postman.com/postman/postman-public-workspace/mcp-request/6866a655b36c67cc435b5033).
 
@@ -134,6 +135,7 @@ The local server supports the following tool configurations:
 
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 * **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
+* **Code** — Optimized for code generation workflows. Use the `--code` flag to enable this configuration.
 
 **Note:** Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
 
@@ -159,6 +161,7 @@ You can manually integrate your MCP server with Cursor or VS Code to use it with
             "args": [
                 "@postman/postman-mcp-server",
                 "--full" // (optional) Use this flag to enable full mode.
+                "--code" // (optional) Use this flag to enable code generation mode.
                 "--region us" // (optional) Use this flag to specify the Postman API region (us or eu). Defaults to us.
             ],
             "env": {
@@ -188,8 +191,9 @@ By default, the server uses **Full** mode. To access **Minimal** mode, remove th
 
 To integrate the MCP server with Claude, check the latest [Postman MCP Server release](https://github.com/postmanlabs/postman-mcp-server/releases) and get the `.mcpb` file.
 
-* **Minimal** - `postman-api-mcp-minimal.mcpb`
-* **Full** - `postman-api-mcp-full.mcpb`
+* **Minimal** - `postman-mcp-server-minimal.mcpb`
+* **Full** - `postman-mcp-server-full.mcpb`
+* **Code** - `postman-mcp-server-code.mcpb`
 
 For more information, see the [Claude Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions) documentation.
 
@@ -207,6 +211,12 @@ For **Full** mode:
 
 ```bash
 claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mcp-server@latest --full 
+```
+
+For **Code** mode:
+
+```bash
+claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mcp-server@latest --code 
 ```
 
 ### Use as a Gemini CLI extension
