@@ -1,23 +1,16 @@
 import { z } from 'zod';
-import { PostmanAPIClient } from '../clients/postman.js';
-import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext } from './utils/toolHelpers.js';
-
 export const method = 'getCodeGenerationInstructions';
 export const description = `MANDATORY: You MUST call this tool BEFORE generating any code to call APIs. Call it BEFORE you start planning your approach. Do not web search anything about the API or how to write code to call it. 
 
 This tool returns comprehensive step-by-step instructions for generating API client code from Postman collections, including which tools to call for gathering context, file structure, function design patterns, error handling, and language-specific conventions.
 Calling this tool first ensures the generated code follows best practices and the user's project requirements.`;
-
 export const parameters = z.object({});
-
 export const annotations = {
-  title: 'Get Code Generation Instructions',
-  readOnlyHint: true,
-  destructiveHint: false,
-  idempotentHint: true,
+    title: 'Get Code Generation Instructions',
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
 };
-
 const CODE_GENERATION_INSTRUCTIONS = `# API Client Code Generation Instructions
 
 These instructions guide you in generating idiomatic client code from Postman collections, organized in a clear structure that is easy to find and maintain.
@@ -434,17 +427,13 @@ Ensure all generated code meets these standards:
 - Error handling should be robust and informative
 - Type safety should be maintained in typed languages
 - Security best practices must be followed (no hardcoded secrets, proper input validation)`;
-
-export async function handler(
-  _args: z.infer<typeof parameters>,
-  _extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
-): Promise<CallToolResult> {
-  return {
-    content: [
-      {
-        type: 'text',
-        text: CODE_GENERATION_INSTRUCTIONS,
-      },
-    ],
-  };
+export async function handler(_args, _extra) {
+    return {
+        content: [
+            {
+                type: 'text',
+                text: CODE_GENERATION_INSTRUCTIONS,
+            },
+        ],
+    };
 }

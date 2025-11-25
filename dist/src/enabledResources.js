@@ -35,6 +35,7 @@ const full = [
     'getCollectionResponse',
     'updateCollectionResponse',
     'transferCollectionResponses',
+    'runCollection',
     'createCollectionComment',
     'deleteCollectionComment',
     'getCollectionComments',
@@ -110,7 +111,7 @@ const full = [
     'deleteApiCollectionComment',
     'deleteSpecFile',
     'getEnabledTools',
-    'runCollection',
+    'searchPostmanElements',
 ];
 const minimal = [
     'createCollection',
@@ -154,9 +155,28 @@ const minimal = [
     'runCollection',
     'getEnabledTools',
 ];
-const excludedFromGeneration = ['runCollection', 'getEnabledTools'];
+const code = [
+    'getCodeGenerationInstructions',
+    'getWorkspace',
+    'getWorkspaces',
+    'searchPostmanElements',
+    'getCollectionRequest',
+    'getCollectionResponse',
+    'getCollectionFolder',
+    'getAuthenticatedUser',
+    'getCollectionMap',
+    'getEnvironment',
+    'getEnvironments',
+];
+const excludedFromGeneration = [
+    'runCollection',
+    'getEnabledTools',
+    'getCodeGenerationInstructions',
+    'getCollectionMap',
+];
 export const enabledResources = {
     full,
     minimal,
+    code,
     excludedFromGeneration,
 };
