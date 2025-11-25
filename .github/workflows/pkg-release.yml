@@ -7,6 +7,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+
   workflow_dispatch:
     inputs:
       tag:
@@ -14,16 +15,19 @@ on:
         required: true
         type: string
 
-# required for OIDC-based NPM publish
 permissions:
   contents: read
-  id-token: write
+  id-token: write       # required for OIDC-based publishing
 
 jobs:
   call-npm-release:
     uses: postmanlabs/gh-security-scan-workflow/.github/workflows/security-npm-publish.yml@main
+
     with:
-      tag: ${{ inputs.tag }}
+      tag: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
       node_version: '22'
+      package_path: 'dist'
+      dry_run: ${{ github.event_name == 'workflow_dispatch' }}
+
     secrets:
-      POSTMAN_NPM_TOKEN: ${{ secrets.POSTMAN_NPM_TOKEN }}
+      POSTMAN_NPM_TOKEN: ${{ secrets.POSTMAN_NPM_TOKEN }} # read-only granular token
