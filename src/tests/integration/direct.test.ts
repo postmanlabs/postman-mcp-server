@@ -31,7 +31,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
     ) as Record<string, string>;
     cleanEnv.NODE_ENV = 'test';
 
-    serverProcess = spawn('node', ['dist/src/index.js'], {
+    serverProcess = spawn('node', ['dist/generated/stdio.js'], {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: cleanEnv,
     });
@@ -52,7 +52,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
     const transport = new StdioClientTransport({
       command: 'node',
-      args: ['dist/src/index.js', '--full'],
+      args: ['dist/generated/stdio.js', '--full'],
       env: cleanEnv,
     });
 
@@ -110,7 +110,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
       const transport = new StdioClientTransport({
         command: 'node',
-        args: ['dist/src/index.js', '--full'],
+        args: ['dist/generated/stdio.js', '--full'],
         env: {
           ...process.env,
           NODE_ENV: 'test',
@@ -176,7 +176,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
       const transport = new StdioClientTransport({
         command: 'node',
-        args: ['dist/src/index.js', '--full'],
+        args: ['dist/generated/stdio.js', '--full'],
         env: {
           ...process.env,
           NODE_ENV: 'test',
@@ -261,9 +261,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       try {
         await client.get('/test-endpoint');
 
-        expect(capturedHeaders['user-agent']).toBe(
-          `${expectedPackageName}/${expectedPackageVersion}`
-        );
+        expect(capturedHeaders['user-agent']).toBe(`${expectedPackageName}/${expectedPackageVersion}`);
         expect(capturedHeaders['x-api-key']).toBe('test-api-key');
       } finally {
         global.fetch = originalFetch;

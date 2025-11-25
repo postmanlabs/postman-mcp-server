@@ -97,6 +97,7 @@ let clientInfo = undefined;
 async function run() {
     const args = process.argv.slice(2);
     const useFull = args.includes('--full');
+    const useCode = args.includes('--code');
     const regionIndex = args.findIndex((arg) => arg === '--region');
     if (regionIndex !== -1 && regionIndex + 1 < args.length) {
         const region = args[regionIndex + 1];
@@ -126,7 +127,8 @@ async function run() {
     });
     const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
     const minimalTools = allGeneratedTools.filter((t) => enabledResources.minimal.includes(t.method));
-    const tools = useFull ? fullTools : minimalTools;
+    const codeTools = allGeneratedTools.filter((t) => enabledResources.code.includes(t.method));
+    const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
     const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION });
     server.onerror = (error) => {
         const msg = String(error?.message || error);
@@ -139,7 +141,7 @@ async function run() {
     });
     const client = new PostmanAPIClient(apiKey);
     const serverContext = {
-        serverType: useFull ? 'full' : 'minimal',
+        serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
         availableTools: tools.map((t) => t.method),
     };
     log('info', 'Registering tools with McpServer');
@@ -182,7 +184,8 @@ async function run() {
         }
     };
     await server.connect(transport);
-    logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`);
+    const toolsetName = useCode ? 'code' : useFull ? 'full' : 'minimal';
+    logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`);
 }
 run().catch((error) => {
     log('error', 'Unhandled error during server execution', {

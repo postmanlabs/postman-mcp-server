@@ -15,6 +15,9 @@ export const parameters = z.object({
             .describe('If true, the mock server is set private. By default, mock servers are public and can receive requests from anyone and anywhere.')
             .default(false),
         versionTag: z.string().describe("The API's version tag ID.").optional(),
+        collection: z
+            .string()
+            .describe("The associated collection's unique ID. This is a mandatory parameter."),
         config: z
             .object({
             serverResponseId: z
@@ -25,9 +28,6 @@ export const parameters = z.object({
         })
             .describe("The mock server's configuration settings.")
             .optional(),
-        collection: z
-            .string()
-            .describe("The associated collection's unique ID. This is a mandatory parameter."),
     })
         .optional(),
 });
