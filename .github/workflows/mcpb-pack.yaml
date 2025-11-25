@@ -29,6 +29,8 @@ jobs:
           mv manifest-minimal.tmp.json manifest-minimal.json
           jq --arg v "$pkg_version" '.version = $v' manifest-full.json > manifest-full.tmp.json
           mv manifest-full.tmp.json manifest-full.json
+          jq --arg v "$pkg_version" '.version = $v' manifest-code.json > manifest-code.tmp.json
+          mv manifest-code.tmp.json manifest-code.json
 
       - name: Build project
         run: npm run build
@@ -53,9 +55,15 @@ jobs:
           mcpb pack
           mv "${current_dir}.mcpb" "${current_dir}-full.mcpb"
           
+          # Package code version
+          cp manifest-code.json manifest.json
+          mcpb pack
+          mv "${current_dir}.mcpb" "${current_dir}-code.mcpb"
+          
           # Set environment variables
           echo "MCPB_MINIMAL_FILENAME=${current_dir}-minimal.mcpb" >> $GITHUB_ENV
           echo "MCPB_FULL_FILENAME=${current_dir}-full.mcpb" >> $GITHUB_ENV
+          echo "MCPB_CODE_FILENAME=${current_dir}-code.mcpb" >> $GITHUB_ENV
 
       - name: Upload minimal release asset
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
@@ -72,6 +80,15 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.MCPB_FULL_FILENAME }}
           asset_name: ${{ env.MCPB_FULL_FILENAME }}
+          tag: ${{ github.ref }}
+          overwrite: true
+
+      - name: Upload code release asset
+        uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.MCPB_CODE_FILENAME }}
+          asset_name: ${{ env.MCPB_CODE_FILENAME }}
           tag: ${{ github.ref }}
           overwrite: true
 
