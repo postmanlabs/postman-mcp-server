@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   call-npm-release:
-    uses: postmanlabs/gh-security-scan-workflow/.github/workflows/security-npm-publish.yml@main
+    uses: postmanlabs/gh-security-scan-workflow/.github/workflow/security-npm-publish.yml@main
 
     with:
       tag: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
