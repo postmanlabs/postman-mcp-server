@@ -27,21 +27,21 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.18.1",
-    "dotenv": "^17.2.2",
-    "newman": "^6.2.1",
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "dotenv": "^17.2.3",
+    "newman": "^6.2.0",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
+    "@eslint/js": "^9.39.1",
     "@types/node": "^24",
-    "eslint": "^9.35.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-unused-imports": "^4.2.0",
+    "eslint-plugin-unused-imports": "^4.3.0",
     "prettier": "^3.6.2",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.0",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.0",
+    "vitest": "^4.0.13"
   },
   "engines": {
     "node": ">=20.0.0"
