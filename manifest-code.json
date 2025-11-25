@@ -3,8 +3,8 @@
   "version": "2.5.0",
   "name": "postman-mcp-server-code",
   "display_name": "Postman MCP Server (Code)",
-  "description": "Connect your AI to your APIs on Postman for code generation.",
-  "long_description": "This extension enables AI assistants to interact with the Postman API through Model Context Protocol (MCP). This code version is specifically optimized for code generation workflows, providing tools to extract API specifications, collection structures, and generate language-specific code from Postman collections. All secured with your Postman API key.",
+  "description": "Search for APIs and generate client code from Postman collections.",
+  "long_description": "Search public and internal API definitions and generate high-quality, well-organized client code for making API requests. Provide API context to AI agents for any task. All secured with your Postman API key.",
   "author": {
     "name": "Postman, Inc.",
     "email": "help@postman.com",
