@@ -65,6 +65,7 @@ function logBoth(
 
 type FullResourceMethod = (typeof enabledResources.full)[number];
 type MinimalResourceMethod = (typeof enabledResources.minimal)[number];
+type CodeResourceMethod = (typeof enabledResources.code)[number];
 type EnabledResourceMethod = FullResourceMethod;
 
 interface ToolModule {
@@ -156,6 +157,7 @@ let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefine
 async function run() {
   const args = process.argv.slice(2);
   const useFull = args.includes('--full');
+  const useCode = args.includes('--code');
 
   const regionIndex = args.findIndex((arg) => arg === '--region');
   if (regionIndex !== -1 && regionIndex + 1 < args.length) {
@@ -191,7 +193,10 @@ async function run() {
   const minimalTools = allGeneratedTools.filter((t) =>
     enabledResources.minimal.includes(t.method as MinimalResourceMethod)
   );
-  const tools = useFull ? fullTools : minimalTools;
+  const codeTools = allGeneratedTools.filter((t) =>
+    enabledResources.code.includes(t.method as CodeResourceMethod)
+  );
+  const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
 
   // Create McpServer instance
   const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION });
@@ -213,7 +218,7 @@ async function run() {
 
   // Create server context that will be passed to all tools
   const serverContext: ServerContext = {
-    serverType: useFull ? 'full' : 'minimal',
+    serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
     availableTools: tools.map((t) => t.method),
   };
 
@@ -271,10 +276,11 @@ async function run() {
     }
   };
   await server.connect(transport);
+  const toolsetName = useCode ? 'code' : useFull ? 'full' : 'minimal';
   logBoth(
     server,
     'info',
-    `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`
+    `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`
   );
 }
 

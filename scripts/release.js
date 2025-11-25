@@ -91,6 +91,7 @@ try {
 
     updateManifest('manifest-full.json');
     updateManifest('manifest-minimal.json');
+    updateManifest('manifest-code.json');
 
     // Build mcpb packages locally to calculate SHA256 hashes
     console.log('📦 Building mcpb packages for SHA256 calculation...');
@@ -120,6 +121,12 @@ try {
     execSync('mcpb pack', { stdio: 'inherit' });
     execSync(`mv "${currentDir}.mcpb" "postman-mcp-server-full.mcpb"`, { stdio: 'inherit' });
 
+    // Package code version
+    console.log('📦 Packaging code version...');
+    execSync('cp manifest-code.json manifest.json', { stdio: 'inherit' });
+    execSync('mcpb pack', { stdio: 'inherit' });
+    execSync(`mv "${currentDir}.mcpb" "postman-mcp-server-code.mcpb"`, { stdio: 'inherit' });
+
     // Restore manifest.json (optional, or delete it)
     execSync('rm manifest.json', { stdio: 'inherit' });
 
@@ -143,7 +150,8 @@ try {
         console.log('🔐 Calculating SHA256 hashes for mcpb packages...');
         const mcpbFiles = [
             { name: 'postman-mcp-server-minimal.mcpb', path: 'postman-mcp-server-minimal.mcpb' },
-            { name: 'postman-mcp-server-full.mcpb', path: 'postman-mcp-server-full.mcpb' }
+            { name: 'postman-mcp-server-full.mcpb', path: 'postman-mcp-server-full.mcpb' },
+            { name: 'postman-mcp-server-code.mcpb', path: 'postman-mcp-server-code.mcpb' }
         ];
 
         const mcpbPackages = serverJson.packages.filter(pkg => pkg.registryType === 'mcpb');
@@ -168,7 +176,7 @@ try {
 
     // Clean up mcpb files (they'll be rebuilt by GitHub Action)
     console.log('🧹 Cleaning up local mcpb packages...');
-    execSync('rm -f postman-mcp-server-minimal.mcpb postman-mcp-server-full.mcpb', { stdio: 'inherit' });
+    execSync('rm -f postman-mcp-server-minimal.mcpb postman-mcp-server-full.mcpb postman-mcp-server-code.mcpb', { stdio: 'inherit' });
 
     // Commit and tag
     console.log('📤 Committing and tagging...');
