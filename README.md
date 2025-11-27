@@ -16,6 +16,7 @@ Postman also offers servers as an [npm package](https://www.npmjs.com/package/@p
 
 ### Use Cases
 
+* **API Testing** - Continuously test your API using your Postman collection.
 * **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
 * **Collection management** - Create and [tag](https://learning.postman.com/docs/collections/use-collections/collaborate-with-collections/#tag-a-collection) collections, update collection and request [documentation](https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/), add [comments](https://learning.postman.com/docs/collaborating-in-postman/comments/), or perform actions across multiple collections without leaving your editor.
 * **Workspace and environment management** - Create [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/overview/) and [environments](https://learning.postman.com/docs/sending-requests/variables/managing-environments/), plus manage your environment variables.
