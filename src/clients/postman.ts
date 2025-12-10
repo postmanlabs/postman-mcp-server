@@ -1,5 +1,6 @@
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { USER_AGENT } from '../constants.js';
+import type { ServerContext } from '../tools/utils/toolHelpers.js';
 
 export enum ContentType {
   Json = 'application/json',
@@ -36,14 +37,17 @@ export interface IPostmanAPIClient {
 export class PostmanAPIClient implements IPostmanAPIClient {
   private readonly baseUrl: string;
   private readonly apiKey?: string;
+  private readonly serverContext?: ServerContext;
   private static instance: PostmanAPIClient | null = null;
 
   constructor(
     apiKey?: string,
-    baseUrl: string = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com'
+    baseUrl: string = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com',
+    serverContext?: ServerContext
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
+    this.serverContext = serverContext;
   }
 
   /**
@@ -109,7 +113,11 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     );
     const userAgentValue = userAgentKey ? options.headers?.[userAgentKey] : undefined;
 
-    const userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
+    // Build user agent with toolset information if available
+    let userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
+    if (this.serverContext?.serverType) {
+      userAgentHeader = `${userAgentHeader} (toolset: ${this.serverContext.serverType})`;
+    }
 
     const disallowed = new Set([
       'content-length',

@@ -213,14 +213,14 @@ async function run() {
     process.exit(0);
   });
 
-  // Create a client instance with the API key for STDIO mode
-  const client = new PostmanAPIClient(apiKey);
-
   // Create server context that will be passed to all tools
   const serverContext: ServerContext = {
     serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
     availableTools: tools.map((t) => t.method),
   };
+
+  // Create a client instance with the API key and server context for STDIO mode
+  const client = new PostmanAPIClient(apiKey, undefined, serverContext);
 
   log('info', 'Registering tools with McpServer');
 

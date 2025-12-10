@@ -8,10 +8,12 @@ export var ContentType;
 export class PostmanAPIClient {
     baseUrl;
     apiKey;
+    serverContext;
     static instance = null;
-    constructor(apiKey, baseUrl = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com') {
+    constructor(apiKey, baseUrl = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com', serverContext) {
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
+        this.serverContext = serverContext;
     }
     static getInstance(apiKey, baseUrl) {
         if (!PostmanAPIClient.instance) {
@@ -45,7 +47,10 @@ export class PostmanAPIClient {
         const contentType = options.contentType || ContentType.Json;
         const userAgentKey = Object.keys(options.headers ?? {}).find((key) => key.toLowerCase() === 'user-agent');
         const userAgentValue = userAgentKey ? options.headers?.[userAgentKey] : undefined;
-        const userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
+        let userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
+        if (this.serverContext?.serverType) {
+            userAgentHeader = `${userAgentHeader} (toolset: ${this.serverContext.serverType})`;
+        }
         const disallowed = new Set([
             'content-length',
             'transfer-encoding',
