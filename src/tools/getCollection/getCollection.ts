@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { PostmanAPIClient } from '../clients/postman.js';
+import { PostmanAPIClient } from '../../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import { ServerContext, asMcpError, McpError } from '../utils/toolHelpers.js';
 
 export const method = 'getCollection';
 export const description =

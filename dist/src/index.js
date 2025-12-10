@@ -139,11 +139,11 @@ async function run() {
         await server.close();
         process.exit(0);
     });
-    const client = new PostmanAPIClient(apiKey);
     const serverContext = {
         serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
         availableTools: tools.map((t) => t.method),
     };
+    const client = new PostmanAPIClient(apiKey, undefined, serverContext);
     log('info', 'Registering tools with McpServer');
     for (const tool of tools) {
         server.tool(tool.method, tool.description, tool.parameters.shape, tool.annotations || {}, async (args, extra) => {
