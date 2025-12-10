@@ -707,8 +707,23 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(CollectionDataFactory.validateResponse(getResult)).toBe(true);
       expect((getResult.content as any)[0].text).toContain(collectionData.info.name);
 
-      const collection = CollectionDataFactory.extractCollectionFromResponse(getResult);
+      const getFullResult = await client.callTool(
+        {
+          name: 'getCollection',
+          arguments: {
+            collectionId,
+            model: 'full',
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(getFullResult)).toBe(true);
+
+      const collection = CollectionDataFactory.extractCollectionFromResponse(getFullResult);
       expect(collection).toBeDefined();
+      expect(collection.item).toBeDefined();
+      expect(Array.isArray(collection.item)).toBe(true);
 
       const updatedName = '[Integration Test] Updated Collection';
       const updatedCollection = {
@@ -716,6 +731,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
         info: {
           ...collection.info,
           name: updatedName,
+          schema: collection.info.schema || 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
         },
       };
 
@@ -731,6 +747,8 @@ describe('Postman MCP - Direct Integration Tests', () => {
         { timeout: 100000 }
       );
       expect(CollectionDataFactory.validateResponse(updateResult)).toBe(true);
+      expect((updateResult.content as any)[0].text).toContain(updatedName);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const verifyUpdateResult = await client.callTool(
         {
