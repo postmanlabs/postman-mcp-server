@@ -731,7 +731,9 @@ describe('Postman MCP - Direct Integration Tests', () => {
         info: {
           ...collection.info,
           name: updatedName,
-          schema: collection.info.schema || 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+          schema:
+            collection.info.schema ||
+            'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
         },
       };
 
