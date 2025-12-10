@@ -103,6 +103,7 @@ const full = [
     'getStatusOfAnAsyncApiTask',
     'getAuthenticatedUser',
     'getTaggedEntities',
+    'getCodeGenerationInstructions',
     'transferCollectionFolders',
     'transferCollectionResponses',
     'transferCollectionResponses',
@@ -173,10 +174,18 @@ const excludedFromGeneration = [
     'getEnabledTools',
     'getCodeGenerationInstructions',
     'getCollectionMap',
+    'getCollection',
 ];
+const subtools = {
+    getCollection: {
+        orchestrator: 'getCollection',
+        subtools: ['getCollection', 'getCollectionMap'],
+    },
+};
 export const enabledResources = {
     full,
     minimal,
     code,
     excludedFromGeneration,
+    subtools,
 };
