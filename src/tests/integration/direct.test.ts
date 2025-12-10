@@ -13,6 +13,7 @@ import {
   TestCollection,
 } from './factories/dataFactory.js';
 import { PostmanAPIClient } from '../../clients/postman.js';
+import type { ServerContext } from '../../tools/utils/toolHelpers.js';
 import packageJson from '../../../package.json' assert { type: 'json' };
 
 describe('Postman MCP - Direct Integration Tests', () => {
@@ -263,6 +264,144 @@ describe('Postman MCP - Direct Integration Tests', () => {
 
         expect(capturedHeaders['user-agent']).toBe(
           `${expectedPackageName}/${expectedPackageVersion}`
+        );
+        expect(capturedHeaders['x-api-key']).toBe('test-api-key');
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should include toolset information in user-agent when serverContext is provided (full)', async () => {
+      const serverContext: ServerContext = {
+        serverType: 'full',
+        availableTools: ['getCollection', 'createCollection'],
+      };
+      const client = new PostmanAPIClient('test-api-key', undefined, serverContext);
+
+      const originalFetch = global.fetch;
+      let capturedHeaders: Record<string, string> = {};
+
+      global.fetch = vi.fn().mockImplementation(async (_url: string, options: any) => {
+        capturedHeaders = options.headers || {};
+        return {
+          ok: true,
+          status: 200,
+          headers: {
+            get: vi.fn().mockReturnValue('application/json'),
+          },
+          json: async () => ({ test: 'data' }),
+        } as any;
+      });
+
+      try {
+        await client.get('/test-endpoint');
+
+        expect(capturedHeaders['user-agent']).toBe(
+          `${expectedPackageName}/${expectedPackageVersion} (toolset: full)`
+        );
+        expect(capturedHeaders['x-api-key']).toBe('test-api-key');
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should include toolset information in user-agent when serverContext is provided (minimal)', async () => {
+      const serverContext: ServerContext = {
+        serverType: 'minimal',
+        availableTools: ['getCollection'],
+      };
+      const client = new PostmanAPIClient('test-api-key', undefined, serverContext);
+
+      const originalFetch = global.fetch;
+      let capturedHeaders: Record<string, string> = {};
+
+      global.fetch = vi.fn().mockImplementation(async (_url: string, options: any) => {
+        capturedHeaders = options.headers || {};
+        return {
+          ok: true,
+          status: 200,
+          headers: {
+            get: vi.fn().mockReturnValue('application/json'),
+          },
+          json: async () => ({ test: 'data' }),
+        } as any;
+      });
+
+      try {
+        await client.get('/test-endpoint');
+
+        expect(capturedHeaders['user-agent']).toBe(
+          `${expectedPackageName}/${expectedPackageVersion} (toolset: minimal)`
+        );
+        expect(capturedHeaders['x-api-key']).toBe('test-api-key');
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should include toolset information in user-agent when serverContext is provided (code)', async () => {
+      const serverContext: ServerContext = {
+        serverType: 'code',
+        availableTools: ['getCollection'],
+      };
+      const client = new PostmanAPIClient('test-api-key', undefined, serverContext);
+
+      const originalFetch = global.fetch;
+      let capturedHeaders: Record<string, string> = {};
+
+      global.fetch = vi.fn().mockImplementation(async (_url: string, options: any) => {
+        capturedHeaders = options.headers || {};
+        return {
+          ok: true,
+          status: 200,
+          headers: {
+            get: vi.fn().mockReturnValue('application/json'),
+          },
+          json: async () => ({ test: 'data' }),
+        } as any;
+      });
+
+      try {
+        await client.get('/test-endpoint');
+
+        expect(capturedHeaders['user-agent']).toBe(
+          `${expectedPackageName}/${expectedPackageVersion} (toolset: code)`
+        );
+        expect(capturedHeaders['x-api-key']).toBe('test-api-key');
+      } finally {
+        global.fetch = originalFetch;
+      }
+    });
+
+    it('should combine custom user-agent header with toolset information', async () => {
+      const serverContext: ServerContext = {
+        serverType: 'full',
+        availableTools: ['getCollection', 'createCollection'],
+      };
+      const client = new PostmanAPIClient('test-api-key', undefined, serverContext);
+
+      const originalFetch = global.fetch;
+      let capturedHeaders: Record<string, string> = {};
+
+      global.fetch = vi.fn().mockImplementation(async (_url: string, options: any) => {
+        capturedHeaders = options.headers || {};
+        return {
+          ok: true,
+          status: 200,
+          headers: {
+            get: vi.fn().mockReturnValue('application/json'),
+          },
+          json: async () => ({ test: 'data' }),
+        } as any;
+      });
+
+      try {
+        await client.get('/test-endpoint', {
+          headers: { 'user-agent': 'custom-client/1.0.0' },
+        });
+
+        expect(capturedHeaders['user-agent']).toBe(
+          `custom-client/1.0.0/${expectedPackageName}/${expectedPackageVersion} (toolset: full)`
         );
         expect(capturedHeaders['x-api-key']).toBe('test-api-key');
       } finally {
@@ -598,6 +737,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
           name: 'getCollection',
           arguments: {
             collectionId,
+            model: 'minimal',
           },
         },
         undefined,
