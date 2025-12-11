@@ -207,7 +207,7 @@ const code = [
   'getCollectionResponse',
   'getCollectionFolder',
   'getAuthenticatedUser',
-  'getCollectionMap',
+  'getCollection',
   'getEnvironment',
   'getEnvironments',
 ] as const;
