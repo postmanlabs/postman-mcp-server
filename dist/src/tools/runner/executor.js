@@ -60,15 +60,46 @@ export class TestTracker {
         this.totalFailed = 0;
     }
 }
+export function resolveFolderName(folderId, collection) {
+    if (!folderId)
+        return undefined;
+    const items = collection?.item;
+    if (!Array.isArray(items))
+        return undefined;
+    function findFolder(items, targetId) {
+        for (const item of items) {
+            const itemId = item.id || (item._postman_id ? item._postman_id : null);
+            const itemUid = item.uid;
+            const idMatches = itemId === targetId ||
+                itemUid === targetId ||
+                (itemId && targetId.endsWith(itemId)) ||
+                (itemUid && targetId.endsWith(itemUid));
+            if (idMatches && Array.isArray(item.item)) {
+                return item.name;
+            }
+            if (Array.isArray(item.item)) {
+                const found = findFolder(item.item, targetId);
+                if (found)
+                    return found;
+            }
+        }
+        return undefined;
+    }
+    const foundName = findFolder(items, folderId);
+    if (foundName)
+        return foundName;
+    return folderId;
+}
 export function buildNewmanOptions(params, collection, environment) {
+    const folderName = resolveFolderName(params.folderId, collection);
     return {
         collection: collection,
         environment: environment,
+        folder: folderName,
         iterationCount: params.iterationCount || 1,
         timeout: params.requestTimeout || 60000,
         timeoutRequest: params.requestTimeout || 60000,
         timeoutScript: params.scriptTimeout || 5000,
-        delayRequest: 1000,
         ignoreRedirects: false,
         insecure: false,
         bail: params.stopOnFailure ? ['failure'] : false,
@@ -87,9 +118,17 @@ export async function executeCollection(context) {
     const tracker = new TestTracker();
     const output = new OutputBuilder();
     output.add(`🚀 Starting collection: ${context.collection.name}`);
-    if (context.environment) {
-        output.add(`🌍 Using environment: ${context.environment.name}\n`);
+    if (context.params.folderId) {
+        const resolvedName = resolveFolderName(context.params.folderId, context.collection.json);
+        output.add(`📁 Filtering to folder: ${resolvedName || context.params.folderId}`);
+        if (resolvedName && resolvedName !== context.params.folderId) {
+            output.add(`   (resolved from ID: ${context.params.folderId})`);
+        }
     }
+    if (context.environment) {
+        output.add(`🌍 Using environment: ${context.environment.name}`);
+    }
+    output.add('');
     const newmanOptions = buildNewmanOptions(context.params, context.collection.json, context.environment?.json);
     const startTime = Date.now();
     const summary = await runNewman(newmanOptions, tracker, output);

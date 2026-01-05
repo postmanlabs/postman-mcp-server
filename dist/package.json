@@ -29,7 +29,7 @@
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.22.0",
         "dotenv": "^17.2.3",
-        "newman": "^6.2.0",
+        "newman": "^6.2.1",
         "uuid": "^13.0.0"
     },
     "devDependencies": {

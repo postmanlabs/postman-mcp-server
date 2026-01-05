@@ -6,7 +6,7 @@ import { runCollection } from './runner/index.js';
 
 export const method = 'runCollection';
 export const description =
-  'Runs a Postman collection by ID with detailed test results and execution statistics. Supports optional environment for variable substitution. Note: Advanced parameters like custom delays and other runtime options are not yet available.';
+  'Runs a Postman collection by ID with detailed test results and execution statistics. Supports optional environment for variable substitution and optional folder filtering to run only requests within a specific folder. Note: Advanced parameters like custom delays and other runtime options are not yet available.';
 
 export const parameters = z.object({
   collectionId: z
@@ -18,6 +18,12 @@ export const parameters = z.object({
     .string()
     .optional()
     .describe('Optional environment ID to use for variable substitution during the run.'),
+  folderId: z
+    .string()
+    .optional()
+    .describe(
+      'Optional folder name or ID to filter the run to only requests within that folder (and nested subfolders). Folder names are preferred; IDs will be automatically resolved to names.'
+    ),
   stopOnError: z.boolean().optional().describe('Gracefully halt on errors (default: false)'),
   stopOnFailure: z
     .boolean()

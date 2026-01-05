@@ -1,6 +1,7 @@
 export interface CollectionRunParams {
   collectionId: string;
   environmentId?: string;
+  folderId?: string;
   stopOnError?: boolean;
   stopOnFailure?: boolean;
   abortOnError?: boolean;
