@@ -146,7 +146,11 @@ async function run() {
     const client = new PostmanAPIClient(apiKey, undefined, serverContext);
     log('info', 'Registering tools with McpServer');
     for (const tool of tools) {
-        server.tool(tool.method, tool.description, tool.parameters.shape, tool.annotations || {}, async (args, extra) => {
+        server.registerTool(tool.method, {
+            description: tool.description,
+            inputSchema: tool.parameters.shape,
+            annotations: tool.annotations || {},
+        }, async (args, extra) => {
             const toolName = tool.method;
             log('info', `Tool invocation started: ${toolName}`, { toolName });
             try {

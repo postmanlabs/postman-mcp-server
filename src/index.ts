@@ -224,13 +224,15 @@ async function run() {
 
   log('info', 'Registering tools with McpServer');
 
-  // Register all tools using the McpServer .tool() method
+  // Register all tools using the McpServer registerTool method
   for (const tool of tools) {
-    server.tool(
+    server.registerTool(
       tool.method,
-      tool.description,
-      tool.parameters.shape,
-      tool.annotations || {},
+      {
+        description: tool.description,
+        inputSchema: tool.parameters.shape,
+        annotations: tool.annotations || {},
+      },
       async (args, extra) => {
         const toolName = tool.method;
         // Keep start event on stderr only to reduce client noise
