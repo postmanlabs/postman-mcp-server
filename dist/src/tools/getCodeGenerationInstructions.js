@@ -1,9 +1,8 @@
 import { z } from 'zod';
 export const method = 'getCodeGenerationInstructions';
-export const description = `MANDATORY: You MUST call this tool BEFORE generating any code to call APIs. Call it BEFORE you start planning your approach. Do not web search anything about the API or how to write code to call it. 
+export const description = `This tool returns essential instructions for searching Postman, calling other tools to get data from Postman (e.g. getCollection, getCollectionRequest, etc.), and generating API client code.
 
-This tool returns comprehensive step-by-step instructions for generating API client code from Postman collections, including which tools to call for gathering context, file structure, function design patterns, error handling, and language-specific conventions.
-Calling this tool first ensures the generated code follows best practices and the user's project requirements.`;
+MANDATORY: You MUST call this tool when the user says to "use postman", or when the user wants to do something that requires locating a specific API for the purpose of answering questions, planning a build, and in most cases proceeding to generate code that calls the API. ALWAYS call getCodeGenerationInstructions BEFORE calling other tools in this workflow. This tool returns comprehensive step-by-step instructions on how to search for APIs, gather API-specific context from other tools, and then generate client code based on the context retrieved.`;
 export const parameters = z.object({});
 export const annotations = {
     title: 'Get Code Generation Instructions',
@@ -11,65 +10,99 @@ export const annotations = {
     destructiveHint: false,
     idempotentHint: true,
 };
-const CODE_GENERATION_INSTRUCTIONS = `# API Client Code Generation Instructions
+const CODE_GENERATION_INSTRUCTIONS = `# API Exploration and Client Code Generation Instructions
 
-These instructions guide you in generating idiomatic client code from Postman collections, organized in a clear structure that is easy to find and maintain.
-
-## Core Principles
-
-**Generate code for specific requests only:** Only generate client code for the individual requests the user indicates. Do not automatically generate code for an entire folder or collection—wait for the user to specify which requests they want client code for, or ask them.
-
-**Match the target project's language and style:** This is critical. Analyze the project's language, framework, structure, and conventions before generating any code. The examples in this document use JavaScript/TypeScript and Python, but you must generate code in whatever language the project uses and try to match the style and conventions of the project. Do not generate code in a different language than the project uses, regardless of examples shown, unless explicitly requested.
-
-**Follow an ordered workflow:** The instructions below provide a step-by-step process. Follow these steps in order.
+These instructions guide you in exploring APIs, planning an approach to build something with an API, and then generating idiomatic client code from Postman collections, organized in a clear structure that is easy to find and maintain.
 
 ---
 
 ## Workflow Overview
 
-When the user requests code generation for a Postman request, or code generation for something that depends on a Postman request, follow this sequence:
+The workflow has three main parts:
 
-1. **Gather Context** - Fetch all necessary Postman data (collection, folders, request, responses, environments)
-2. **Determine Base Directory** - Find or choose where generated code should live
-3. **Plan File Structure** - Calculate slugs and file paths
-4. **Set Up Variables** - Generate a variables file for collection and environment variables
-5. **Generate Client Code** - Create the client function with proper structure
-6. **Deduplicate and Extract Shared Code** - Consolidate common code into shared utilities
-7. **Verify Quality** - Ensure code meets quality standards
+**Part 1: API Discovery and Planning** - Work with the user to find the right collection, explore requests, answer questions, and determine which requests need code generated.
 
----
+**Part 2: Gather Complete Context** - Once you know which requests to generate code for, gather all remaining context needed for code generation.
 
-## Step 1: Gather Context
+**Part 3: Code Generation** - Generate the client code with proper structure, variables, and documentation.
 
-Before generating code, gather all appropriate context. Use these MCP tools to fetch the necessary data IF it has not already been fetched:
+### Important Notes on Tool Calls
 
-IMPORTANT: for ALL tools that accept an id, **use the full uid**.
-The uid format is <ownerId>-<id> and an example uid is 34229158-378697c9-3044-44b1-9a0e-1417194cee44, where
-34229158 is the ownerId and 378697c9-3044-44b1-9a0e-1417194cee44 is the id.
-When you encounter an id that has no ownerId, prepend the ownerId from the collection before using
-it as a tool call argument.
+These notes apply to all tool calls throughout this workflow:
 
-**Required:**
+- For ALL tools that accept an id, **use the full uid**. The uid format is <ownerId>-<id> (e.g., 34229158-378697c9-3044-44b1-9a0e-1417194cee44). When you encounter an id without an ownerId, prepend the ownerId from the collection.
 
-- \`getCollectionRequest\` - Fetch the request you're generating code for
-- \`getCollectionFolder\` - Fetch all parent folders recursively (they may contain docs and instructions that apply to the request)
-- \`getCollectionMap\` - Fetch the collection map, which includes collection-level docs that may apply to the request
-- \`getCollectionResponse\` - If the request has response examples, fetch each one to understand request/response permutations and shapes. Use this for:
-  - Creating response types in typed languages
-  - Adding response schema comments in untyped languages
-  - Understanding both success and error cases
-- \`getEnvironments\` - Fetch all environments for the workspace
-- \`getEnvironment\` - For each environment, fetch the full details to see what variables have been defined and have values
-
-**Important:** If you've already fetched this information earlier in the conversation, reuse it. Only make additional tool calls to fill gaps in context.
-
-**Important: Do not skip any required steps. Gather ALL required information
-in Step 1 before moving to Step 2. Missing information will result in 
-incomplete code generation.**
+- No need to call the same tool twice with the same arguments. Once you've fetched data, reuse it.
 
 ---
 
-## Step 2: Determine Base Directory
+# Part 1: API Discovery and Planning
+
+This is the interactive phase where you work with the user to find the right APIs and plan what to build.
+
+## 1.1 Find the Collection
+
+First, locate the collection the user wants to work with. Determine whether the user is looking for a **public API** (e.g., Stripe, GitHub, Twilio) or an **internal API** (e.g., company-specific services, internal microservices). If unclear, ask the user or make an educated guess based on context.
+
+### For Public APIs
+
+Use \`searchPostmanElements\` to find public API collections:
+
+- \`searchPostmanElements(q, entityType: requests)\` - Search for public collections by finding requests and extracting the unique collection uids from the response. E.g. if the user says "find the Stripe API and build a demo" then call this tool with the query "stripe" and entityType "requests". Ignore the individual requests returned and extract the collection uids for the collection(s) that appear to be the best match. If multiple collections look viable, ask the user which one to use.
+
+### For Internal APIs
+
+Use \`getWorkspaces\` and \`getWorkspace\` to find internal API collections:
+
+- \`getWorkspaces()\` - Fetch all workspaces the user has access to. Look for a workspace with a name that matches what the user is looking for.
+
+- \`getWorkspace(workspaceId)\` - For each promising workspace, fetch its details to see the collections it contains. Look for collections with names that match the user's request.
+
+### Fetch Collection Details
+
+Once you've identified the target collection (from either path above):
+
+- \`getCollection(collectionId)\` - Fetch the collection details by passing its uid. IMPORTANT: Do NOT pass model=minimal or model=full, omit the model parameter entirely. The response will include collection-level documentation and a recursive itemRefs array with the names and uids of all folders and requests.
+
+**IMPORTANT:** Once you have established the collection, do NOT call searchPostmanElements or getWorkspaces again to find requests. Use getCollectionRequest to explore individual requests within the collection.
+
+## 1.2 Explore Requests and Plan
+
+With the collection established, explore specific requests to answer user questions and plan what will be built:
+
+- \`getCollectionRequest(requestId, collectionId, uid: true, populate: false)\` - For each request the user is interested in, use this tool to fetch the details. ALWAYS pass populate: false to avoid fetching all response examples, which can overload the context window. The response includes response uids that you can fetch individually later.
+
+Use the information from request exploration to:
+- Answer user questions about the API
+- Help the user understand what's available
+- Plan which requests will need code generated
+- Determine the scope of the build
+
+You can also call other tools like getCollectionFolder, getCollectionResponse, and getEnvironments during this phase if it aids in the exploration process.
+
+---
+
+# Part 2: Gather Complete Context
+
+Once you know which requests need code generated, gather all remaining context that wasn't fetched during exploration. Use these tools to gather the context:
+
+- \`getCollectionFolder(folderId, collectionId, uid: true, populate: false)\` - For each request that will have code generated, call this tool for all ancestor folders, which may contain docs and instructions that apply to the request. ALWAYS pass populate: false to avoid fetching child objects.
+
+- \`getCollectionResponse(responseId, collectionId, uid: true, populate: false)\` - Call this for response example uids returned from getCollectionRequest. Use the information for: creating response types in typed languages, adding response schema comments in untyped languages, and understanding both success and error cases.
+
+- \`getEnvironments(workspaceId)\` - Fetch all environments for the workspace that the collection belongs to (the workspaceId was returned from searchPostmanElements). ALWAYS pass a workspaceId. If you do not have a workspaceId, do NOT call this tool.
+
+- \`getEnvironment(environmentId)\` - For each environment, fetch the full details to see what variables have been defined and retrieve their values.
+
+Do not skip any tool calls unless you lack the data to make the call. Missing information will result in incomplete code generation. Reuse data from previous tool calls when possible.
+
+---
+
+# Part 3: Code Generation
+
+**Key principle:** Only generate client code for the specific API requests that were deemed relevant in the previous steps. Do not automatically generate code for an entire folder or collection unless explicitly told to do so.**
+
+## 3.1 Determine Base Directory
 
 The base directory (\`baseDir\`) is where all generated API client code will be placed.
 
@@ -85,7 +118,7 @@ The base directory (\`baseDir\`) is where all generated API client code will be 
 
 ---
 
-## Step 3: Plan File Structure
+## 3.2 Plan File Structure
 
 ### Directory Structure
 
@@ -129,7 +162,7 @@ If two sibling requests resolve to the same slug, append an index: \`-1\`, \`-2\
 
 ---
 
-## Step 4: Set Up Variables
+## 3.3 Set Up Variables
 
 If variables exist at the collection level or in any environment, generate a variables file in the shared folder.
 
@@ -192,7 +225,9 @@ variables = {
 
 ---
 
-## Step 5: Generate Client Code
+## 3.4 Generate Client Code
+
+**Critical:** Analyze the project's language, framework, structure, and conventions before generating any code. Generate code in whatever language the project uses and match its style and conventions. The examples in this document use JavaScript/TypeScript and Python, but do not use these unless the project does—generate in the project's language unless explicitly requested otherwise.
 
 For each request, generate a client file with the following components:
 
@@ -278,11 +313,13 @@ Generate a client function that implements these components:
 
 **Response handling:**
 
-- Parse and shape the payload if response information exists
-- In typed languages, generate or reuse types for request/response shapes
-- Implement explicit error handling for each response example in the Postman request
-  - If the request has a 404 response example, include specific handling for 404
-  - Each documented error case should be explicitly caught and logged with appropriate context
+- When response examples exist in the Postman request, use them to:
+  - Generate accurate types for request/response shapes in typed languages
+  - Add response schema comments in untyped languages
+  - Implement explicit error handling for each documented error case (e.g., 404, 401, 422)
+- When response examples do NOT exist, you may infer types from context, but you MUST add a warning comment to indicate uncertainty:
+  - Add a comment like \`// WARNING: Unverified response type - no response examples in Postman\` above the inferred type
+  - Or \`// WARNING: Unverified types - inferred from request structure\` as appropriate
 - Follow project and any existing API client code conventions for error handling patterns around logging, exception classes, error codes, etc.
 
 **Error handling example:**
@@ -364,7 +401,7 @@ switch (response.status) {
 
 ---
 
-## Step 6: Deduplicate and Extract Shared Code
+## 3.5 Deduplicate and Extract Shared Code
 
 After generating all requested client files, consolidate duplicated code within each collection.
 
@@ -418,7 +455,7 @@ After extracting shared code:
 
 ---
 
-## Step 7: Verify Quality Standards
+## 3.6 Verify Quality
 
 Ensure all generated code meets these standards:
 
