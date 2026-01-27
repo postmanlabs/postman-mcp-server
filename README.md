@@ -39,11 +39,13 @@ The Postman MCP Server supports the EU region for remote and local servers:
   * [**VS Code**](#install-in-visual-studio-code)
   * [**Cursor**](#install-in-cursor)
   * [**Claude Code**](#install-in-claude-code)
+  * [**GitHub Copilot CLI**](#install-in-github-copilot-cli)
 * [**Local server**](#local-server)
   * [**VS Code**](#install-in-visual-studio-code-1)
   * [**Cursor**](#install-in-cursor-1)
   * [**Claude**](#claude-integration)
   * [**Claude Code**](#install-in-claude-code-1)
+  * [**GitHub Copilot CLI**](#install-in-github-copilot-cli-1)
   * [**Gemini CLI**](#use-as-a-gemini-cli-extension)
   * [**Docker**](#install-in-docker)
 * [**Questions and support**](#questions-and-support)
@@ -128,6 +130,34 @@ For **Full** mode:
 ```bash
 claude mcp add --transport http postman https://mcp.postman.com/mcp --header "Authorization: Bearer <POSTMAN_API_KEY>"
 ```
+
+### Install in GitHub Copilot CLI
+
+Use the Copilot CLI to interactively add the MCP server:
+
+```bash
+/mcp add
+```
+
+Alternatively, create or edit the configuration file `~/.copilot/mcp-config.json` and add:
+
+```json
+{
+  "mcpServers": {
+    "postman-api-http-server": {
+      "type": "http",
+      "url": "https://mcp.postman.com/minimal",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+By default, this uses **Minimal** mode. To access **Full** mode, change the `url` value to `https://mcp.postman.com/mcp`. To access **Code** mode, change the value to `https://mcp.postman.com/code`.
+
+For more information, see the [Copilot CLI documentation](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli).
 
 ---
 
@@ -226,6 +256,34 @@ For **Full** mode:
 ```bash
 claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mcp-server@latest --full 
 ```
+
+### Install in GitHub Copilot CLI
+
+Use the Copilot CLI to interactively add the MCP server:
+
+```bash
+/mcp add
+```
+
+Alternatively, create or edit the configuration file `~/.copilot/mcp-config.json` and add:
+
+```json
+{
+  "mcpServers": {
+    "postman-api-mcp": {
+      "command": "npx",
+      "args": ["@postman/postman-mcp-server", "--full"],
+      "env": {
+        "POSTMAN_API_KEY": "YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
+
+By default, the server uses **Full** mode. To access **Minimal** mode, remove the `--full` flag from the args array. To access **Code** mode, replace the `--full` flag with `--code`.
+
+For more information, see the [Copilot CLI documentation](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli).
 
 ### Use as a Gemini CLI extension
 
