@@ -39,6 +39,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
   * [**VS Code**](#install-in-visual-studio-code)
   * [**Cursor**](#install-in-cursor)
   * [**Claude Code**](#install-in-claude-code)
+  * [**Codex**](#install-in-codex)
 * [**Local server**](#local-server)
   * [**VS Code**](#install-in-visual-studio-code-1)
   * [**Cursor**](#install-in-cursor-1)
@@ -127,6 +128,28 @@ For **Full** mode:
 
 ```bash
 claude mcp add --transport http postman https://mcp.postman.com/mcp --header "Authorization: Bearer <POSTMAN_API_KEY>"
+```
+
+### Install in Codex
+
+To install the MCP server in Codex, run the following command in your terminal:
+
+For **Minimal** mode:
+
+```bash
+codex mcp add postman --env POSTMAN_API_KEY=<POSTMAN_API_KEY> -- npx @postman/postman-mcp-server --minimal
+```
+
+For **Code** mode:
+
+```bash
+codex mcp add postman --env POSTMAN_API_KEY=<POSTMAN_API_KEY> -- npx @postman/postman-mcp-server --code
+```
+
+For **Full** mode:
+
+```bash
+codex mcp add postman --env POSTMAN_API_KEY=<POSTMAN_API_KEY> -- npx @postman/postman-mcp-server --full
 ```
 
 ---
