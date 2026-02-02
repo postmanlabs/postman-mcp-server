@@ -40,11 +40,15 @@ The Postman MCP Server supports the EU region for remote and local servers:
   * [**Cursor**](#install-in-cursor)
   * [**Claude Code**](#install-in-claude-code)
   * [**Codex**](#install-in-codex)
+  * [**Windsurf**](#install-in-windsurf)
+  * [**Antigravity**](#install-in-antigravity)
 * [**Local server**](#local-server)
   * [**VS Code**](#install-in-visual-studio-code-1)
   * [**Cursor**](#install-in-cursor-1)
   * [**Claude**](#claude-integration)
   * [**Claude Code**](#install-in-claude-code-1)
+  * [**Windsurf**](#install-in-windsurf-1)
+  * [**Antigravity**](#install-in-antigravity-1)
   * [**Gemini CLI**](#use-as-a-gemini-cli-extension)
   * [**Docker**](#install-in-docker)
 * [**Questions and support**](#questions-and-support)
@@ -152,6 +156,100 @@ For **Full** mode:
 codex mcp add postman --env POSTMAN_API_KEY=<POSTMAN_API_KEY> -- npx @postman/postman-mcp-server --full
 ```
 
+### Install in Windsurf
+
+To install the MCP server in Windsurf, copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file:
+
+```json
+{
+    "mcpServers": {
+        "postman-api": {
+            "args": [
+                "mcp-remote",
+                "https://mcp.postman.com/mcp",
+                "--header",
+                "Authorization: Bearer XXX"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {}
+        },
+        "postman-api-code": {
+            "args": [
+                "mcp-remote",
+                "https://mcp.postman.com/code",
+                "--header",
+                "Authorization: Bearer XXX"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {}
+        },
+        "postman-api-minimal": {
+            "args": [
+                "mcp-remote",
+                "https://mcp.postman.com/minimal",
+                "--header",
+                "Authorization: Bearer XXX"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {}
+        }
+    }
+}
+```
+
+### Install in Antigravity
+
+To install the MCP server in Antigravity, click **Manage MCP servers > View raw config**. Then, copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file:
+
+```json
+{
+    "mcpServers": {
+        "postman-api": {
+            "args": [
+                "mcp-remote",
+                "https://mcp.postman.com/mcp",
+                "--header",
+                "Authorization: Bearer XXX"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {}
+        },
+        "postman-api-code": {
+            "args": [
+                "mcp-remote",
+                "https://mcp.postman.com/code",
+                "--header",
+                "Authorization: Bearer XXX"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {}
+        },
+        "postman-api-minimal": {
+            "args": [
+                "mcp-remote",
+                "https://mcp.postman.com/minimal",
+                "--header",
+                "Authorization: Bearer XXX"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {}
+        }
+    }
+}
+```
+
 ---
 
 ## Local server
@@ -169,7 +267,6 @@ The local server supports the following tool configurations:
 * **Full** — Includes all available Postman API tools (100+ tools). Use the `--full` flag to enable this configuration.
 
 **Note:** Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
-
 
 ### Install in Visual Studio Code
 
@@ -248,6 +345,61 @@ For **Full** mode:
 
 ```bash
 claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mcp-server@latest --full 
+```
+
+### Install in Windsurf
+
+To manually install the MCP server in Windsurf, do the following:
+
+1. Click **Open MCP Marketplace** in Windsurf.
+1. Type "Postman" in the search text box to filter the marketplace results.
+1. Click **Install**.
+1. When prompted, enter a valid Postman API key.
+1. Select the tools that you want to enable, or click **All Tools** to select all available tools.
+1. Turn on **Enabled** to enable the Postman MCP server.
+
+#### Manual installation
+
+Copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file:
+
+```json
+{
+    "mcpServers": {
+        "postman_mcp_server_stdio": {
+            "args": [
+                "@postman/postman-mcp-server"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {
+                "POSTMAN_API_KEY": "XXXX"
+            }
+        }
+    }
+}
+```
+
+### Install in Antigravity
+
+To install the MCP server in Antigravity, click **Manage MCP servers > View raw config**. Then, copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file:
+
+```json
+{
+    "mcpServers": {
+        "postman_mcp_server_stdio": {
+            "args": [
+                "@postman/postman-mcp-server"
+            ],
+            "command": "npx",
+            "disabled": false,
+            "disabledTools": [],
+            "env": {
+                "POSTMAN_API_KEY": "XXXX"
+            }
+        }
+    }
+}
 ```
 
 ### Use as a Gemini CLI extension
