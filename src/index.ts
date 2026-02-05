@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import dotenv from 'dotenv';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { InitializeRequest } from '@modelcontextprotocol/sdk/types.js';
@@ -16,10 +15,12 @@ import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
+import dotenv from 'dotenv';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
 import { ServerContext } from './tools/utils/toolHelpers.js';
+import { env } from './env.js';
 
 const SUPPORTED_REGIONS = {
   us: 'https://api.postman.com',
@@ -34,7 +35,7 @@ function setRegionEnvironment(region: string): void {
   if (!isValidRegion(region)) {
     throw new Error(`Invalid region: ${region}. Supported regions: us, eu`);
   }
-  process.env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
+  env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
 }
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -91,21 +92,21 @@ interface ToolModule {
 async function loadAllTools(): Promise<ToolModule[]> {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
-  const toolsDir = join(__dirname, 'tools');
+  const generatedToolsDir = join(__dirname, './tools');
+  const isWindows = process.platform === 'win32';
 
+  const tools: ToolModule[] = [];
+
+  // Load generated tools from ./tools/*.js
   try {
-    log('info', 'Loading tools from directory', { toolsDir });
-    const files = await readdir(toolsDir);
+    log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir });
+    const files = await readdir(generatedToolsDir);
     const toolFiles = files.filter((file) => file.endsWith('.js'));
     log('debug', 'Discovered tool files', { count: toolFiles.length });
 
-    const tools: ToolModule[] = [];
-
     for (const file of toolFiles) {
       try {
-        const toolPath = join(toolsDir, file);
-        // If the OS is windows, prepend 'file://' to the path
-        const isWindows = process.platform === 'win32';
+        const toolPath = join(generatedToolsDir, file);
         const toolModule = await import(isWindows ? `file://${toolPath}` : toolPath);
 
         if (
@@ -126,16 +127,15 @@ async function loadAllTools(): Promise<ToolModule[]> {
         });
       }
     }
-
-    log('info', 'Tool loading completed', { totalLoaded: tools.length });
-    return tools;
   } catch (error: any) {
     log('error', 'Failed to read tools directory', {
-      toolsDir,
+      toolsDir: generatedToolsDir,
       error: String(error?.message || error),
     });
-    return [];
   }
+
+  log('info', 'Tool loading completed', { totalLoaded: tools.length });
+  return tools;
 }
 
 const dotEnvOutput = dotenv.config({ quiet: true });
@@ -166,7 +166,7 @@ async function run() {
       setRegionEnvironment(region);
       log('info', `Using region: ${region}`, {
         region,
-        baseUrl: process.env.POSTMAN_API_BASE_URL,
+        baseUrl: env.POSTMAN_API_BASE_URL,
       });
     } else {
       log('error', `Invalid region: ${region}`);
@@ -176,7 +176,7 @@ async function run() {
   }
 
   // For STDIO mode, validate API key is available in environment
-  const apiKey = process.env.POSTMAN_API_KEY;
+  const apiKey = env.POSTMAN_API_KEY;
   if (!apiKey) {
     log('error', 'POSTMAN_API_KEY environment variable is required for STDIO mode');
     process.exit(1);

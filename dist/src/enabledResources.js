@@ -155,6 +155,7 @@ const minimal = [
     'getStatusOfAnAsyncApiTask',
     'runCollection',
     'getEnabledTools',
+    'updateCollectionRequest',
 ];
 const code = [
     'getCodeGenerationInstructions',

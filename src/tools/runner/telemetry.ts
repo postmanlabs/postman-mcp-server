@@ -1,5 +1,6 @@
 import { RUNNER_ACCEPT_HEADER } from '../../constants.js';
 import { PostmanAPIClient } from '../../clients/postman.js';
+import { env } from '../../env.js';
 import { ExecutionResult, TelemetryPayload } from './models.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -115,7 +116,7 @@ export function buildTelemetryPayload(
       startedAt: result.startTime,
       createdAt: result.endTime,
       branchSource: 'local',
-      branch: process.env.GIT_BRANCH || 'main',
+      branch: env.GIT_BRANCH,
     },
     runOverview: {
       collectionName: collectionName,
