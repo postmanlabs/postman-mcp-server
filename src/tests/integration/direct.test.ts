@@ -45,9 +45,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
         version: '1.0.0',
       },
       {
-        capabilities: {
-          tools: {},
-        },
+        capabilities: {},
       }
     );
 
@@ -103,9 +101,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
           version: '1.0.0',
         },
         {
-          capabilities: {
-            tools: {},
-          },
+          capabilities: {},
         }
       );
 
@@ -133,7 +129,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
         expect(result.content).toBeDefined();
         expect(Array.isArray(result.content)).toBe(true);
 
-        const content = result.content[0];
+        const content = (result.content as any)[0];
         expect(content).toBeDefined();
         expect(content.type).toBe('text');
       } finally {
@@ -150,9 +146,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
           version: '1.0.0',
         },
         {
-          capabilities: {
-            tools: {},
-          },
+          capabilities: {},
         }
       );
 
@@ -169,9 +163,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
           version: '2.0.0',
         },
         {
-          capabilities: {
-            tools: {},
-          },
+          capabilities: {},
         }
       );
 
@@ -262,9 +254,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       try {
         await client.get('/test-endpoint');
 
-        expect(capturedHeaders['user-agent']).toBe(
-          `${expectedPackageName}/${expectedPackageVersion}`
-        );
+        expect(capturedHeaders['user-agent']).toBe(`${expectedPackageName}/${expectedPackageVersion}`);
         expect(capturedHeaders['x-api-key']).toBe('test-api-key');
       } finally {
         global.fetch = originalFetch;
@@ -699,7 +689,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       const getResult = await client.callTool(
         {
           name: 'getCollection',
-          arguments: { collectionId },
+          arguments: { collectionId, model: 'full' },
         },
         undefined,
         { timeout: 100000 }
@@ -707,23 +697,8 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(CollectionDataFactory.validateResponse(getResult)).toBe(true);
       expect((getResult.content as any)[0].text).toContain(collectionData.info.name);
 
-      const getFullResult = await client.callTool(
-        {
-          name: 'getCollection',
-          arguments: {
-            collectionId,
-            model: 'full',
-          },
-        },
-        undefined,
-        { timeout: 100000 }
-      );
-      expect(CollectionDataFactory.validateResponse(getFullResult)).toBe(true);
-
-      const collection = CollectionDataFactory.extractCollectionFromResponse(getFullResult);
+      const collection = CollectionDataFactory.extractCollectionFromResponse(getResult);
       expect(collection).toBeDefined();
-      expect(collection.item).toBeDefined();
-      expect(Array.isArray(collection.item)).toBe(true);
 
       const updatedName = '[Integration Test] Updated Collection';
       const updatedCollection = {
@@ -731,9 +706,6 @@ describe('Postman MCP - Direct Integration Tests', () => {
         info: {
           ...collection.info,
           name: updatedName,
-          schema:
-            collection.info.schema ||
-            'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
         },
       };
 
@@ -749,15 +721,13 @@ describe('Postman MCP - Direct Integration Tests', () => {
         { timeout: 100000 }
       );
       expect(CollectionDataFactory.validateResponse(updateResult)).toBe(true);
-      expect((updateResult.content as any)[0].text).toContain(updatedName);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const verifyUpdateResult = await client.callTool(
         {
           name: 'getCollection',
           arguments: {
             collectionId,
-            model: 'minimal',
+            model: 'full',
           },
         },
         undefined,

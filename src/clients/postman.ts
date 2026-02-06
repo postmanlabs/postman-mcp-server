@@ -1,6 +1,7 @@
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { USER_AGENT } from '../constants.js';
 import type { ServerContext } from '../tools/utils/toolHelpers.js';
+import { env } from '../env.js';
 
 export enum ContentType {
   Json = 'application/json',
@@ -42,7 +43,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
 
   constructor(
     apiKey?: string,
-    baseUrl: string = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com',
+    baseUrl: string = env.POSTMAN_API_BASE_URL,
     serverContext?: ServerContext
   ) {
     this.apiKey = apiKey;
@@ -99,7 +100,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     options: PostmanAPIRequestOptions & { method: string }
   ): Promise<T> {
     // Get API key at request time - check instance, then environment
-    const currentApiKey = this.apiKey || process.env.POSTMAN_API_KEY;
+    const currentApiKey = this.apiKey || env.POSTMAN_API_KEY;
     if (!currentApiKey) {
       throw new Error(
         'API key is required for requests. Provide it via constructor parameter or set POSTMAN_API_KEY environment variable.'
