@@ -5,11 +5,13 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createSpec';
 export const description =
-  "Creates an API specification in Postman's [Spec Hub](https://learning.postman.com/docs/design-apis/specifications/overview/). Specifications can be single or multi-file.\n\n**Note:**\n- Postman supports OpenAPI 3.0 and AsyncAPI 2.0 specifications.\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n";
+  "Creates an API specification in Postman's [Spec Hub](https://learning.postman.com/docs/design-apis/specifications/overview/). Specifications can be single or multi-file.\n\n**Note:**\n- Postman supports OpenAPI 2.0, OpenAPI 3.0, OpenAPI 3.1, and AsyncAPI 2.0 specifications.\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n";
 export const parameters = z.object({
   workspaceId: z.string().describe("The workspace's ID."),
   name: z.string().describe("The specification's name."),
-  type: z.enum(['OPENAPI:3.0', 'ASYNCAPI:2.0']).describe("The specification's type."),
+  type: z
+    .enum(['OPENAPI:2.0', 'OPENAPI:3.0', 'OPENAPI:3.1', 'ASYNCAPI:2.0'])
+    .describe("The specification's type."),
   files: z
     .array(
       z.union([
@@ -32,7 +34,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    "Creates an API specification in Postman's [Spec Hub](https://learning.postman.com/docs/design-apis/specifications/overview/). Specifications can be single or multi-file.\n\n**Note:**\n- Postman supports OpenAPI 3.0 and AsyncAPI 2.0 specifications.\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n",
+    "Creates an API specification in Postman's [Spec Hub](https://learning.postman.com/docs/design-apis/specifications/overview/). Specifications can be single or multi-file.\n\n**Note:**\n- Postman supports OpenAPI 2.0, OpenAPI 3.0, OpenAPI 3.1, and AsyncAPI 2.0 specifications.\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n",
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: false,

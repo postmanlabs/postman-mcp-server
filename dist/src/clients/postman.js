@@ -1,5 +1,6 @@
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { USER_AGENT } from '../constants.js';
+import { env } from '../env.js';
 export var ContentType;
 (function (ContentType) {
     ContentType["Json"] = "application/json";
@@ -10,7 +11,7 @@ export class PostmanAPIClient {
     apiKey;
     serverContext;
     static instance = null;
-    constructor(apiKey, baseUrl = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com', serverContext) {
+    constructor(apiKey, baseUrl = env.POSTMAN_API_BASE_URL, serverContext) {
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
         this.serverContext = serverContext;
@@ -40,7 +41,7 @@ export class PostmanAPIClient {
         return this.request(endpoint, { ...options, method: 'DELETE' });
     }
     async request(endpoint, options) {
-        const currentApiKey = this.apiKey || process.env.POSTMAN_API_KEY;
+        const currentApiKey = this.apiKey || env.POSTMAN_API_KEY;
         if (!currentApiKey) {
             throw new Error('API key is required for requests. Provide it via constructor parameter or set POSTMAN_API_KEY environment variable.');
         }
