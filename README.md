@@ -454,6 +454,7 @@ Alternatively, create or edit the configuration file `~/.copilot/mcp-config.json
     }
   }
 }
+```
 
 For more information, see the [Copilot CLI documentation](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli).
 
