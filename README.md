@@ -447,16 +447,13 @@ Alternatively, create or edit the configuration file `~/.copilot/mcp-config.json
   "mcpServers": {
     "postman-api-mcp": {
       "command": "npx",
-      "args": ["@postman/postman-mcp-server", "--full"],
+      "args": ["@postman/postman-mcp-server"],
       "env": {
         "POSTMAN_API_KEY": "YOUR_API_KEY"
       }
     }
   }
 }
-```
-
-By default, the server uses **Full** mode. To access **Minimal** mode, remove the `--full` flag from the args array. To access **Code** mode, replace the `--full` flag with `--code`.
 
 For more information, see the [Copilot CLI documentation](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli).
 
