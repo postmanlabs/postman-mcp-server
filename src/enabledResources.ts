@@ -196,6 +196,7 @@ const minimal = [
   'getStatusOfAnAsyncApiTask',
   'runCollection',
   'getEnabledTools',
+  'updateCollectionRequest',
 ] as const;
 
 const code = [
@@ -225,7 +226,7 @@ const excludedFromGeneration = [
  * Each subtool is defined with:
  * - orchestrator: The main tool that will be exposed (the index.ts file)
  * - subtools: Array of tools that will be placed in the orchestrator's folder
- *
+ * 
  * Example structure for 'getCollection':
  * tools/
  *   getCollection/

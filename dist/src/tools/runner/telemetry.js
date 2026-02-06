@@ -1,4 +1,5 @@
 import { RUNNER_ACCEPT_HEADER } from '../../constants.js';
+import { env } from '../../env.js';
 import { v4 as uuidv4 } from 'uuid';
 export function buildTelemetryPayload(collectionId, collectionName, result) {
     const durationMs = result.durationMs;
@@ -98,7 +99,7 @@ export function buildTelemetryPayload(collectionId, collectionName, result) {
             startedAt: result.startTime,
             createdAt: result.endTime,
             branchSource: 'local',
-            branch: process.env.GIT_BRANCH || 'main',
+            branch: env.GIT_BRANCH,
         },
         runOverview: {
             collectionName: collectionName,
