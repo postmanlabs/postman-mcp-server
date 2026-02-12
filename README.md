@@ -77,8 +77,10 @@ MCP hosts that support OAuth can discover and use it automatically for all tools
 
 Consider using the remote Postman MCP server if:
 
-* Your MCP host doesn't support remote MCP servers.
 * You want to get started quickly and easily.
+* You are working with public APIs
+* Your MCP host doesn't support local MCP servers.
+
 
 **Supported configurations**
 
@@ -375,12 +377,13 @@ For more information, see the [Copilot CLI documentation](https://docs.github.co
 
 ## Local server
 
-The local server is based on STDIO transport and is hosted locally on an environment of your choice.
+The local server uses STDIO transport and is hosted locally on an environment of your choice.
 
 **Why use the local server?**
 
 Consider using the local Postman MCP server if:
 
+* You are working with internal APIs.
 * You want to power local use cases, such as local API testing.
 * You have specific security and network requirements.
 * You prefer to build the MCP server from the source code in this repo.
