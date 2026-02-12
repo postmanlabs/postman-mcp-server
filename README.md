@@ -78,7 +78,7 @@ MCP hosts that support OAuth can discover and use it automatically for all tools
 Consider using the remote Postman MCP server if:
 
 * You want to get started quickly and easily.
-* You are working with public APIs
+* You are working with public APIs.
 * Your MCP host doesn't support local MCP servers.
 
 
