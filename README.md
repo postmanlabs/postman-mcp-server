@@ -14,11 +14,11 @@ Postman also offers servers as an [npm package](https://www.npmjs.com/package/@p
 
 ### Authentication
 
-For the best developer experience and fastest setup, use **OAuth** on the **US remote server** (`https://mcp.postman.com`). OAuth is fully compliant with the [MCP Authorization specification](https://modelcontextprotocol.io/specification/draft/basic/authorization) and requires no manual API key configuration. The **EU remote server** and the **local server** (this repo/npm package) support only [Postman API key](https://postman.postman.co/settings/me/api-keys) authentication.
+For the best developer experience and fastest setup, use **OAuth** on the **remote server** (`https://mcp.postman.com`). OAuth is fully compliant with the [MCP Authorization specification](https://modelcontextprotocol.io/specification/draft/basic/authorization) and requires no manual API key configuration. The **EU remote server** and the **local server** (this repo/npm package) support only [Postman API key](https://postman.postman.co/settings/me/api-keys) authentication.
 
 ### Use Cases
 
-* **API Testing** - Continuously test your API using your Postman collection.
+* **API Testing** - Continuously test your API using your Postman collection. To be able to test local APIs, use the **local server** (`#local-server`) as the remote server won't have network access to your workstation.
 * **Code synchronization** - Effortlessly keep your code in sync with your [Postman Collections](https://learning.postman.com/docs/design-apis/collections/overview/) and specs.
 * **Collection management** - Create and [tag](https://learning.postman.com/docs/collections/use-collections/collaborate-with-collections/#tag-a-collection) collections, update collection and request [documentation](https://learning.postman.com/docs/publishing-your-api/api-documentation-overview/), add [comments](https://learning.postman.com/docs/collaborating-in-postman/comments/), or perform actions across multiple collections without leaving your editor.
 * **Workspace and environment management** - Create [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/overview/) and [environments](https://learning.postman.com/docs/sending-requests/variables/managing-environments/), plus manage your environment variables.
@@ -31,7 +31,7 @@ Designed for developers who want to integrate their AI tools with Postman's cont
 
 The Postman MCP Server supports the EU region for remote and local servers:
 
-* For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`. The EU remote server supports **API key authentication only**. For OAuth, use the US server at `https://mcp.postman.com`.
+* For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`. The EU remote server supports **API key authentication only**.
 * For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly.
 * OAuth isn't supported for the EU Postman MCP Server.
 
@@ -65,13 +65,17 @@ The Postman MCP Server supports the EU region for remote and local servers:
 
 ## Remote server
 
-The remote Postman MCP Server is hosted by Postman over streamable HTTP and provides the easiest method for getting started. If your MCP host doesn't support remote MCP servers, you can use the [local Postman MCP Server](#local-server).
+The remote Postman MCP Server is hosted by Postman over streamable HTTP and provides the easiest method for getting started. 
 
-The US remote server (`https://mcp.postman.com`) supports **OAuth** for the best developer experience and fastest setup, and no API key needed. OAuth also provides stronger security and fine-grained access control compared to a static API key. OAuth is MCP specification–compliant, including Dynamic Client Registration (DCR), OAuth metadata, and PKCE.
+Why user the remote server?
+* If your MCP host doesn't support remote MCP servers
+* It is the fastest and simplest to get started
+
+The remote server (`https://mcp.postman.com`) supports **OAuth** for the best developer experience and fastest setup, and no API key needed. OAuth also provides stronger security and fine-grained access control compared to a static API key. OAuth is MCP specification–compliant, including Dynamic Client Registration (DCR), OAuth metadata, and PKCE.
 
 **Note:** The EU remote server (`https://mcp.eu.postman.com`) only supports API key authentication.
 
-MCP hosts that support OAuth can discover and use it automatically for all tools. The US server also accepts a [Postman API key](https://postman.postman.co/settings/me/api-keys) (Bearer token in the `Authorization` header).
+MCP hosts that support OAuth can discover and use it automatically for all tools. The remote server also accepts a [Postman API key](https://postman.postman.co/settings/me/api-keys) (Bearer token in the `Authorization` header).
 
 The remote server supports the following tool configurations:
 
@@ -85,7 +89,7 @@ The remote server supports the following tool configurations:
 
 To install the remote Postman MCP Server in Cursor, click the install button.
 
-**Note:** If your MCP host supports OAuth, use the US server URL (`https://mcp.postman.com`) with no headers for the fastest setup. Otherwise, ensure the Authorization header uses the `Bearer <YOUR_API_KEY>` format. OAuth is not available on the EU server.
+**Note:** If your MCP host supports OAuth, use the server URL (`https://mcp.postman.com`) with no headers for the fastest setup. Otherwise, ensure the Authorization header uses the `Bearer <YOUR_API_KEY>` format. OAuth is not available on the EU server.
 
 By default, the server uses **Minimal** mode. To access **Full** mode, change the `url` value to `https://mcp.postman.com/mcp` in the `mcp.json` file. To access **Code** mode, change the value to `https://mcp.postman.com/code`.
 
@@ -234,7 +238,7 @@ codex mcp add postman --env POSTMAN_API_KEY=<POSTMAN_API_KEY> -- npx @postman/po
 
 To install the MCP server in Windsurf, copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file.
 
-This configuration uses the US server (`https://mcp.postman.com`), which authenticates with OAuth automatically. For the EU server, you must use the [local server](#install-in-windsurf-1) with an API key.
+This configuration uses the remote server (`https://mcp.postman.com`), which authenticates with OAuth automatically.
 
 ```json
 {
@@ -274,7 +278,7 @@ This configuration uses the US server (`https://mcp.postman.com`), which authent
 
 To install the MCP server in Antigravity, click **Manage MCP servers > View raw config**. Then, copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file.
 
-This configuration uses the US server (`https://mcp.postman.com`), which authenticates automatically with OAuth. For the EU server, you must use the [local server](#install-in-antigravity-1) with an API key.
+This configuration uses the remote server (`https://mcp.postman.com`), which authenticates automatically with OAuth.
 
 ```json
 {
@@ -312,11 +316,9 @@ This configuration uses the US server (`https://mcp.postman.com`), which authent
 
 ### Install in GitHub Copilot CLI
 
-You can add the MCP server to your Copilot CLI either with OAuth (recommended and for US server only) or an API key (required for EU server or the [local server](#install-in-github-copilot-cli-1)).
+You can add the MCP server to your Copilot CLI either with OAuth (recommended) or an API key.
 
-**OAuth**
-
-By default, adding the Postman MCP remote server over HTTP to Copilot CLI uses OAuth for remote US servers. Use the Copilot CLI to interactively add the MCP server:
+Use the Copilot CLI to interactively add the MCP server:
 
 ```bash
 /mcp add
@@ -368,9 +370,13 @@ For more information, see the [Copilot CLI documentation](https://docs.github.co
 
 ## Local server
 
-If remote MCP servers aren't supported by your MCP host, you can install the Postman MCP Server to your local machine.
+The local server is based on STDIO transport and is hosted locally on an environment of your choice.
 
-STDIO is a lightweight solution that's ideal for integration with editors and tools like Visual Studio Code. Install an MCP-compatible VS Code extension, such as GitHub Copilot, Claude for VS Code, or other AI assistants that support MCP.
+Why user the remote server?
+
+* You want to power local use cases like local API testing.
+* You have specific security and network requirements
+* You prefer to build the MCP server from the source code in this repo.
 
 The local server supports the following tool configurations:
 
@@ -463,7 +469,7 @@ claude mcp add postman --env POSTMAN_API_KEY=YOUR_KEY -- npx @postman/postman-mc
 
 ### Install in Codex
 
-To install the MCP server for EU servers or locally in Codex, use the API key installation method. Set the `POSTMAN_API_KEY` environment variable and invoke the MCP server using `npx`.
+To install the local use the API key installation method. Set the `POSTMAN_API_KEY` environment variable and invoke the MCP server using `npx`.
 
 For **Minimal** mode:
 
