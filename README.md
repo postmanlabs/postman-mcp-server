@@ -52,7 +52,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
   * [**Cursor**](#install-in-cursor-1)
   * [**Claude**](#claude-integration)
   * [**Claude Code**](#install-in-claude-code-1)
-  * * [**Codex**](#install-in-codex-1)
+  * [**Codex**](#install-in-codex-1)
   * [**Windsurf**](#install-in-windsurf-1)
   * [**Antigravity**](#install-in-antigravity-1)
   * [**GitHub Copilot CLI**](#install-in-github-copilot-cli-1)
