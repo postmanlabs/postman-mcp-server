@@ -33,7 +33,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
 
 * For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com`. The EU remote server supports **API key authentication only**. For OAuth, use the US server at `https://mcp.postman.com`.
 * For our STDIO public package, use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly.
-* OAuth isn't supported for the Postman MCP Server.
+* OAuth isn't supported for the EU Postman MCP Server.
 
 ---
 
