@@ -73,8 +73,7 @@ export const parameters = z.object({
     .default({ enableOptionalParameters: true, folderStrategy: 'Paths' }),
 });
 export const annotations = {
-  title:
-    'Creates a collection from the given API specification.\nThe specification must already exist or be created before it can be used to generate a collection.\nThe response contains a polling link to the task status.\n',
+  title: 'Creates a collection from the given API specification.',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: false,

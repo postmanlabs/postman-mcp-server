@@ -21,7 +21,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a mock server in a collection.\n\n- Pass the collection UID (ownerId-collectionId), not the bare collection ID.\n- If you only have a \\`collectionId\\`, resolve the UID first:\n  1) Prefer GET \\`/collections/{collectionId}\\` and read \\`uid\\`, or\n  2) Construct \\`{ownerId}-{collectionId}\\` using ownerId from GET \\`/me\\`:\n    - For team-owned collections: \\`ownerId = me.teamId\\`\n    - For personal collections: \\`ownerId = me.user.id\\`\n- Use the \\`workspace\\` query to place the mock in a specific workspace. Prefer explicit workspace scoping.\n',
+    title: 'Creates a mock server in a collection.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

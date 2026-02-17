@@ -26,8 +26,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'Updates a comment on a collection.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n',
+  title: 'Updates a comment on a collection.',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,

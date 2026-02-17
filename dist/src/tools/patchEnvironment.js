@@ -47,7 +47,7 @@ export const parameters = z.object({
     ]),
 });
 export const annotations = {
-    title: 'Updates specific environment properties, such as its name and variables.\n\n**Note:**\n\n- You can only perform one type of operation at a time. For example, you cannot perform an \\`add\\` and \\`replace\\` operation in the same call.\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- To add a description to an existing variable, use the \\`add\\` operation.\n',
+    title: 'Updates specific environment properties, such as its name and variables.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,

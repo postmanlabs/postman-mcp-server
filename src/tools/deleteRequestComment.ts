@@ -13,7 +13,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    'Deletes a comment from a request. On success, this returns an HTTP \\`204 No Content\\` response.\n\n**Note:**\n\nDeleting the first comment of a thread deletes all the comments in the thread.\n',
+    'Deletes a comment from a request. On success, this returns an HTTP \\`204 No Content\\` response.',
   readOnlyHint: false,
   destructiveHint: true,
   idempotentHint: true,

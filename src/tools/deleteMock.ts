@@ -8,8 +8,7 @@ export const description =
   'Deletes a mock server.\n- Resource: Mock server entity. This is destructive.\n- Ensure you are targeting the correct mock ID.\n';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });
 export const annotations = {
-  title:
-    'Deletes a mock server.\n- Resource: Mock server entity. This is destructive.\n- Ensure you are targeting the correct mock ID.\n',
+  title: 'Deletes a mock server.',
   readOnlyHint: false,
   destructiveHint: true,
   idempotentHint: true,
