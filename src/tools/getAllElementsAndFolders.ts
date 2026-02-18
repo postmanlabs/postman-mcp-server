@@ -87,7 +87,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    "Gets information about the folders and their elements added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).\n\n**Note:**\n\nThe \\`limit\\` and \\`offset\\` parameters are separately applied to elements and folders. For example, if you query a \\`limit\\` value of \\`10\\` and an \\`offset\\` value \\`0\\`, the endpoint returns 10 elements and 10 folders for a total of 20 items. The \\`totalCount\\` property in the \\`meta\\` response is the total count of both elements and folders.\n",
+    "Gets information about the folders and their elements added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

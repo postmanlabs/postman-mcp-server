@@ -1003,7 +1003,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nIf you do not include the \\`workspace\\` query parameter, the system creates the collection in the oldest personal Internal workspace you own.\n',
+    'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: false,

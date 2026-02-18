@@ -7,7 +7,7 @@ export const parameters = z.object({
     specId: z.string().describe("The spec's ID."),
 });
 export const annotations = {
-    title: 'Syncs a collection generated from an API specification. This is an asynchronous endpoint that returns an HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- This endpoint only supports the OpenAPI 3.0 specification type.\n- You can only sync collections generated from the given spec ID.\n',
+    title: 'Syncs a collection generated from an API specification. This is an asynchronous endpoint that returns an HTTP \\`202 Accepted\\` response.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,

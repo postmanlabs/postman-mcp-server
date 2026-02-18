@@ -112,7 +112,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` query parameter, the system creates the monitor in the oldest personal Internal workspace you own.\n',
+    title: 'Creates a monitor.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

@@ -10,6 +10,7 @@ import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
 import { env } from './env.js';
+import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
 const SUPPORTED_REGIONS = {
     us: 'https://api.postman.com',
     eu: 'https://api.eu.postman.com',
@@ -143,6 +144,10 @@ async function run() {
         serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
         availableTools: tools.map((t) => t.method),
     };
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const viewsDir = join(__dirname, './views');
+    const renderTemplate = createTemplateRenderer(viewsDir);
     const client = new PostmanAPIClient(apiKey, undefined, serverContext);
     log('info', 'Registering tools with McpServer');
     for (const tool of tools) {
@@ -168,6 +173,12 @@ async function run() {
                     toolName,
                     durationMs,
                 });
+                if (result.content?.[0]?.type === 'text') {
+                    const rendered = renderTemplate(toolName, result.content[0].text);
+                    if (rendered) {
+                        return { content: [{ type: 'text', text: rendered }] };
+                    }
+                }
                 return result;
             }
             catch (error) {

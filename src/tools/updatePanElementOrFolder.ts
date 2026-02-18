@@ -71,7 +71,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    "Updates an element or folder in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).\n\n**Note:**\n\nYou can only pass one element object type per call. For example, you cannot pass both \\`api\\` and \\`collection\\` in a single request.\n",
+    "Updates an element or folder in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,

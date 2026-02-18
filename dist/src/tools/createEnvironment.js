@@ -28,7 +28,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates an environment.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n- If you do not include the \\`workspace\\` query parameter, the system creates the environment in the oldest personal Internal workspace you own.\n',
+    title: 'Creates an environment.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

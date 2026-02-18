@@ -1,0 +1,6 @@
+# Workspaces
+
+| id | name | type | visibility | createdBy | scim |
+|---|---|---|---|---|---|
+{% for item in workspaces %}| {{ item.id }} | {{ item.name }} | {{ item.type }} | {{ item.visibility }} | {{ item.createdBy }} | {{ item.scim | dump }} |
+{% endfor %}
