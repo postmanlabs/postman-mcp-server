@@ -176,6 +176,7 @@ const excludedFromGeneration = [
     'getCodeGenerationInstructions',
     'getCollectionMap',
     'getCollection',
+    'searchPostmanElements',
 ];
 const subtools = {
     getCollection: {
@@ -183,10 +184,15 @@ const subtools = {
         subtools: ['getCollection', 'getCollectionMap'],
     },
 };
+const templated = [
+    'getCollections',
+    'getWorkspaces',
+];
 export const enabledResources = {
     full,
     minimal,
     code,
     excludedFromGeneration,
     subtools,
+    templated,
 };

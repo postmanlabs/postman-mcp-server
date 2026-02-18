@@ -8,8 +8,7 @@ export const description =
   'Gets information about a mock server.\n- Resource: Mock server entity. Response includes the associated \\`collection\\` UID and \\`mockUrl\\`.\n- Use the \\`collection\\` UID to navigate back to the source collection.\n';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });
 export const annotations = {
-  title:
-    'Gets information about a mock server.\n- Resource: Mock server entity. Response includes the associated \\`collection\\` UID and \\`mockUrl\\`.\n- Use the \\`collection\\` UID to navigate back to the source collection.\n',
+  title: 'Gets information about a mock server.',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

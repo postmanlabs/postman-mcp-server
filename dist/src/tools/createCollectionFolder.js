@@ -12,7 +12,7 @@ export const parameters = z.object({
     folder: z.string().describe('The ID of a folder in which to create the folder.').optional(),
 });
 export const annotations = {
-    title: 'Creates a folder in a collection. For a complete list of properties, refer to the **Folder** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\nYou can use this endpoint to to import requests and responses into a newly-created folder. To do this, include the \\`requests\\` field and the list of request objects in the request body. For more information, see the provided example.\n\n**Note:**\n\nIt is recommended that you pass the \\`name\\` property in the request body. If you do not, the system uses a null value. As a result, this creates a folder with a blank name.\n',
+    title: 'Creates a folder in a collection. For a complete list of properties, refer to the **Folder** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

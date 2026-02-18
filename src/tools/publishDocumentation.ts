@@ -107,7 +107,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    "Publishes a collection's documentation. This makes it publicly available to anyone with the link to the documentation.\n\n**Note:**\n\n- Your [Postman plan](https://www.postman.com/pricing/) impacts your use of these endpoints:\n  - For **Free** and **Basic** users, you must have permissions to edit the collection.\n  - If [API Governance and Security](https://learning.postman.com/docs/api-governance/configurable-rules/configurable-rules-overview/) is enabled for your [**Enterprise**](https://www.postman.com/pricing/) team, only users with the [Community Manager role](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#team-roles) can publish documentation.\n- Publishing is only supported for collections with HTTP requests.\n- You cannot publish a collection added to an API.\n",
+    "Publishes a collection's documentation. This makes it publicly available to anyone with the link to the documentation.",
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,

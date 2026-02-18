@@ -21,6 +21,7 @@ import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
 import { ServerContext } from './tools/utils/toolHelpers.js';
 import { env } from './env.js';
+import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
 
 const SUPPORTED_REGIONS = {
   us: 'https://api.postman.com',
@@ -219,6 +220,12 @@ async function run() {
     availableTools: tools.map((t) => t.method),
   };
 
+  // Initialize template renderer
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const viewsDir = join(__dirname, './views');
+  const renderTemplate = createTemplateRenderer(viewsDir);
+
   // Create a client instance with the API key and server context for STDIO mode
   const client = new PostmanAPIClient(apiKey, undefined, serverContext);
 
@@ -256,6 +263,15 @@ async function run() {
             toolName,
             durationMs,
           });
+
+          // Apply template rendering
+          if (result.content?.[0]?.type === 'text') {
+            const rendered = renderTemplate(toolName, result.content[0].text);
+            if (rendered) {
+              return { content: [{ type: 'text' as const, text: rendered }] };
+            }
+          }
+
           return result;
         } catch (error: any) {
           const errMsg = String(error?.message || error);
