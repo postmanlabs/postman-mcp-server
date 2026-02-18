@@ -26,7 +26,7 @@ export const parameters = z.object({
         .describe("A list of the specification's files and their contents."),
 });
 export const annotations = {
-    title: "Creates an API specification in Postman's [Spec Hub](https://learning.postman.com/docs/design-apis/specifications/overview/). Specifications can be single or multi-file.\n\n**Note:**\n- Postman supports OpenAPI 2.0, OpenAPI 3.0, OpenAPI 3.1, and AsyncAPI 2.0 specifications.\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n",
+    title: "Creates an API specification in Postman's [Spec Hub](https://learning.postman.com/docs/design-apis/specifications/overview/). Specifications can be single or multi-file.",
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

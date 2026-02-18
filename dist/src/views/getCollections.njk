@@ -1,0 +1,12 @@
+# Collections
+
+## Meta
+
+- **total**: {{ meta.total }}
+- **offset**: {{ meta.offset }}
+- **limit**: {{ meta.limit }}
+
+| id | name | owner | createdAt | updatedAt | uid | fork | isPublic |
+|---|---|---|---|---|---|---|---|
+{% for item in collections %}| {{ item.id }} | {{ item.name }} | {{ item.owner }} | {{ item.createdAt }} | {{ item.updatedAt }} | {{ item.uid }} | {{ item.fork | dump }} | {{ item.isPublic }} |
+{% endfor %}

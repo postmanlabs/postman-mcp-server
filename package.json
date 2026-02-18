@@ -30,6 +30,7 @@
     "@modelcontextprotocol/sdk": "^1.25.2",
     "dotenv": "^17.2.3",
     "newman": "^6.2.0",
+    "nunjucks": "^3.2.4",
     "uuid": "^13.0.0",
     "zod": "^3.25.76"
   },

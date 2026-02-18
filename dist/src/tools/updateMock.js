@@ -32,7 +32,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Updates a mock server.\n- Resource: Mock server entity associated with a collection UID.\n- Use this to change name, environment, privacy, or default server response.\n',
+    title: 'Updates a mock server.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,

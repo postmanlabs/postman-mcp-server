@@ -5,12 +5,12 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'searchPostmanElements';
 export const description =
-  'Searches for Postman elements in the public network.\n\n**When to Use This Tool:**\n- When the user asks for a specific named request (e.g., "find PayPal requests", "search for Stripe API requests")\n- When the user explicitly wants to search the public network\n- Do NOT use this for searching the user\'s own workspaces or collections (use getCollections or getWorkspaces instead)\n\n**Search Scope:**\n- Only searches the public network (public workspaces and collections)\n- Does not search private workspaces, team workspaces, or personal collections\n- Currently supports searching for requests (entityType: "requests")\n';
+  'Searches for Postman elements in the public network.\n\n**When to Use This Tool:**\n- When the user asks for a specific named request (e.g., "find PayPal requests", "search for Stripe API requests")\n- When the user wants to find collections (e.g., "find Stripe collections", "search for payment API collections")\n- When the user explicitly wants to search the public network\n- Do NOT use this for searching the user\'s own workspaces or collections (use getCollections or getWorkspaces instead)\n\n**Search Scope:**\n- Only searches the public network (public workspaces and collections)\n- Does not search private workspaces, team workspaces, or personal collections\n\n**Entity Types:**\n- `requests`: Search for individual API requests\n- `collections`: Search for collections (unique collections extracted from request results; pagination applies to underlying requests)\n';
 export const parameters = z.object({
   entityType: z
-    .literal('requests')
+    .enum(['requests', 'collections'])
     .describe(
-      'The type of Postman [entity](https://learning.postman.com/docs/getting-started/basics/postman-elements/) (element) to search for. At this time, this only accepts the `requests` value.'
+      'The type of Postman [entity](https://learning.postman.com/docs/getting-started/basics/postman-elements/) to search for. Use `requests` to search for individual API requests, or `collections` to search for collections (unique collections extracted from request results; pagination applies to underlying requests).'
     ),
   q: z
     .string()
@@ -39,8 +39,7 @@ export const parameters = z.object({
     .default(10),
 });
 export const annotations = {
-  title:
-    'Searches for Postman elements in the public network.\n\n**When to Use This Tool:**\n- When the user asks for a specific named request (e.g., "find PayPal requests", "search for Stripe API requests")\n- When the user explicitly wants to search the public network\n- Do NOT use this for searching the user\'s own workspaces or collections (use getCollections or getWorkspaces instead)\n\n**Search Scope:**\n- Only searches the public network (public workspaces and collections)\n- Does not search private workspaces, team workspaces, or personal collections\n- Currently supports searching for requests (entityType: "requests")\n',
+  title: 'Searches for Postman elements in the public network.',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
@@ -51,7 +50,8 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/search/${args.entityType}`;
+    // Always use /search/requests endpoint (API only supports requests)
+    const endpoint = '/search/requests';
     const query = new URLSearchParams();
     if (args.q !== undefined) query.set('q', String(args.q));
     if (args.publisherIsVerified !== undefined)
@@ -63,11 +63,60 @@ export async function handler(
       headers: extra.headers,
     };
     const result = await extra.client.get(url, options);
+
+    // Handle collections: extract unique collections from request results
+    if (args.entityType === 'collections') {
+      const collectionsMap = new Map<
+        string,
+        {
+          collectionId: string;
+          collectionName: string;
+          workspaceId: string;
+          workspaceName: string;
+          publisher: string;
+          publisherVerified: boolean;
+        }
+      >();
+      const data = (result as any)?.data || [];
+      for (const item of data) {
+        if (!collectionsMap.has(item.collection.id)) {
+          collectionsMap.set(item.collection.id, {
+            collectionId: item.collection.id,
+            collectionName: item.collection.name,
+            workspaceId: item.workspace.id,
+            workspaceName: item.workspace.name,
+            publisher: item.publisher.name,
+            publisherVerified: item.publisher.isVerified,
+          });
+        }
+      }
+      const collections = Array.from(collectionsMap.values());
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              {
+                data: collections,
+                meta: {
+                  nextCursor: (result as any)?.meta?.nextCursor,
+                  collectionsCount: collections.length,
+                  note: 'Collections extracted from request results. Pagination applies to underlying requests.',
+                },
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+
     return {
       content: [
         {
           type: 'text',
-          text: `${typeof result === 'string' ? result : JSON.stringify(result, null, 2)}`,
+          text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
         },
       ],
     };

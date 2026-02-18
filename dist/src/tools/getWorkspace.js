@@ -10,7 +10,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Gets information about a workspace.\n\n**Note:**\n\nThis endpoint's response contains the \\`visibility\\` field. [Visibility](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/managing-workspaces/#changing-workspace-visibility) determines who can access the workspace:\n- \\`personal\\` — Only you can access the workspace.\n- \\`team\\` — All team members can access the workspace.\n- \\`private\\` — Only invited team members can access the workspace ([**Professional** and **Enterprise** plans only](https://www.postman.com/pricing)).\n- \\`public\\` — Everyone can access the workspace.\n- \\`partner\\` — Only invited team members and [partners](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/partner-workspaces/) can access the workspace ([**Professional** and **Enterprise** plans only](https://www.postman.com/pricing)).\n",
+    title: 'Gets information about a workspace.',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,

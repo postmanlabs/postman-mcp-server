@@ -26,7 +26,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a comment on a folder. To create a reply on an existing comment, include the \\`threadId\\` property in the request body.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n',
+    title: 'Creates a comment on a folder. To create a reply on an existing comment, include the \\`threadId\\` property in the request body.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

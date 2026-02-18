@@ -35,8 +35,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'Replaces all the contents of an environment with the given information.\n\n**Note:**\n\n- The request body size cannot exceed the maximum allowed size of 30MB.\n- If you receive an HTTP \\`411 Length Required\\` error response, manually pass the \\`Content-Length\\` header and its value in the request header.\n',
+  title: 'Replaces all the contents of an environment with the given information.',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,
