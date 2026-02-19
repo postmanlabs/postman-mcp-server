@@ -590,6 +590,38 @@ To install the MCP server as a Gemini CLI extension, run the following command i
 gemini extensions install https://github.com/postmanlabs/postman-mcp-server
 ```
 
+### Install in Kiro
+
+To use the Postman MCP Server in Kiro, you can use one of the following methods:
+
+To set up the Postman MCP Server with one-click, see [API Testing with Postman](https://kiro.dev/powers/) on the Kiro Powers page. Click **Add to Kiro**.
+
+To install the Postman MCP Server manually, do the following:
+
+1. Launch Kiro and click the Kiro ghost icon in the left sidebar.
+1. Add an MCP Server and select either **User Config** or **Workspace Config** to install the Postman MCP server.
+1. Add the following JSON block to the `mcp.json` configuration file:
+
+    ```json wordWrap
+    {
+        "mcpServers": {
+            "postman": {
+            "command": "npx",
+                "args": [
+                    "@postman/postman-mcp-server"
+                ],
+                "env": {
+                    "POSTMAN_API_KEY": "postman-api-key"
+                },
+                "disabled": false,
+                "autoApprove": [
+                    "getAuthenticatedUser"
+                ]
+            }
+        }
+    }
+    ```
+
 ### Install in Docker
 
 For Docker set up and installation, see [DOCKER.md](./DOCKER.md).
