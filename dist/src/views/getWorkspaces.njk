@@ -1,6 +1,6 @@
 # Workspaces
 
-| id | name | type | visibility | createdBy | scim |
-|---|---|---|---|---|---|
-{% for item in workspaces %}| {{ item.id }} | {{ item.name }} | {{ item.type }} | {{ item.visibility }} | {{ item.createdBy }} | {{ item.scim | dump }} |
+| id | name | type | visibility | createdBy | about | createdAt | updatedAt | scim |
+|---|---|---|---|---|---|---|---|---|
+{% for item in workspaces %}| {{ item.id }} | {{ item.name }} | {{ item.type }} | {{ item.visibility }} | {{ item.createdBy }} | {{ item.about }} | {{ item.createdAt }} | {{ item.updatedAt }} | {{ item.scim | dump }} |
 {% endfor %}

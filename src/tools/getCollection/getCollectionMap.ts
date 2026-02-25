@@ -5,8 +5,8 @@ import { ServerContext, asMcpError, McpError } from '../utils/toolHelpers.js';
 
 export const method = 'getCollectionMap';
 export const description = `Get a Postman collection map with metadata and a complete recursive index of all folders and requests. Response includes collection metadata and description. Response includes itemRefs property (name and id only) instead of the full item array. After calling, present the collection summary and ask the user where they\'d like to explore next, calling getCollectionFolder and/or getCollectionRequest tools in parallel to get more data quickly.
-  Once you've called this tool, DO NOT call searchPostmanElements to find items in or related to this collection. Instead, use the map in itemRefs.
-  Only use searchPostmanElements to find the collection where a request may be. Then, stay in the collection and don't use the search.
+  Once you've called this tool, DO NOT call searchPostmanElementsInPublicNetwork to find items in or related to this collection. Instead, use the map in itemRefs.
+  Only use searchPostmanElementsInPublicNetwork to find the collection where a request may be. Then, stay in the collection and don't use the search.
   When using the getCollectionRequest tool to look up request data, omit the populate parameter to avoid getting all response examples
   back at once (can be very large). Instead, use the response ids from the return value and call getCollectionResponse for each one.
   Prepend the collection's ownerId to the front of each response id when passing it to getCollectionResponse. This is the first part of the collection uid.
