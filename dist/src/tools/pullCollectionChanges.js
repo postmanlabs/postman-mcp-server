@@ -2,7 +2,9 @@ import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'pullCollectionChanges';
 export const description = "Pulls the changes from a parent (source) collection into the forked collection. In the endpoint's response:\n\n- The \\`destinationId\\` is the ID of the forked collection.\n- The \\`sourceId\\` is the ID of the source collection.\n";
-export const parameters = z.object({ collectionId: z.string().describe("The collection's ID.") });
+export const parameters = z.object({
+    collectionId: z.string().describe("The forked collection's ID."),
+});
 export const annotations = {
     title: "Pulls the changes from a parent (source) collection into the forked collection. In the endpoint's response:",
     readOnlyHint: false,
