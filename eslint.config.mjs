@@ -1,10 +1,13 @@
+import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import unusedImports from "eslint-plugin-unused-imports";
 import eslintConfigPrettier from 'eslint-config-prettier'; // Ensures ESLint doesn't conflict with Prettier
 
-export default tseslint.config(
-  { ignores: ['dist/**', '**/*.js'] },
+export default defineConfig([
+  {
+    ignores: ['dist/', '**/*.js']
+  },
   {
     files: ['src/**/*.ts'],
   },
@@ -33,4 +36,4 @@ export default tseslint.config(
     }
   },
   eslintConfigPrettier
-);
+]);
