@@ -112,7 +112,8 @@ const full = [
     'deleteApiCollectionComment',
     'deleteSpecFile',
     'getEnabledTools',
-    'searchPostmanElements',
+    'searchPostmanElementsInPublicNetwork',
+    'searchPostmanElementsInPrivateNetwork',
 ];
 const minimal = [
     'createCollection',
@@ -152,7 +153,7 @@ const minimal = [
     'createCollectionRequest',
     'createCollectionResponse',
     'duplicateCollection',
-    'getStatusOfAnAsyncApiTask',
+    'getDuplicateCollectionTaskStatus',
     'runCollection',
     'getEnabledTools',
     'updateCollectionRequest',
@@ -161,7 +162,7 @@ const code = [
     'getCodeGenerationInstructions',
     'getWorkspace',
     'getWorkspaces',
-    'searchPostmanElements',
+    'searchPostmanElementsInPublicNetwork',
     'getCollectionRequest',
     'getCollectionResponse',
     'getCollectionFolder',
@@ -169,6 +170,7 @@ const code = [
     'getCollection',
     'getEnvironment',
     'getEnvironments',
+    'searchPostmanElementsInPrivateNetwork',
 ];
 const excludedFromGeneration = [
     'runCollection',
@@ -176,7 +178,8 @@ const excludedFromGeneration = [
     'getCodeGenerationInstructions',
     'getCollectionMap',
     'getCollection',
-    'searchPostmanElements',
+    'searchPostmanElementsInPublicNetwork',
+    'searchPostmanElementsInPrivateNetwork',
 ];
 const subtools = {
     getCollection: {
@@ -184,7 +187,10 @@ const subtools = {
         subtools: ['getCollection', 'getCollectionMap'],
     },
 };
-const templated = ['getCollections', 'getWorkspaces'];
+const templated = [
+    'getCollections',
+    'getWorkspaces',
+];
 export const enabledResources = {
     full,
     minimal,

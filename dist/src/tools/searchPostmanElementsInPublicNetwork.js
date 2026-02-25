@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'searchPostmanElements';
+export const method = 'searchPostmanElementsInPublicNetwork';
 export const description = 'Searches for Postman elements in the public network.\n\n**When to Use This Tool:**\n- When the user asks for a specific named request (e.g., "find PayPal requests", "search for Stripe API requests")\n- When the user wants to find collections (e.g., "find Stripe collections", "search for payment API collections")\n- When the user explicitly wants to search the public network\n- Do NOT use this for searching the user\'s own workspaces or collections (use getCollections or getWorkspaces instead)\n\n**Search Scope:**\n- Only searches the public network (public workspaces and collections)\n- Does not search private workspaces, team workspaces, or personal collections\n\n**Entity Types:**\n- `requests`: Search for individual API requests\n- `collections`: Search for collections (unique collections extracted from request results; pagination applies to underlying requests)\n';
 export const parameters = z.object({
     entityType: z

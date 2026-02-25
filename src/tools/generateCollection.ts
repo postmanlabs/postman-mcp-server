@@ -23,9 +23,9 @@ export const parameters = z.object({
         .describe('The option for setting the indentation character type.')
         .default('Space'),
       parametersResolution: z
-        .enum(['Schema', 'Example'])
+        .string()
         .describe(
-          "Whether to generate the request and response parameters based on the specification or the specification's examples."
+          'Generated collections use examples for parameter generation by default. Any existing collections generated using the schema parameter generation will continue to sync using their existing strategy.'
         )
         .default('Schema'),
       folderStrategy: z

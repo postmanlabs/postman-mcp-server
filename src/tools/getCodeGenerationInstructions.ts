@@ -53,13 +53,19 @@ First, locate the collection the user wants to work with. Determine whether the 
 
 ### For Public APIs
 
-Use \`searchPostmanElements\` to find public API collections:
+Use \`searchPostmanElementsInPublicNetwork\` to find public API collections:
 
-- \`searchPostmanElements(q, entityType: collections)\` - Search for public collections. E.g. if the user says "find the Stripe API and build a demo" then call this tool with the query "stripe" and entityType "collections". Review the collection(s) returned and select the best match. If multiple collections look viable, ask the user which one to use.
+- \`searchPostmanElementsInPublicNetwork(q, entityType: collections)\` - Search for public collections. E.g. if the user says "find the Stripe API and build a demo" then call this tool with the query "stripe" and entityType "collections". Review the collection(s) returned and select the best match. If multiple collections look viable, ask the user which one to use.
 
-### For Internal APIs
+### For Private APIs in the user's organization
 
-Use \`getWorkspaces\` and \`getWorkspace\` to find internal API collections:
+Use \`searchPostmanElementsInPrivateNetwork\` to find API collections in the Private API Network which is a central repository of trusted Workspaces within the organisation meant for discovery and reuse :
+
+- \`searchPostmanElementsInPrivateNetwork(q, entityType: collections)\` - Search for API collections in the Private API Network. E.g. if the user says "find the notification API and integrate it" then call this tool with the query "notification" and entityType "collections". Review the collection(s) returned and select the best match. If multiple API requests look viable, ask the user which one to use.
+
+### For user owned APIs
+
+Use \`getWorkspaces\` and \`getWorkspace\` to find user's internal API collections:
 
 - \`getWorkspaces()\` - Fetch all workspaces the user has access to. Look for a workspace with a name that matches what the user is looking for.
 
@@ -71,7 +77,7 @@ Once you've identified the target collection (from either path above):
 
 - \`getCollection(collectionId)\` - Fetch the collection details by passing its uid. IMPORTANT: Do NOT pass model=minimal or model=full, omit the model parameter entirely. The response will include collection-level documentation and a recursive itemRefs array with the names and uids of all folders and requests.
 
-**IMPORTANT:** Once you have established the collection, do NOT call searchPostmanElements or getWorkspaces again to find requests. Use getCollectionRequest to explore individual requests within the collection.
+**IMPORTANT:** Once you have established the collection, do NOT call searchPostmanElementsInPublicNetwork or searchPostmanElementsInPrivateNetwork or getWorkspaces again to find requests. Use getCollectionRequest to explore individual requests within the collection.
 
 ## 1.2 Explore Requests and Plan
 
@@ -97,7 +103,7 @@ Once you know which requests need code generated, gather all remaining context t
 
 - \`getCollectionResponse(responseId, collectionId, uid: true, populate: false)\` - Call this for response example uids returned from getCollectionRequest. Use the information for: creating response types in typed languages, adding response schema comments in untyped languages, and understanding both success and error cases.
 
-- \`getEnvironments(workspaceId)\` - Fetch all environments for the workspace that the collection belongs to (the workspaceId was returned from searchPostmanElements). ALWAYS pass a workspaceId. If you do not have a workspaceId, do NOT call this tool.
+- \`getEnvironments(workspaceId)\` - Fetch all environments for the workspace that the collection belongs to (the workspaceId was returned from searchPostmanElementsInPublicNetwork or searchPostmanElementsInPrivateNetwork). ALWAYS pass a workspaceId. If you do not have a workspaceId, do NOT call this tool.
 
 - \`getEnvironment(environmentId)\` - For each environment, fetch the full details to see what variables have been defined and retrieve their values.
 

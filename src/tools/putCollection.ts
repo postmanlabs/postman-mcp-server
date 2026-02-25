@@ -692,6 +692,16 @@ export const parameters = z.object({
                 'The [settings](https://learning.postman.com/docs/sending-requests/create-requests/request-settings/) used to alter the [Protocol Profile Behavior](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md) of sending a request.'
               )
               .optional(),
+            createdAt: z
+              .string()
+              .datetime({ offset: true })
+              .describe('The date and time at which the collection item was created.')
+              .optional(),
+            updatedAt: z
+              .string()
+              .datetime({ offset: true })
+              .describe('The date and time at which the collection item was updated.')
+              .optional(),
             uid: z.string().describe("The collection item's unique ID.").optional(),
           })
           .describe('Information about the collection request or folder.')

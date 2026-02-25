@@ -5,7 +5,7 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createWorkspace';
 export const description =
-  'Creates a new [workspace](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/).\n\n**Note:**\n\n- This endpoint returns a 403 \\`Forbidden\\` response if the user does not have permission to create workspaces. [Admins and Super Admins](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#team-roles) can configure workspace permissions to restrict users and/or user groups from creating workspaces or require approvals for the creation of team workspaces.\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n\n### Important\n\nWe deprecated linking collections or environments between workspaces. We do not recommend that you do this.\n\nIf you have a linked collection or environment, note the following:\n- The endpoint does not create a clone of a collection or environment.\n- Any changes you make to a linked collection or environment changes them in all workspaces.\n- If you delete a collection or environment linked between workspaces, the system deletes it in all the workspaces.\n';
+  'Creates a new [workspace](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/).\n\n**Note:**\n\n- This endpoint returns a 403 \\`Forbidden\\` response if the user does not have permission to create workspaces. [Admins and Super Admins](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#team-roles) can configure workspace permissions to restrict users and/or user groups from creating workspaces or require approvals for the creation of team workspaces.\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n- The \\`teamId\\` property must be passed in the request body if [Postman Organizations](https://learning.postman.com/docs/administration/onboarding-checklist) is enabled.\n';
 export const parameters = z.object({
   workspace: z
     .object({
@@ -17,6 +17,12 @@ export const parameters = z.object({
         ),
       description: z.string().describe("The workspace's description.").optional(),
       about: z.string().describe('A brief summary about the workspace.').optional(),
+      teamId: z
+        .string()
+        .describe(
+          'The team ID to assign to the workspace. This property is required if Postman [Organizations](https://learning.postman.com/docs/administration/managing-your-team/overview) is enabled.'
+        )
+        .optional(),
     })
     .describe('Information about the workspace.')
     .optional(),
