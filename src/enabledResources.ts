@@ -245,10 +245,7 @@ const subtools = {
   },
 } as const;
 
-const templated = [
-  'getCollections',
-  'getWorkspaces',
-] as const;
+const templated = ['getCollections', 'getWorkspaces'] as const;
 
 export const enabledResources = {
   full,
