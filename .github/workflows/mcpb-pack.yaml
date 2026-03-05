@@ -13,14 +13,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Sync manifest versions with package.json
         run: |
@@ -33,33 +36,33 @@ jobs:
           mv manifest-code.tmp.json manifest-code.json
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Install dependencies for packaging
-        run: npm ci --omit=dev
+        run: pnpm install --frozen-lockfile --prod
 
       - name: Install MCPB
-        run: npm install -g @anthropic-ai/mcpb
+        run: pnpm add -g @anthropic-ai/mcpb
 
       - name: Package extensions
         run: |
           current_dir=$(basename "$PWD")
-          
+
           # Package minimal version
           cp manifest-minimal.json manifest.json
           mcpb pack
           mv "${current_dir}.mcpb" "${current_dir}-minimal.mcpb"
-          
-          # Package full version  
+
+          # Package full version
           cp manifest-full.json manifest.json
           mcpb pack
           mv "${current_dir}.mcpb" "${current_dir}-full.mcpb"
-          
+
           # Package code version
           cp manifest-code.json manifest.json
           mcpb pack
           mv "${current_dir}.mcpb" "${current_dir}-code.mcpb"
-          
+
           # Set environment variables
           echo "MCPB_MINIMAL_FILENAME=${current_dir}-minimal.mcpb" >> $GITHUB_ENV
           echo "MCPB_FULL_FILENAME=${current_dir}-full.mcpb" >> $GITHUB_ENV
