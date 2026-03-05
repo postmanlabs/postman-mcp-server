@@ -18,13 +18,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Enable corepack
+      run: corepack enable
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm install
-    - run: npm run build
-    - run: npm test
+        cache: 'pnpm'
+    - run: pnpm install
+    - run: pnpm run build
+    - run: pnpm test
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
