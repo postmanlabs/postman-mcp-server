@@ -1,10 +1,10 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'deletePanWorkspace';
-export const description = "Removes a workspace from your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).\n\n**Note:**\n\nRemoving a workspace does not delete it. It only removes it from the Private API Network folder.\n";
+export const method = 'removeWorkspaceFromPrivateNetwork';
+export const description = "Removes a workspace from your team's Private API Network. This does not delete the workspace itself — it only removes it from the Private API Network folder.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
 export const annotations = {
-    title: "Removes a workspace from your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
+    title: "Removes a workspace from your team's Private API Network. This does not delete the workspace itself — it only removes it from the Private API Network folder.",
     readOnlyHint: false,
     destructiveHint: true,
     idempotentHint: true,
