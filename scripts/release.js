@@ -73,13 +73,13 @@ try {
     pkg.version = newVersion;
     writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
 
-    // Update package-lock.json version
-    console.log('🔒 Updating package-lock.json...');
-    execSync('npm install --package-lock-only', { stdio: 'inherit' });
+    // Update pnpm-lock.yaml version
+    console.log('🔒 Updating pnpm-lock.yaml...');
+    execSync('pnpm install --lockfile-only', { stdio: 'inherit' });
 
     // Build project
     console.log('🔨 Building project...');
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync('pnpm run build', { stdio: 'inherit' });
 
     // Update manifest versions
     console.log('📝 Updating manifest files...');
@@ -101,12 +101,12 @@ try {
         execSync('which mcpb', { stdio: 'pipe' });
     } catch {
         console.log('⚠️  mcpb not found, installing globally...');
-        execSync('npm install -g @anthropic-ai/mcpb', { stdio: 'inherit' });
+        execSync('pnpm add -g @anthropic-ai/mcpb', { stdio: 'inherit' });
     }
 
     // Install production dependencies for packaging
     console.log('📦 Installing production dependencies...');
-    execSync('npm ci --omit=dev', { stdio: 'inherit' });
+    execSync('pnpm install --frozen-lockfile --prod', { stdio: 'inherit' });
 
     // Package minimal version
     console.log('📦 Packaging minimal version...');
@@ -132,7 +132,7 @@ try {
 
     // Reinstall all dependencies
     console.log('📦 Reinstalling all dependencies...');
-    execSync('npm ci', { stdio: 'inherit' });
+    execSync('pnpm install --frozen-lockfile', { stdio: 'inherit' });
 
     // Update server.json with versions and SHA256 hashes
     console.log('📝 Updating server.json...');
