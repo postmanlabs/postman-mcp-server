@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'getAllPanAddRequests';
-export const description = "Gets all requests to add workspaces to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).";
+export const method = 'listPrivateNetworkAddRequests';
+export const description = "Gets all requests to add workspaces to your team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({
     since: z
         .string()
@@ -40,7 +40,7 @@ export const parameters = z.object({
         .default(1000),
 });
 export const annotations = {
-    title: "Gets all requests to add workspaces to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
+    title: "Gets all requests to add workspaces to your team's Private API Network.",
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,

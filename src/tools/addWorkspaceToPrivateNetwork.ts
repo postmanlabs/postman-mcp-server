@@ -3,9 +3,9 @@ import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'postPanWorkspace';
+export const method = 'addWorkspaceToPrivateNetwork';
 export const description =
-  "Publishes a workspace in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).";
+  "Publishes a workspace to your team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({
   workspace: z.object({
     id: z.string().describe("The workspace's ID."),
@@ -13,8 +13,7 @@ export const parameters = z.object({
   }),
 });
 export const annotations = {
-  title:
-    "Publishes a workspace in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
+  title: "Publishes a workspace to your team's Private API Network.",
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: false,
