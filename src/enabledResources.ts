@@ -45,6 +45,9 @@ const full = [
   'updateCollectionResponse',
   'transferCollectionResponses',
 
+  // Collection Runner
+  'runCollection',
+
   // Comments
   'createCollectionComment',
   'deleteCollectionComment',
@@ -114,11 +117,11 @@ const full = [
   'updateWorkspaceTags',
 
   // PAN (Private API Network)
-  'getAllElementsAndFolders',
-  'getAllPanAddElementRequests',
-  'deletePanElementOrFolder',
-  'postPanElementOrFolder',
-  'updatePanElementOrFolder',
+  'listPrivateNetworkWorkspaces',
+  'listPrivateNetworkAddRequests',
+  'removeWorkspaceFromPrivateNetwork',
+  'addWorkspaceToPrivateNetwork',
+  'respondPrivateNetworkAddRequest',
 
   // // Documentation
   'publishDocumentation',
@@ -131,6 +134,9 @@ const full = [
   // User and Tags
   'getAuthenticatedUser',
   'getTaggedEntities',
+
+  // Code Generation
+  'getCodeGenerationInstructions',
 
   // Transfer
   'transferCollectionFolders',
@@ -146,7 +152,12 @@ const full = [
   'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
-  'runCollection',
+  'searchPostmanElementsInPublicNetwork',
+  'searchPostmanElementsInPrivateNetwork',
+
+  // Analytics
+  'getAnalyticsData',
+  'getAnalyticsMetadata',
 ] as const;
 
 const minimal = [
@@ -187,15 +198,67 @@ const minimal = [
   'createCollectionRequest',
   'createCollectionResponse',
   'duplicateCollection',
-  'getStatusOfAnAsyncApiTask',
+  'getDuplicateCollectionTaskStatus',
   'runCollection',
   'getEnabledTools',
+  'updateCollectionRequest',
 ] as const;
 
-const excludedFromGeneration = ['runCollection', 'getEnabledTools'] as const;
+const code = [
+  'getCodeGenerationInstructions',
+  'getWorkspace',
+  'getWorkspaces',
+  'searchPostmanElementsInPublicNetwork',
+  'getCollectionRequest',
+  'getCollectionResponse',
+  'getCollectionFolder',
+  'getAuthenticatedUser',
+  'getCollection',
+  'getEnvironment',
+  'getEnvironments',
+  'searchPostmanElementsInPrivateNetwork',
+] as const;
+
+const excludedFromGeneration = [
+  'runCollection',
+  'getEnabledTools',
+  'getCodeGenerationInstructions',
+  'getCollectionMap',
+  'getCollection',
+  'searchPostmanElementsInPublicNetwork',
+  'searchPostmanElementsInPrivateNetwork',
+] as const;
+
+/**
+ * Subtools are tools that are grouped under a parent tool orchestrator.
+ * Each subtool is defined with:
+ * - orchestrator: The main tool that will be exposed (the index.ts file)
+ * - subtools: Array of tools that will be placed in the orchestrator's folder
+ * 
+ * Example structure for 'getCollection':
+ * tools/
+ *   getCollection/
+ *     index.ts          <- orchestrator (handles routing logic)
+ *     getCollection.ts  <- subtool (the actual API call)
+ *     getCollectionMap.ts <- subtool (the map variant)
+ */
+const subtools = {
+  getCollection: {
+    orchestrator: 'getCollection',
+    subtools: ['getCollection', 'getCollectionMap'],
+  },
+} as const;
+
+const templated = [
+  'getCollections',
+  'getWorkspaces',
+] as const;
 
 export const enabledResources = {
   full,
   minimal,
+  code,
   excludedFromGeneration,
+  subtools,
+  templated,
 };

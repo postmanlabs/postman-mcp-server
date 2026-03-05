@@ -371,7 +371,7 @@ export const parameters = z.object({
 });
 export const annotations = {
   title:
-    'Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n',
+    'Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,

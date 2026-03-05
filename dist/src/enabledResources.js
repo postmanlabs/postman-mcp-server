@@ -35,6 +35,7 @@ const full = [
     'getCollectionResponse',
     'updateCollectionResponse',
     'transferCollectionResponses',
+    'runCollection',
     'createCollectionComment',
     'deleteCollectionComment',
     'getCollectionComments',
@@ -91,17 +92,18 @@ const full = [
     'updateWorkspaceGlobalVariables',
     'getWorkspaceTags',
     'updateWorkspaceTags',
-    'getAllElementsAndFolders',
-    'getAllPanAddElementRequests',
-    'deletePanElementOrFolder',
-    'postPanElementOrFolder',
-    'updatePanElementOrFolder',
+    'listPrivateNetworkWorkspaces',
+    'listPrivateNetworkAddRequests',
+    'removeWorkspaceFromPrivateNetwork',
+    'addWorkspaceToPrivateNetwork',
+    'respondPrivateNetworkAddRequest',
     'publishDocumentation',
     'unpublishDocumentation',
     'getAsyncSpecTaskStatus',
     'getStatusOfAnAsyncApiTask',
     'getAuthenticatedUser',
     'getTaggedEntities',
+    'getCodeGenerationInstructions',
     'transferCollectionFolders',
     'transferCollectionResponses',
     'transferCollectionResponses',
@@ -110,7 +112,10 @@ const full = [
     'deleteApiCollectionComment',
     'deleteSpecFile',
     'getEnabledTools',
-    'runCollection',
+    'searchPostmanElementsInPublicNetwork',
+    'searchPostmanElementsInPrivateNetwork',
+    'getAnalyticsData',
+    'getAnalyticsMetadata',
 ];
 const minimal = [
     'createCollection',
@@ -150,13 +155,49 @@ const minimal = [
     'createCollectionRequest',
     'createCollectionResponse',
     'duplicateCollection',
-    'getStatusOfAnAsyncApiTask',
+    'getDuplicateCollectionTaskStatus',
     'runCollection',
     'getEnabledTools',
+    'updateCollectionRequest',
 ];
-const excludedFromGeneration = ['runCollection', 'getEnabledTools'];
+const code = [
+    'getCodeGenerationInstructions',
+    'getWorkspace',
+    'getWorkspaces',
+    'searchPostmanElementsInPublicNetwork',
+    'getCollectionRequest',
+    'getCollectionResponse',
+    'getCollectionFolder',
+    'getAuthenticatedUser',
+    'getCollection',
+    'getEnvironment',
+    'getEnvironments',
+    'searchPostmanElementsInPrivateNetwork',
+];
+const excludedFromGeneration = [
+    'runCollection',
+    'getEnabledTools',
+    'getCodeGenerationInstructions',
+    'getCollectionMap',
+    'getCollection',
+    'searchPostmanElementsInPublicNetwork',
+    'searchPostmanElementsInPrivateNetwork',
+];
+const subtools = {
+    getCollection: {
+        orchestrator: 'getCollection',
+        subtools: ['getCollection', 'getCollectionMap'],
+    },
+};
+const templated = [
+    'getCollections',
+    'getWorkspaces',
+];
 export const enabledResources = {
     full,
     minimal,
+    code,
     excludedFromGeneration,
+    subtools,
+    templated,
 };

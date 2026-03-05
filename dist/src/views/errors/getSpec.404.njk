@@ -1,0 +1,5 @@
+API specification not found: {{ args.specId }}
+{% if error and (error.detail or error.message) %}
+API detail: {{ error.detail or error.message }}
+{% endif %}
+Verify the spec ID is correct. Use getAllSpecs to list available specifications.

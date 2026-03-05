@@ -73,13 +73,13 @@ try {
     pkg.version = newVersion;
     writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
 
-    // Update package-lock.json version
-    console.log('🔒 Updating package-lock.json...');
-    execSync('npm install --package-lock-only', { stdio: 'inherit' });
+    // Update pnpm-lock.yaml version
+    console.log('🔒 Updating pnpm-lock.yaml...');
+    execSync('pnpm install --lockfile-only', { stdio: 'inherit' });
 
     // Build project
     console.log('🔨 Building project...');
-    execSync('npm run build', { stdio: 'inherit' });
+    execSync('pnpm run build', { stdio: 'inherit' });
 
     // Update manifest versions
     console.log('📝 Updating manifest files...');
@@ -91,6 +91,7 @@ try {
 
     updateManifest('manifest-full.json');
     updateManifest('manifest-minimal.json');
+    updateManifest('manifest-code.json');
 
     // Build mcpb packages locally to calculate SHA256 hashes
     console.log('📦 Building mcpb packages for SHA256 calculation...');
@@ -100,12 +101,12 @@ try {
         execSync('which mcpb', { stdio: 'pipe' });
     } catch {
         console.log('⚠️  mcpb not found, installing globally...');
-        execSync('npm install -g @anthropic-ai/mcpb', { stdio: 'inherit' });
+        execSync('pnpm add -g @anthropic-ai/mcpb', { stdio: 'inherit' });
     }
 
     // Install production dependencies for packaging
     console.log('📦 Installing production dependencies...');
-    execSync('npm ci --omit=dev', { stdio: 'inherit' });
+    execSync('pnpm install --frozen-lockfile --prod', { stdio: 'inherit' });
 
     // Package minimal version
     console.log('📦 Packaging minimal version...');
@@ -120,12 +121,18 @@ try {
     execSync('mcpb pack', { stdio: 'inherit' });
     execSync(`mv "${currentDir}.mcpb" "postman-mcp-server-full.mcpb"`, { stdio: 'inherit' });
 
+    // Package code version
+    console.log('📦 Packaging code version...');
+    execSync('cp manifest-code.json manifest.json', { stdio: 'inherit' });
+    execSync('mcpb pack', { stdio: 'inherit' });
+    execSync(`mv "${currentDir}.mcpb" "postman-mcp-server-code.mcpb"`, { stdio: 'inherit' });
+
     // Restore manifest.json (optional, or delete it)
     execSync('rm manifest.json', { stdio: 'inherit' });
 
     // Reinstall all dependencies
     console.log('📦 Reinstalling all dependencies...');
-    execSync('npm ci', { stdio: 'inherit' });
+    execSync('pnpm install --frozen-lockfile', { stdio: 'inherit' });
 
     // Update server.json with versions and SHA256 hashes
     console.log('📝 Updating server.json...');
@@ -143,7 +150,8 @@ try {
         console.log('🔐 Calculating SHA256 hashes for mcpb packages...');
         const mcpbFiles = [
             { name: 'postman-mcp-server-minimal.mcpb', path: 'postman-mcp-server-minimal.mcpb' },
-            { name: 'postman-mcp-server-full.mcpb', path: 'postman-mcp-server-full.mcpb' }
+            { name: 'postman-mcp-server-full.mcpb', path: 'postman-mcp-server-full.mcpb' },
+            { name: 'postman-mcp-server-code.mcpb', path: 'postman-mcp-server-code.mcpb' }
         ];
 
         const mcpbPackages = serverJson.packages.filter(pkg => pkg.registryType === 'mcpb');
@@ -168,7 +176,7 @@ try {
 
     // Clean up mcpb files (they'll be rebuilt by GitHub Action)
     console.log('🧹 Cleaning up local mcpb packages...');
-    execSync('rm -f postman-mcp-server-minimal.mcpb postman-mcp-server-full.mcpb', { stdio: 'inherit' });
+    execSync('rm -f postman-mcp-server-minimal.mcpb postman-mcp-server-full.mcpb postman-mcp-server-code.mcpb', { stdio: 'inherit' });
 
     // Commit and tag
     console.log('📤 Committing and tagging...');

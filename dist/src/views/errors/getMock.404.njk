@@ -1,0 +1,5 @@
+Mock server not found: {{ args.mockId }}
+{% if error and (error.detail or error.message) %}
+API detail: {{ error.detail or error.message }}
+{% endif %}
+Verify the mock ID is correct. Use getMocks to list available mock servers.

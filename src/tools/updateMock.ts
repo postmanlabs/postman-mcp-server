@@ -20,6 +20,9 @@ export const parameters = z.object({
         )
         .default(false),
       versionTag: z.string().describe("The API's version tag ID.").optional(),
+      collection: z
+        .string()
+        .describe("The associated collection's unique ID. This is a mandatory parameter."),
       config: z
         .object({
           serverResponseId: z
@@ -32,15 +35,11 @@ export const parameters = z.object({
         })
         .describe("The mock server's configuration settings.")
         .optional(),
-      collection: z
-        .string()
-        .describe("The associated collection's unique ID. This is a mandatory parameter."),
     })
     .optional(),
 });
 export const annotations = {
-  title:
-    'Updates a mock server.\n- Resource: Mock server entity associated with a collection UID.\n- Use this to change name, environment, privacy, or default server response.\n',
+  title: 'Updates a mock server.',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,

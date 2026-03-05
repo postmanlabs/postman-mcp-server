@@ -18,8 +18,8 @@ export const parameters = z.object({
             .describe('The option for setting the indentation character type.')
             .default('Space'),
         parametersResolution: z
-            .enum(['Schema', 'Example'])
-            .describe("Whether to generate the request and response parameters based on the specification or the specification's examples.")
+            .string()
+            .describe('Generated collections use examples for parameter generation by default. Any existing collections generated using the schema parameter generation will continue to sync using their existing strategy.')
             .default('Schema'),
         folderStrategy: z
             .enum(['Paths', 'Tags'])
@@ -54,7 +54,7 @@ export const parameters = z.object({
         .default({ enableOptionalParameters: true, folderStrategy: 'Paths' }),
 });
 export const annotations = {
-    title: 'Creates a collection from the given API specification.\nThe specification must already exist or be created before it can be used to generate a collection.\nThe response contains a polling link to the task status.\n',
+    title: 'Creates a collection from the given API specification.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

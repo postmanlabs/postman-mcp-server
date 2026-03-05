@@ -12,7 +12,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Creates a duplicate of the given collection in another workspace.\n\nUse the GET \\`/collection-duplicate-tasks/{taskId}\\` endpoint to get the duplication task's current status.\n",
+    title: 'Creates a duplicate of the given collection in another workspace.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

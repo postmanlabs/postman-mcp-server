@@ -9,7 +9,7 @@ export const description =
 export const parameters = z.object({ collectionId: z.string().describe("The collection's ID.") });
 export const annotations = {
   title:
-    'Checks whether there is a change between the forked collection and its parent (source) collection.\n\nIf the value of the \\`isSourceAhead\\` property is \\`true\\` in the response, then there is a difference between the forked collection and its source collection.\n\n**Note:**\n\nThis endpoint may take a few minutes to return an updated \\`isSourceAhead\\` status.\n',
+    'Checks whether there is a change between the forked collection and its parent (source) collection.',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

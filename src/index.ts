@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import dotenv from 'dotenv';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { InitializeRequest } from '@modelcontextprotocol/sdk/types.js';
@@ -16,10 +15,14 @@ import { readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
+import dotenv from 'dotenv';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
 import { ServerContext } from './tools/utils/toolHelpers.js';
+import { env } from './env.js';
+import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
+import { createErrorTemplateRenderer } from './tools/utils/errorTemplateRenderer.js';
 
 const SUPPORTED_REGIONS = {
   us: 'https://api.postman.com',
@@ -34,7 +37,7 @@ function setRegionEnvironment(region: string): void {
   if (!isValidRegion(region)) {
     throw new Error(`Invalid region: ${region}. Supported regions: us, eu`);
   }
-  process.env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
+  env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
 }
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -65,6 +68,7 @@ function logBoth(
 
 type FullResourceMethod = (typeof enabledResources.full)[number];
 type MinimalResourceMethod = (typeof enabledResources.minimal)[number];
+type CodeResourceMethod = (typeof enabledResources.code)[number];
 type EnabledResourceMethod = FullResourceMethod;
 
 interface ToolModule {
@@ -90,21 +94,21 @@ interface ToolModule {
 async function loadAllTools(): Promise<ToolModule[]> {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
-  const toolsDir = join(__dirname, 'tools');
+  const generatedToolsDir = join(__dirname, './tools');
+  const isWindows = process.platform === 'win32';
 
+  const tools: ToolModule[] = [];
+
+  // Load generated tools from ./tools/*.js
   try {
-    log('info', 'Loading tools from directory', { toolsDir });
-    const files = await readdir(toolsDir);
+    log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir });
+    const files = await readdir(generatedToolsDir);
     const toolFiles = files.filter((file) => file.endsWith('.js'));
     log('debug', 'Discovered tool files', { count: toolFiles.length });
 
-    const tools: ToolModule[] = [];
-
     for (const file of toolFiles) {
       try {
-        const toolPath = join(toolsDir, file);
-        // If the OS is windows, prepend 'file://' to the path
-        const isWindows = process.platform === 'win32';
+        const toolPath = join(generatedToolsDir, file);
         const toolModule = await import(isWindows ? `file://${toolPath}` : toolPath);
 
         if (
@@ -125,16 +129,15 @@ async function loadAllTools(): Promise<ToolModule[]> {
         });
       }
     }
-
-    log('info', 'Tool loading completed', { totalLoaded: tools.length });
-    return tools;
   } catch (error: any) {
     log('error', 'Failed to read tools directory', {
-      toolsDir,
+      toolsDir: generatedToolsDir,
       error: String(error?.message || error),
     });
-    return [];
   }
+
+  log('info', 'Tool loading completed', { totalLoaded: tools.length });
+  return tools;
 }
 
 const dotEnvOutput = dotenv.config({ quiet: true });
@@ -156,6 +159,7 @@ let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefine
 async function run() {
   const args = process.argv.slice(2);
   const useFull = args.includes('--full');
+  const useCode = args.includes('--code');
 
   const regionIndex = args.findIndex((arg) => arg === '--region');
   if (regionIndex !== -1 && regionIndex + 1 < args.length) {
@@ -164,7 +168,7 @@ async function run() {
       setRegionEnvironment(region);
       log('info', `Using region: ${region}`, {
         region,
-        baseUrl: process.env.POSTMAN_API_BASE_URL,
+        baseUrl: env.POSTMAN_API_BASE_URL,
       });
     } else {
       log('error', `Invalid region: ${region}`);
@@ -174,7 +178,7 @@ async function run() {
   }
 
   // For STDIO mode, validate API key is available in environment
-  const apiKey = process.env.POSTMAN_API_KEY;
+  const apiKey = env.POSTMAN_API_KEY;
   if (!apiKey) {
     log('error', 'POSTMAN_API_KEY environment variable is required for STDIO mode');
     process.exit(1);
@@ -191,7 +195,10 @@ async function run() {
   const minimalTools = allGeneratedTools.filter((t) =>
     enabledResources.minimal.includes(t.method as MinimalResourceMethod)
   );
-  const tools = useFull ? fullTools : minimalTools;
+  const codeTools = allGeneratedTools.filter((t) =>
+    enabledResources.code.includes(t.method as CodeResourceMethod)
+  );
+  const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
 
   // Create McpServer instance
   const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION });
@@ -208,24 +215,34 @@ async function run() {
     process.exit(0);
   });
 
-  // Create a client instance with the API key for STDIO mode
-  const client = new PostmanAPIClient(apiKey);
-
   // Create server context that will be passed to all tools
   const serverContext: ServerContext = {
-    serverType: useFull ? 'full' : 'minimal',
+    serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
     availableTools: tools.map((t) => t.method),
   };
 
+  // Initialize template renderer
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const viewsDir = join(__dirname, './views');
+  const renderTemplate = createTemplateRenderer(viewsDir);
+  const errorsDir = join(__dirname, './views/errors');
+  const renderErrorTemplate = createErrorTemplateRenderer(errorsDir);
+
+  // Create a client instance with the API key and server context for STDIO mode
+  const client = new PostmanAPIClient(apiKey, undefined, serverContext);
+
   log('info', 'Registering tools with McpServer');
 
-  // Register all tools using the McpServer .tool() method
+  // Register all tools using the McpServer registerTool method
   for (const tool of tools) {
-    server.tool(
+    server.registerTool(
       tool.method,
-      tool.description,
-      tool.parameters.shape,
-      tool.annotations || {},
+      {
+        description: tool.description,
+        inputSchema: tool.parameters.shape,
+        annotations: tool.annotations || {},
+      },
       async (args, extra) => {
         const toolName = tool.method;
         // Keep start event on stderr only to reduce client noise
@@ -249,12 +266,46 @@ async function run() {
             toolName,
             durationMs,
           });
+
+          // Apply template rendering
+          if (result.content?.[0]?.type === 'text') {
+            const rendered = renderTemplate(toolName, result.content[0].text);
+            if (rendered) {
+              return { content: [{ type: 'text' as const, text: rendered }] };
+            }
+          }
+
           return result;
         } catch (error: any) {
           const errMsg = String(error?.message || error);
           // Failures: notify both server stderr and client
           logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
-          if (error instanceof McpError) throw error;
+          if (error instanceof McpError) {
+            const httpStatus = (error.data as Record<string, unknown>)?.httpStatus;
+            if (typeof httpStatus === 'number') {
+              const rawBody = String((error.data as Record<string, unknown>)?.cause ?? '');
+              let parsedBody: Record<string, unknown> | null = null;
+              try { parsedBody = JSON.parse(rawBody) as Record<string, unknown>; } catch { /* not JSON */ }
+
+              // Unwrap common { error: { ... } } API response pattern
+              const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
+                ? parsedBody.error as Record<string, unknown>
+                : parsedBody;
+
+              const rendered = renderErrorTemplate(toolName, httpStatus, {
+                toolName,
+                statusCode: httpStatus,
+                args,
+                errorMessage: error.message,
+                errorBody: rawBody,
+                error: errorObj,
+              });
+              if (rendered) {
+                throw new McpError(error.code, rendered, error.data);
+              }
+            }
+            throw error;
+          }
           throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
         }
       }
@@ -271,10 +322,11 @@ async function run() {
     }
   };
   await server.connect(transport);
+  const toolsetName = useCode ? 'code' : useFull ? 'full' : 'minimal';
   logBoth(
     server,
     'info',
-    `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${useFull ? 'full' : 'minimal'})`
+    `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`
   );
 }
 

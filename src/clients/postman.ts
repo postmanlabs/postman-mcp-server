@@ -1,5 +1,7 @@
 import { IsomorphicHeaders, McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { USER_AGENT } from '../constants.js';
+import type { ServerContext } from '../tools/utils/toolHelpers.js';
+import { env } from '../env.js';
 
 export enum ContentType {
   Json = 'application/json',
@@ -36,14 +38,17 @@ export interface IPostmanAPIClient {
 export class PostmanAPIClient implements IPostmanAPIClient {
   private readonly baseUrl: string;
   private readonly apiKey?: string;
+  private readonly serverContext?: ServerContext;
   private static instance: PostmanAPIClient | null = null;
 
   constructor(
     apiKey?: string,
-    baseUrl: string = process.env.POSTMAN_API_BASE_URL || 'https://api.postman.com'
+    baseUrl: string = env.POSTMAN_API_BASE_URL,
+    serverContext?: ServerContext
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
+    this.serverContext = serverContext;
   }
 
   /**
@@ -95,7 +100,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     options: PostmanAPIRequestOptions & { method: string }
   ): Promise<T> {
     // Get API key at request time - check instance, then environment
-    const currentApiKey = this.apiKey || process.env.POSTMAN_API_KEY;
+    const currentApiKey = this.apiKey || env.POSTMAN_API_KEY;
     if (!currentApiKey) {
       throw new Error(
         'API key is required for requests. Provide it via constructor parameter or set POSTMAN_API_KEY environment variable.'
@@ -109,7 +114,11 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     );
     const userAgentValue = userAgentKey ? options.headers?.[userAgentKey] : undefined;
 
-    const userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
+    // Build user agent with toolset information if available
+    let userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
+    if (this.serverContext?.serverType) {
+      userAgentHeader = `${userAgentHeader} (toolset: ${this.serverContext.serverType})`;
+    }
 
     const disallowed = new Set([
       'content-length',
@@ -166,11 +175,13 @@ export class PostmanAPIClient implements IPostmanAPIClient {
           `API request failed: ${response.status} ${errorText}`,
           {
             cause: errorText,
+            httpStatus: response.status,
           }
         );
       default:
         throw new McpError(ErrorCode.InternalError, `API request failed: ${response.status}`, {
           cause: errorText,
+          httpStatus: response.status,
         });
     }
   }

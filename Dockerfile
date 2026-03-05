@@ -1,26 +1,28 @@
 FROM node:22.16-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@10.6.2 --activate
 RUN adduser -D app
 USER app
 
 WORKDIR /app
 
-COPY --chown=app ./package*.json ./
+COPY --chown=app ./package.json ./pnpm-lock.yaml ./
 
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 COPY --chown=app . ./
 
-RUN npm run build
+RUN pnpm run build
 
 FROM node:22.16-alpine AS production-base
 
+RUN corepack enable && corepack prepare pnpm@10.6.2 --activate
 RUN adduser -D app
 USER app
 WORKDIR /app
 
-COPY --chown=app ./package*.json ./
+COPY --chown=app ./package.json ./pnpm-lock.yaml ./
 
-RUN npm ci --only=production
+RUN pnpm install --frozen-lockfile --prod
 
 COPY --chown=app --from=builder /app/dist ./dist
 

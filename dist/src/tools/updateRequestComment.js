@@ -22,7 +22,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Updates a comment on a request.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n',
+    title: 'Updates a comment on a request.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,

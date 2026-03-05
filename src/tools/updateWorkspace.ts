@@ -5,7 +5,7 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updateWorkspace';
 export const description =
-  'Updates a workspace.\n\n**Note:**\n\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n\n### Important\n\nWe deprecated linking collections or environments between workspaces. We do not recommend that you do this.\n\nIf you have a linked collection or environment, note the following:\n- The endpoint does not create a clone of a collection or environment.\n- Any changes you make to a linked collection or environment changes them in all workspaces.\n- If you delete a collection or environment linked between workspaces, the system deletes it in all the workspaces.\n';
+  'Updates a workspace.\n\n**Note:**\n\n- This endpoint does not support the following visibility changes:\n  - \\`private\\` to \\`public\\`, \\`public\\` to \\`private\\`, and \\`private\\` to \\`personal\\` for **Free** and **Solo** [plans](https://www.postman.com/pricing/).\n  - \\`public\\` to \\`personal\\` for team users only.\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n';
 export const parameters = z.object({
   workspaceId: z.string().describe("The workspace's ID."),
   workspace: z
@@ -23,8 +23,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'Updates a workspace.\n\n**Note:**\n\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n\n### Important\n\nWe deprecated linking collections or environments between workspaces. We do not recommend that you do this.\n\nIf you have a linked collection or environment, note the following:\n- The endpoint does not create a clone of a collection or environment.\n- Any changes you make to a linked collection or environment changes them in all workspaces.\n- If you delete a collection or environment linked between workspaces, the system deletes it in all the workspaces.\n',
+  title: 'Updates a workspace.',
   readOnlyHint: false,
   destructiveHint: false,
   idempotentHint: true,

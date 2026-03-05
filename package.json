@@ -1,20 +1,22 @@
 {
   "name": "@postman/postman-mcp-server",
-  "version": "2.4.9",
+  "version": "2.7.1",
   "description": "A simple MCP server to operate on the Postman API",
   "mcpName": "com.postman/postman-mcp-server",
   "main": "dist/src/index.js",
   "type": "module",
+  "packageManager": "pnpm@10.6.2",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "start:stdio": "node dist/src/index.js",
     "build": "eslint --fix ./src && prettier --write \"src/**/*.ts\" && tsc",
-    "prepack": "npm run build",
+    "prepack": "pnpm run build",
     "test": "vitest",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "preversion": "npm run build",
+    "preversion": "pnpm run build",
     "version": "git add dist/",
-    "release": "npm version",
+    "release": "pnpm version",
     "release-custom": "node scripts/release.js"
   },
   "bin": "dist/src/index.js",
@@ -27,30 +29,23 @@
     "access": "public"
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "^12.0.0",
-    "@modelcontextprotocol/sdk": "^1.18.1",
-    "dotenv": "^17.2.2",
-    "es-toolkit": "^1.39.10",
-    "express": "^5.1.0",
-    "newman": "^6.2.1"
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "dotenv": "^17.3.1",
+    "newman": "^6.2.2",
+    "nunjucks": "^3.2.4",
+    "uuid": "^13.0.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@types/express": "^5.0.3",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^24",
-    "eslint": "^9.35.0",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-unused-imports": "^4.2.0",
-    "fs-extra": "^11.3.2",
-    "jest": "^30.1.3",
-    "json-schema-to-zod": "^2.6.1",
-    "openapi-types": "^12.1.3",
-    "prettier": "^3.6.2",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.0",
-    "vitest": "^3.2.4"
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "prettier": "^3.8.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=20.0.0"

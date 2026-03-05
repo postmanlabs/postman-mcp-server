@@ -22,6 +22,7 @@ export const parameters = z.object({
     limit: z
         .number()
         .int()
+        .lte(25)
         .describe('The maximum number of rows to return in the response, up to a maximum value of 25. Any value greater than 25 returns a 400 Bad Request response.')
         .default(25),
 });

@@ -9,7 +9,7 @@ export const parameters = z.object({
     content: z.string().describe("The file's stringified contents."),
 });
 export const annotations = {
-    title: 'Creates an API specification file.\n\n**Note:**\n\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Creating a spec file assigns it the \\`DEFAULT\\` file type.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n',
+    title: 'Creates an API specification file.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

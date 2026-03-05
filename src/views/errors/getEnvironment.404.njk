@@ -1,0 +1,5 @@
+Environment not found: {{ args.environmentId }}
+{% if error and (error.detail or error.message) %}
+API detail: {{ error.detail or error.message }}
+{% endif %}
+Verify the environment ID is correct. Use getEnvironments to list available environments.
