@@ -117,11 +117,11 @@ const full = [
   'updateWorkspaceTags',
 
   // PAN (Private API Network)
-  'getAllPanWorkspaces',
-  'getAllPanAddRequests',
-  'deletePanWorkspace',
-  'postPanWorkspace',
-  'respondPanAddRequest',
+  'listPrivateNetworkWorkspaces',
+  'listPrivateNetworkAddRequests',
+  'removeWorkspaceFromPrivateNetwork',
+  'addWorkspaceToPrivateNetwork',
+  'respondPrivateNetworkAddRequest',
 
   // // Documentation
   'publishDocumentation',
