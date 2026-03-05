@@ -94,10 +94,12 @@ export class PostmanAPIClient {
             case 403:
                 throw new McpError(ErrorCode.InvalidParams, `API request failed: ${response.status} ${errorText}`, {
                     cause: errorText,
+                    httpStatus: response.status,
                 });
             default:
                 throw new McpError(ErrorCode.InternalError, `API request failed: ${response.status}`, {
                     cause: errorText,
+                    httpStatus: response.status,
                 });
         }
     }

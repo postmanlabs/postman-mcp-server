@@ -3,39 +3,47 @@ import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'getAllPanAddElementRequests';
+export const method = 'getAllPanWorkspaces';
 export const description =
-  "Gets a list requests to add elements to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).";
+  "Gets information workspaces added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).";
 export const parameters = z.object({
+  type: z.literal('workspace').describe('The `workspace` value.').optional(),
+  name: z
+    .string()
+    .describe(
+      'Return only workspaces whose name includes the given value. Matching is not case-sensitive.'
+    )
+    .optional(),
+  summary: z
+    .string()
+    .describe(
+      'Return only workspaces whose summary includes the given value. Matching is not case-sensitive.'
+    )
+    .optional(),
+  description: z
+    .string()
+    .describe(
+      'Return only workspaces whose description includes the given value. Matching is not case-sensitive.'
+    )
+    .optional(),
   since: z
     .string()
     .datetime({ offset: true })
     .describe(
-      'Return only results created since the given time, in [ISO 8601](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format. This value cannot be later than the `until` value. To use time-numoffset format, you must use `%2B` URL-encoding for the `+` character.'
+      'Return only results created since the given time, in [ISO 8601](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format. This value cannot be later than the `until` value.'
     )
     .optional(),
   until: z
     .string()
     .datetime({ offset: true })
     .describe(
-      'Return only results created until this given time, in [ISO 8601](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format. This value cannot be earlier than the `since` value. To use time-numoffset format, you must use `%2B` URL-encoding for the `+` character.'
+      'Return only results created until this given time, in [ISO 8601](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) format. This value cannot be earlier than the `since` value.'
     )
     .optional(),
-  requestedBy: z
+  addedBy: z
     .number()
     .int()
-    .describe("Return a user's element requests by their user ID.")
-    .optional(),
-  type: z
-    .enum(['api', 'folder', 'collection', 'workspace'])
-    .describe('Filter by the element type.')
-    .optional(),
-  status: z.enum(['pending', 'denied']).describe('Filter by the request status.').optional(),
-  name: z
-    .string()
-    .describe(
-      'Return only elements whose name includes the given value. Matching is not case-sensitive.'
-    )
+    .describe('Return only workspaces published by the given user ID.')
     .optional(),
   sort: z
     .enum(['createdAt', 'updatedAt'])
@@ -49,6 +57,11 @@ export const parameters = z.object({
       'Sort in ascending (`asc`) or descending (`desc`) order. Matching is not case-sensitive. If you use this query parameter, you must also use the `sort` parameter.'
     )
     .optional(),
+  createdBy: z
+    .number()
+    .int()
+    .describe('Return only results created by the given user ID.')
+    .optional(),
   offset: z
     .number()
     .int()
@@ -58,13 +71,14 @@ export const parameters = z.object({
     .number()
     .int()
     .describe(
-      'The maximum number of elements to return. If the value exceeds the maximum value of `1000`, then the system uses the `1000` value.'
+      'The maximum number of results to return. If the value exceeds the maximum value of `1000`, then the system uses the `1000` value.'
     )
     .default(1000),
+  parentFolderId: z.number().int().describe('This parameter is deprecated.').default(0),
 });
 export const annotations = {
   title:
-    "Gets a list requests to add elements to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
+    "Gets information workspaces added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
@@ -75,18 +89,21 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/network/private/network-entity/request/all`;
+    const endpoint = `/network/private`;
     const query = new URLSearchParams();
+    if (args.type !== undefined) query.set('type', String(args.type));
+    if (args.name !== undefined) query.set('name', String(args.name));
+    if (args.summary !== undefined) query.set('summary', String(args.summary));
+    if (args.description !== undefined) query.set('description', String(args.description));
     if (args.since !== undefined) query.set('since', String(args.since));
     if (args.until !== undefined) query.set('until', String(args.until));
-    if (args.requestedBy !== undefined) query.set('requestedBy', String(args.requestedBy));
-    if (args.type !== undefined) query.set('type', String(args.type));
-    if (args.status !== undefined) query.set('status', String(args.status));
-    if (args.name !== undefined) query.set('name', String(args.name));
+    if (args.addedBy !== undefined) query.set('addedBy', String(args.addedBy));
     if (args.sort !== undefined) query.set('sort', String(args.sort));
     if (args.direction !== undefined) query.set('direction', String(args.direction));
+    if (args.createdBy !== undefined) query.set('createdBy', String(args.createdBy));
     if (args.offset !== undefined) query.set('offset', String(args.offset));
     if (args.limit !== undefined) query.set('limit', String(args.limit));
+    if (args.parentFolderId !== undefined) query.set('parentFolderId', String(args.parentFolderId));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,

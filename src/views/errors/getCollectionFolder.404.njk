@@ -1,0 +1,5 @@
+Collection folder not found: {{ args.folderId }} in collection {{ args.collectionId }}
+{% if error and (error.detail or error.message) %}
+API detail: {{ error.detail or error.message }}
+{% endif %}
+Verify both the collection ID and folder ID are correct.

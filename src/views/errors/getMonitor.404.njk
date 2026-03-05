@@ -1,0 +1,5 @@
+Monitor not found: {{ args.monitorId }}
+{% if error and (error.detail or error.message) %}
+API detail: {{ error.detail or error.message }}
+{% endif %}
+Verify the monitor ID is correct. Use getMonitors to list available monitors.
