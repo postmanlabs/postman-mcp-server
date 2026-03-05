@@ -92,11 +92,11 @@ const full = [
     'updateWorkspaceGlobalVariables',
     'getWorkspaceTags',
     'updateWorkspaceTags',
-    'getAllElementsAndFolders',
-    'getAllPanAddElementRequests',
-    'deletePanElementOrFolder',
-    'postPanElementOrFolder',
-    'updatePanElementOrFolder',
+    'getAllPanWorkspaces',
+    'getAllPanAddRequests',
+    'deletePanWorkspace',
+    'postPanWorkspace',
+    'respondPanAddRequest',
     'publishDocumentation',
     'unpublishDocumentation',
     'getAsyncSpecTaskStatus',
@@ -114,6 +114,8 @@ const full = [
     'getEnabledTools',
     'searchPostmanElementsInPublicNetwork',
     'searchPostmanElementsInPrivateNetwork',
+    'getAnalyticsData',
+    'getAnalyticsMetadata',
 ];
 const minimal = [
     'createCollection',
@@ -187,7 +189,10 @@ const subtools = {
         subtools: ['getCollection', 'getCollectionMap'],
     },
 };
-const templated = ['getCollections', 'getWorkspaces'];
+const templated = [
+    'getCollections',
+    'getWorkspaces',
+];
 export const enabledResources = {
     full,
     minimal,
