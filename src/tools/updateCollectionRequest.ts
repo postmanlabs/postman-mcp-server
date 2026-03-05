@@ -9,7 +9,7 @@ export const description =
 export const parameters = z.object({
   requestId: z.string().describe("The request's ID."),
   collectionId: z.string().describe("The collection's ID."),
-  name: z.string().describe('Name of the request. Only provided fields are updated.').optional(),
+  name: z.string().describe("The request's name.").optional(),
   description: z.string().nullable().describe("The request's description.").optional(),
   method: z
     .enum([
@@ -29,7 +29,6 @@ export const parameters = z.object({
       'PROPFIND',
       'VIEW',
     ])
-    .nullable()
     .describe("The request's HTTP method.")
     .optional(),
   url: z.string().nullable().describe("The request's URL.").optional(),
@@ -38,7 +37,7 @@ export const parameters = z.object({
       z.object({
         key: z.string().describe("The header's key.").optional(),
         value: z.string().describe("The header's value.").optional(),
-        description: z.string().nullable().describe("The header's description.").optional(),
+        description: z.string().describe("The header's description.").optional(),
       })
     )
     .describe("The request's headers.")
@@ -48,11 +47,7 @@ export const parameters = z.object({
       z.object({
         key: z.string().describe("The query parameter's key.").optional(),
         value: z.string().describe("The query parameter's value.").optional(),
-        description: z
-          .string()
-          .nullable()
-          .describe("The query parameter's description.")
-          .optional(),
+        description: z.string().describe("The query parameter's description.").optional(),
         enabled: z.boolean().describe('If true, the query parameter is enabled.').optional(),
       })
     )
@@ -60,7 +55,6 @@ export const parameters = z.object({
     .optional(),
   dataMode: z
     .enum(['raw', 'urlencoded', 'formdata', 'binary', 'graphql'])
-    .nullable()
     .describe("The request body's data mode.")
     .optional(),
   data: z
@@ -68,7 +62,7 @@ export const parameters = z.object({
       z.object({
         key: z.string().describe("The form data's key.").optional(),
         value: z.string().describe("The form data's value.").optional(),
-        description: z.string().nullable().describe("The form data's description.").optional(),
+        description: z.string().describe("The form data's description.").optional(),
         enabled: z.boolean().describe('If true, the form data entry is enabled.').optional(),
         type: z.enum(['text', 'file']).describe("The form data's type.").optional(),
         uuid: z.string().describe("The form data entry's unique identifier.").optional(),
@@ -90,7 +84,6 @@ export const parameters = z.object({
     .object({
       raw: z
         .object({ language: z.string().describe("The raw mode data's language type.").optional() })
-        .catchall(z.unknown())
         .describe('Options for the `raw` data mode.')
         .optional(),
       urlencoded: z
@@ -381,7 +374,7 @@ export const parameters = z.object({
   events: z
     .array(
       z.object({
-        listen: z.enum(['test', 'prerequest']).describe('The event type.'),
+        listen: z.enum(['test', 'prerequest']).describe('The event type.').optional(),
         script: z
           .object({
             id: z.string().describe("The script's ID.").optional(),
@@ -402,6 +395,7 @@ export const parameters = z.object({
           .optional(),
       })
     )
+    .nullable()
     .describe('A list of scripts configured to run when specific events occur.')
     .optional(),
 });

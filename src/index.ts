@@ -22,6 +22,7 @@ import { SERVER_NAME, APP_VERSION } from './constants.js';
 import { ServerContext } from './tools/utils/toolHelpers.js';
 import { env } from './env.js';
 import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
+import { createErrorTemplateRenderer } from './tools/utils/errorTemplateRenderer.js';
 
 const SUPPORTED_REGIONS = {
   us: 'https://api.postman.com',
@@ -225,6 +226,8 @@ async function run() {
   const __dirname = dirname(__filename);
   const viewsDir = join(__dirname, './views');
   const renderTemplate = createTemplateRenderer(viewsDir);
+  const errorsDir = join(__dirname, './views/errors');
+  const renderErrorTemplate = createErrorTemplateRenderer(errorsDir);
 
   // Create a client instance with the API key and server context for STDIO mode
   const client = new PostmanAPIClient(apiKey, undefined, serverContext);
@@ -277,7 +280,32 @@ async function run() {
           const errMsg = String(error?.message || error);
           // Failures: notify both server stderr and client
           logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
-          if (error instanceof McpError) throw error;
+          if (error instanceof McpError) {
+            const httpStatus = (error.data as Record<string, unknown>)?.httpStatus;
+            if (typeof httpStatus === 'number') {
+              const rawBody = String((error.data as Record<string, unknown>)?.cause ?? '');
+              let parsedBody: Record<string, unknown> | null = null;
+              try { parsedBody = JSON.parse(rawBody) as Record<string, unknown>; } catch { /* not JSON */ }
+
+              // Unwrap common { error: { ... } } API response pattern
+              const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
+                ? parsedBody.error as Record<string, unknown>
+                : parsedBody;
+
+              const rendered = renderErrorTemplate(toolName, httpStatus, {
+                toolName,
+                statusCode: httpStatus,
+                args,
+                errorMessage: error.message,
+                errorBody: rawBody,
+                error: errorObj,
+              });
+              if (rendered) {
+                throw new McpError(error.code, rendered, error.data);
+              }
+            }
+            throw error;
+          }
           throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
         }
       }

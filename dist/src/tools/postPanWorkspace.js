@@ -1,22 +1,31 @@
 import { z } from 'zod';
+import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'resolveCommentThread';
-export const description = 'Resolves a comment and any associated replies. On success, this returns an HTTP \\`204 No Content\\` response.\n\nComment thread IDs return in the GET \\`/comments\\` response for [collections](https://www.postman.com/postman/workspace/postman-public-workspace/request/12959542-a6582e0a-9382-4760-8b91-53a8aa6cb8d7) and [collection items](https://www.postman.com/postman/workspace/postman-public-workspace/folder/12959542-efeda219-66e1-474c-a83b-253d15723bf7).\n';
+export const method = 'postPanWorkspace';
+export const description = "Publishes a workspace in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).";
 export const parameters = z.object({
-    threadId: z.number().int().describe("The comment's thread ID."),
+    workspace: z.object({
+        id: z.string().describe("The workspace's ID."),
+        parentFolderId: z.number().int().describe('The `0` value.').default(0),
+    }),
 });
 export const annotations = {
-    title: 'Resolves a comment and any associated replies. On success, this returns an HTTP \\`204 No Content\\` response.',
+    title: "Publishes a workspace in your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/comments-resolutions/${args.threadId}`;
+        const endpoint = `/network/private`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
+        const bodyPayload = {};
+        if (args.workspace !== undefined)
+            bodyPayload.workspace = args.workspace;
         const options = {
+            body: JSON.stringify(bodyPayload),
+            contentType: ContentType.Json,
             headers: extra.headers,
         };
         const result = await extra.client.post(url, options);

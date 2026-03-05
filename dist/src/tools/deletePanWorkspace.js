@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'deleteWorkspace';
-export const description = 'Deletes an existing workspace.';
+export const method = 'deletePanWorkspace';
+export const description = "Removes a workspace from your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).\n\n**Note:**\n\nRemoving a workspace does not delete it. It only removes it from the Private API Network folder.\n";
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
 export const annotations = {
-    title: 'Deletes an existing workspace.',
+    title: "Removes a workspace from your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
     readOnlyHint: false,
     destructiveHint: true,
     idempotentHint: true,
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${args.workspaceId}`;
+        const endpoint = `/network/private/workspace/${args.workspaceId}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
