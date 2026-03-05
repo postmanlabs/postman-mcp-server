@@ -1,0 +1,5 @@
+Workspace not found: {{ args.workspaceId }}
+{% if error and (error.detail or error.message) %}
+API detail: {{ error.detail or error.message }}
+{% endif %}
+Verify the workspace ID is correct and that your API key has access to this workspace.

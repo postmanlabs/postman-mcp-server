@@ -117,11 +117,11 @@ const full = [
   'updateWorkspaceTags',
 
   // PAN (Private API Network)
-  'getAllElementsAndFolders',
-  'getAllPanAddElementRequests',
-  'deletePanElementOrFolder',
-  'postPanElementOrFolder',
-  'updatePanElementOrFolder',
+  'getAllPanWorkspaces',
+  'getAllPanAddRequests',
+  'deletePanWorkspace',
+  'postPanWorkspace',
+  'respondPanAddRequest',
 
   // // Documentation
   'publishDocumentation',
@@ -154,6 +154,10 @@ const full = [
   'getEnabledTools',
   'searchPostmanElementsInPublicNetwork',
   'searchPostmanElementsInPrivateNetwork',
+
+  // Analytics
+  'getAnalyticsData',
+  'getAnalyticsMetadata',
 ] as const;
 
 const minimal = [
@@ -230,7 +234,7 @@ const excludedFromGeneration = [
  * Each subtool is defined with:
  * - orchestrator: The main tool that will be exposed (the index.ts file)
  * - subtools: Array of tools that will be placed in the orchestrator's folder
- *
+ * 
  * Example structure for 'getCollection':
  * tools/
  *   getCollection/
@@ -245,7 +249,10 @@ const subtools = {
   },
 } as const;
 
-const templated = ['getCollections', 'getWorkspaces'] as const;
+const templated = [
+  'getCollections',
+  'getWorkspaces',
+] as const;
 
 export const enabledResources = {
   full,

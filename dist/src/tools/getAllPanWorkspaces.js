@@ -1,8 +1,21 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'getAllElementsAndFolders';
-export const description = "Gets information about the folders and their elements added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).\n\n**Note:**\n\nThe \\`limit\\` and \\`offset\\` parameters are separately applied to elements and folders. For example, if you query a \\`limit\\` value of \\`10\\` and an \\`offset\\` value \\`0\\`, the endpoint returns 10 elements and 10 folders for a total of 20 items. The \\`totalCount\\` property in the \\`meta\\` response is the total count of both elements and folders.\n";
+export const method = 'getAllPanWorkspaces';
+export const description = "Gets information workspaces added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).";
 export const parameters = z.object({
+    type: z.literal('workspace').describe('The `workspace` value.').optional(),
+    name: z
+        .string()
+        .describe('Return only workspaces whose name includes the given value. Matching is not case-sensitive.')
+        .optional(),
+    summary: z
+        .string()
+        .describe('Return only workspaces whose summary includes the given value. Matching is not case-sensitive.')
+        .optional(),
+    description: z
+        .string()
+        .describe('Return only workspaces whose description includes the given value. Matching is not case-sensitive.')
+        .optional(),
     since: z
         .string()
         .datetime({ offset: true })
@@ -16,19 +29,7 @@ export const parameters = z.object({
     addedBy: z
         .number()
         .int()
-        .describe('Return only elements published by the given user ID.')
-        .optional(),
-    name: z
-        .string()
-        .describe('Return only elements whose name includes the given value. Matching is not case-sensitive.')
-        .optional(),
-    summary: z
-        .string()
-        .describe('Return only elements whose summary includes the given value. Matching is not case-sensitive.')
-        .optional(),
-    description: z
-        .string()
-        .describe('Return only elements whose description includes the given value. Matching is not case-sensitive.')
+        .describe('Return only workspaces published by the given user ID.')
         .optional(),
     sort: z
         .enum(['createdAt', 'updatedAt'])
@@ -51,20 +52,12 @@ export const parameters = z.object({
     limit: z
         .number()
         .int()
-        .describe('The maximum number of elements to return. If the value exceeds the maximum value of `1000`, then the system uses the `1000` value.')
+        .describe('The maximum number of results to return. If the value exceeds the maximum value of `1000`, then the system uses the `1000` value.')
         .default(1000),
-    parentFolderId: z
-        .number()
-        .int()
-        .describe("Return the folders and elements in a specific folder. If this value is `0`, then the endpoint only returns the root folder's elements.")
-        .default(0),
-    type: z
-        .enum(['api', 'folder', 'collection', 'workspace'])
-        .describe('Filter by the element type.')
-        .optional(),
+    parentFolderId: z.number().int().describe('This parameter is deprecated.').default(0),
 });
 export const annotations = {
-    title: "Gets information about the folders and their elements added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
+    title: "Gets information workspaces added to your team's [Private API Network](https://learning.postman.com/docs/collaborating-in-postman/adding-private-network/).",
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
@@ -73,18 +66,20 @@ export async function handler(args, extra) {
     try {
         const endpoint = `/network/private`;
         const query = new URLSearchParams();
-        if (args.since !== undefined)
-            query.set('since', String(args.since));
-        if (args.until !== undefined)
-            query.set('until', String(args.until));
-        if (args.addedBy !== undefined)
-            query.set('addedBy', String(args.addedBy));
+        if (args.type !== undefined)
+            query.set('type', String(args.type));
         if (args.name !== undefined)
             query.set('name', String(args.name));
         if (args.summary !== undefined)
             query.set('summary', String(args.summary));
         if (args.description !== undefined)
             query.set('description', String(args.description));
+        if (args.since !== undefined)
+            query.set('since', String(args.since));
+        if (args.until !== undefined)
+            query.set('until', String(args.until));
+        if (args.addedBy !== undefined)
+            query.set('addedBy', String(args.addedBy));
         if (args.sort !== undefined)
             query.set('sort', String(args.sort));
         if (args.direction !== undefined)
@@ -97,8 +92,6 @@ export async function handler(args, extra) {
             query.set('limit', String(args.limit));
         if (args.parentFolderId !== undefined)
             query.set('parentFolderId', String(args.parentFolderId));
-        if (args.type !== undefined)
-            query.set('type', String(args.type));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
             headers: extra.headers,
