@@ -195,7 +195,8 @@ async function run() {
                         try {
                             parsedBody = JSON.parse(rawBody);
                         }
-                        catch { }
+                        catch {
+                        }
                         const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
                             ? parsedBody.error
                             : parsedBody;
