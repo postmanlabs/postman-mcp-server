@@ -42,7 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile --prod
 
       - name: Install MCPB
-        run: pnpm add -g @anthropic-ai/mcpb
+        run: npm install -g @anthropic-ai/mcpb
 
       - name: Package extensions
         run: |
