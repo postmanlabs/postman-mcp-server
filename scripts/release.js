@@ -101,7 +101,7 @@ try {
         execSync('which mcpb', { stdio: 'pipe' });
     } catch {
         console.log('⚠️  mcpb not found, installing globally...');
-        execSync('pnpm add -g @anthropic-ai/mcpb', { stdio: 'inherit' });
+        execSync('npm install -g @anthropic-ai/mcpb', { stdio: 'inherit' });
     }
 
     // Install production dependencies for packaging
