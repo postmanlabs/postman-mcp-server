@@ -6,11 +6,11 @@ import { createHash } from 'crypto';
 
 const versionType = process.argv[2];
 if (!versionType) {
-    console.error('Usage: npm run release-custom <major|minor|patch|version>');
+    console.error('Usage: pnpm run release-custom <major|minor|patch|version>');
     console.error('Examples:');
-    console.error('  npm run release-custom patch');
-    console.error('  npm run release-custom minor');
-    console.error('  npm run release-custom 2.3.3');
+    console.error('  pnpm run release-custom patch');
+    console.error('  pnpm run release-custom minor');
+    console.error('  pnpm run release-custom 2.3.3');
     process.exit(1);
 }
 
