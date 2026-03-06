@@ -110,6 +110,7 @@ jobs:
           overwrite: true
 
   publish-mcp:
+    if: github.event_name != 'workflow_dispatch'
     needs: build-and-release
     runs-on: ubuntu-latest
     steps:
