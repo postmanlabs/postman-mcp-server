@@ -104,8 +104,9 @@ try {
         execSync('npm install -g @anthropic-ai/mcpb', { stdio: 'inherit' });
     }
 
-    // Install production dependencies for packaging
+    // Install production dependencies for packaging (clean node_modules so .pnpm only has prod deps)
     console.log('📦 Installing production dependencies...');
+    execSync('rm -rf node_modules', { stdio: 'inherit' });
     execSync('pnpm install --frozen-lockfile --prod', { stdio: 'inherit' });
 
     // Package minimal version
