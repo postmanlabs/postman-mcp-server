@@ -6,11 +6,11 @@ import { createHash } from 'crypto';
 
 const versionType = process.argv[2];
 if (!versionType) {
-    console.error('Usage: npm run release-custom <major|minor|patch|version>');
+    console.error('Usage: pnpm run release-custom <major|minor|patch|version>');
     console.error('Examples:');
-    console.error('  npm run release-custom patch');
-    console.error('  npm run release-custom minor');
-    console.error('  npm run release-custom 2.3.3');
+    console.error('  pnpm run release-custom patch');
+    console.error('  pnpm run release-custom minor');
+    console.error('  pnpm run release-custom 2.3.3');
     process.exit(1);
 }
 
@@ -101,11 +101,12 @@ try {
         execSync('which mcpb', { stdio: 'pipe' });
     } catch {
         console.log('⚠️  mcpb not found, installing globally...');
-        execSync('pnpm add -g @anthropic-ai/mcpb', { stdio: 'inherit' });
+        execSync('npm install -g @anthropic-ai/mcpb', { stdio: 'inherit' });
     }
 
-    // Install production dependencies for packaging
+    // Install production dependencies for packaging (clean node_modules so .pnpm only has prod deps)
     console.log('📦 Installing production dependencies...');
+    execSync('rm -rf node_modules', { stdio: 'inherit' });
     execSync('pnpm install --frozen-lockfile --prod', { stdio: 'inherit' });
 
     // Package minimal version

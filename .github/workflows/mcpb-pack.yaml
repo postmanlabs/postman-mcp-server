@@ -25,6 +25,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Resolve release tag
+        id: release-tag
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            tag=$(gh release view --json tagName -q .tagName)
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Sync manifest versions with package.json
         run: |
           pkg_version=$(jq -r .version package.json)
@@ -39,10 +51,12 @@ jobs:
         run: pnpm run build
 
       - name: Install dependencies for packaging
-        run: pnpm install --frozen-lockfile --prod
+        run: |
+          rm -rf node_modules
+          pnpm install --frozen-lockfile --prod
 
       - name: Install MCPB
-        run: pnpm add -g @anthropic-ai/mcpb
+        run: npm install -g @anthropic-ai/mcpb
 
       - name: Package extensions
         run: |
@@ -74,7 +88,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.MCPB_MINIMAL_FILENAME }}
           asset_name: ${{ env.MCPB_MINIMAL_FILENAME }}
-          tag: ${{ github.ref }}
+          tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
       - name: Upload full release asset
@@ -83,7 +97,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.MCPB_FULL_FILENAME }}
           asset_name: ${{ env.MCPB_FULL_FILENAME }}
-          tag: ${{ github.ref }}
+          tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
       - name: Upload code release asset
@@ -92,7 +106,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.MCPB_CODE_FILENAME }}
           asset_name: ${{ env.MCPB_CODE_FILENAME }}
-          tag: ${{ github.ref }}
+          tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
   publish-mcp:
