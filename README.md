@@ -283,7 +283,7 @@ This configuration uses the remote server (`https://mcp.postman.com`), which aut
 
 ### Install in Antigravity
 
-To install the MCP server in Antigravity, click **Manage MCP servers > View raw config**. Then, copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file.
+To install the MCP server in Antigravity, click **Manage MCP servers > View raw config**. Then, copy the following JSON config into the `mcp_config.json` file.
 
 This configuration uses the remote server (`https://mcp.postman.com`), which authenticates automatically with OAuth.
 
