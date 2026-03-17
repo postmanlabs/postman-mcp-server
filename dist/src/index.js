@@ -2,7 +2,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol/sdk/types.js';
-import { readdir } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
@@ -131,7 +131,22 @@ async function run() {
     const minimalTools = allGeneratedTools.filter((t) => enabledResources.minimal.includes(t.method));
     const codeTools = allGeneratedTools.filter((t) => enabledResources.code.includes(t.method));
     const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
-    const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION });
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    let instructionsContent;
+    try {
+        const resourcesDir = join(__dirname, './resources');
+        instructionsContent = await readFile(join(resourcesDir, 'Instructions.md'), 'utf-8');
+        log('info', 'Loaded Instructions.md resource');
+    }
+    catch (error) {
+        log('warn', 'Failed to load Instructions.md resource', {
+            error: String(error?.message || error),
+        });
+    }
+    const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION }, instructionsContent
+        ? { instructions: 'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.' }
+        : {});
     server.onerror = (error) => {
         const msg = String(error?.message || error);
         logBoth(server, 'error', `MCP server error: ${msg}`, { error: msg });
@@ -145,8 +160,6 @@ async function run() {
         serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
         availableTools: tools.map((t) => t.method),
     };
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
     const viewsDir = join(__dirname, './views');
     const renderTemplate = createTemplateRenderer(viewsDir);
     const errorsDir = join(__dirname, './views/errors');
@@ -195,8 +208,7 @@ async function run() {
                         try {
                             parsedBody = JSON.parse(rawBody);
                         }
-                        catch {
-                        }
+                        catch { }
                         const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
                             ? parsedBody.error
                             : parsedBody;
@@ -217,6 +229,12 @@ async function run() {
                 throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
             }
         });
+    }
+    if (instructionsContent) {
+        server.registerResource('instructions', 'postman://instructions', { description: 'Instructions for using the Postman MCP server', mimeType: 'text/markdown' }, async (uri) => ({
+            contents: [{ uri: uri.href, mimeType: 'text/markdown', text: instructionsContent }],
+        }));
+        log('info', 'Registered resource: instructions');
     }
     log('info', 'Starting stdio transport');
     const transport = new StdioServerTransport();
