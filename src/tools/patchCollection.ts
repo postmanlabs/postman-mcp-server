@@ -5,7 +5,7 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'patchCollection';
 export const description =
-  'Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n';
+  'Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Important usage notes:**\n\n- **Sequential calls only.** Do NOT call \\`patchCollection\\` in parallel with other \\`patchCollection\\` calls for the same collection — concurrent PATCH requests conflict with each other and cause cancellation errors. Always wait for one call to complete before making another.\n- **Partial updates.** Only include the fields you want to change. Omit all other fields entirely; unspecified fields are left unchanged.\n- **Variables (\\`collection.variable\\`).** When updating variables, provide only the fields you intend to set on each variable object (\\`key\\`, \\`value\\`, \\`description\\`). Omit \\`id\\` and \\`disabled\\` unless you explicitly need to change them — including extra fields can cause validation errors.\n';
 export const parameters = z.object({
   collectionId: z
     .string()
@@ -40,7 +40,7 @@ export const parameters = z.object({
                 .describe(
                   "If true, the variable is not enabled. Doesn't apply to path parameter variables."
                 )
-                .default(false),
+                .optional(),
             })
             .describe('Information about the variable.')
         )

@@ -25,9 +25,9 @@ export const parameters = z.object({
       parametersResolution: z
         .string()
         .describe(
-          'Generated collections use examples for parameter generation by default. Any existing collections generated using the schema parameter generation will continue to sync using their existing strategy.'
+          'Determines how parameter values are generated in the collection. Must be set to "Example" — the "Schema" value is no longer supported by the Postman API and will result in an error. Always use "Example" to generate parameters from example values in the spec.'
         )
-        .default('Schema'),
+        .default('Example'),
       folderStrategy: z
         .enum(['Paths', 'Tags'])
         .describe(
@@ -69,8 +69,7 @@ export const parameters = z.object({
     })
     .describe(
       "The advanced creation options and their values. For more details, see Postman's [OpenAPI to Postman Collection Converter OPTIONS documentation](https://github.com/postmanlabs/openapi-to-postman/blob/develop/OPTIONS.md). These properties are case-sensitive."
-    )
-    .default({ enableOptionalParameters: true, folderStrategy: 'Paths' }),
+    ),
 });
 export const annotations = {
   title: 'Creates a collection from the given API specification.',

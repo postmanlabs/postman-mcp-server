@@ -10,15 +10,18 @@ export const parameters = z.object({
   workspaceId: z.string().describe("The workspace's ID."),
   name: z.string().describe("The specification's name."),
   type: z
-    .enum([
-      'OPENAPI:2.0',
-      'OPENAPI:3.0',
-      'OPENAPI:3.1',
-      'ASYNCAPI:2.0',
-      'PROTOBUF:2',
-      'PROTOBUF:3',
-      'GRAPHQL',
-    ])
+    .preprocess(
+      (v) => (typeof v === 'string' ? v.toUpperCase() : v),
+      z.enum([
+        'OPENAPI:2.0',
+        'OPENAPI:3.0',
+        'OPENAPI:3.1',
+        'ASYNCAPI:2.0',
+        'PROTOBUF:2',
+        'PROTOBUF:3',
+        'GRAPHQL',
+      ])
+    )
     .describe("The specification's type."),
   files: z
     .array(
@@ -29,7 +32,10 @@ export const parameters = z.object({
             .describe("The file's path. Accepts .json, .yaml, .proto and .graphql file types."),
           content: z.string().describe("The file's stringified contents."),
           type: z
-            .enum(['DEFAULT', 'ROOT'])
+            .preprocess(
+              (v) => (typeof v === 'string' ? v.toUpperCase() : v),
+              z.enum(['DEFAULT', 'ROOT'])
+            )
             .describe(
               'The type of file. This property is required when creating multi-file specifications:\n- `ROOT` — The file containing the full OpenAPI structure. This serves as the entry point for the API spec and references other (`DEFAULT`) spec files. Multi-file specs can only have one root file.\n- `DEFAULT` — A file referenced by the `ROOT` file.\n'
             ),

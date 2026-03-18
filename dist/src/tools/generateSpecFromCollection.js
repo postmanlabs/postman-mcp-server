@@ -8,7 +8,9 @@ export const parameters = z.object({
     elementType: z.literal('spec').describe('The `spec` value.'),
     name: z.string().describe("The API specification's name."),
     type: z.literal('OPENAPI:3.0').describe("The specification's type."),
-    format: z.enum(['JSON', 'YAML']).describe('The format of the API specification.'),
+    format: z
+        .preprocess((v) => (typeof v === 'string' ? v.toUpperCase() : v), z.enum(['JSON', 'YAML']))
+        .describe('The format of the API specification.'),
 });
 export const annotations = {
     title: 'Generates an API specification for the given collection. The response contains a polling link to the task status.',
