@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getTaggedEntities';
-export const description = 'Gets Postman elements (entities) by a given tag. Tags enable you to organize and search [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/managing-workspaces/#tagging-a-workspace), [APIs](https://learning.postman.com/docs/designing-and-developing-your-api/managing-apis/#tagging-apis), and [collections](https://learning.postman.com/docs/collections/using-collections/#tagging-a-collection) that contain shared tags.\n\n**Note:**\n\nTagging is available on Postman [**Enterprise** plans](https://www.postman.com/pricing/).\n';
+export const description = '**Requires an Enterprise plan.** Tagging is only available on Postman Enterprise plans. This tool returns a 404 error on Free, Basic, and Professional accounts.\n\nGets Postman elements (entities) by a given tag. Tags enable you to organize and search workspaces, APIs, and collections that contain shared tags.\n';
 export const parameters = z.object({
     slug: z
         .string()
@@ -29,7 +29,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Gets Postman elements (entities) by a given tag. Tags enable you to organize and search [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/managing-workspaces/#tagging-a-workspace), [APIs](https://learning.postman.com/docs/designing-and-developing-your-api/managing-apis/#tagging-apis), and [collections](https://learning.postman.com/docs/collections/using-collections/#tagging-a-collection) that contain shared tags.',
+    title: '**Requires an Enterprise plan.** Tagging is only available on Postman Enterprise plans. This tool returns a 404 error on Free, Basic, and Professional accounts.',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,

@@ -9,7 +9,7 @@ export const parameters = z.object({
         .object({
         info: z
             .object({
-            name: z.string().describe("The collection's name."),
+            name: z.string().min(1).describe("The collection's name. Must not be empty."),
             description: z.string().describe("The collection's description.").optional(),
             schema: z
                 .literal('https://schema.getpostman.com/json/collection/v2.1.0/collection.json')

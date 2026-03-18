@@ -189,7 +189,10 @@ const subtools = {
         subtools: ['getCollection', 'getCollectionMap'],
     },
 };
-const templated = ['getCollections', 'getWorkspaces'];
+const templated = [
+    'getCollections',
+    'getWorkspaces',
+];
 export const enabledResources = {
     full,
     minimal,

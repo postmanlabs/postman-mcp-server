@@ -22,23 +22,26 @@ export const parameters = z.object({
     .optional(),
   description: z.string().nullable().describe("The request's description.").optional(),
   method: z
-    .enum([
-      'GET',
-      'PUT',
-      'POST',
-      'PATCH',
-      'DELETE',
-      'COPY',
-      'HEAD',
-      'OPTIONS',
-      'LINK',
-      'UNLINK',
-      'PURGE',
-      'LOCK',
-      'UNLOCK',
-      'PROPFIND',
-      'VIEW',
-    ])
+    .preprocess(
+      (v) => (typeof v === 'string' ? v.toUpperCase() : v),
+      z.enum([
+        'GET',
+        'PUT',
+        'POST',
+        'PATCH',
+        'DELETE',
+        'COPY',
+        'HEAD',
+        'OPTIONS',
+        'LINK',
+        'UNLINK',
+        'PURGE',
+        'LOCK',
+        'UNLOCK',
+        'PROPFIND',
+        'VIEW',
+      ])
+    )
     .describe("The request's HTTP method.")
     .optional(),
   url: z.string().nullable().describe("The request's URL.").optional(),
