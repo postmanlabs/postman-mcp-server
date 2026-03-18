@@ -11,7 +11,7 @@ import {
   CallToolResult,
 } from '@modelcontextprotocol/sdk/types.js';
 
-import { readdir } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { z } from 'zod';
@@ -200,8 +200,27 @@ async function run() {
   );
   const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
 
+  // Load instructions
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  let instructionsContent: string | undefined;
+  try {
+    const resourcesDir = join(__dirname, './resources');
+    instructionsContent = await readFile(join(resourcesDir, 'Instructions.md'), 'utf-8');
+    log('info', 'Loaded Instructions.md resource');
+  } catch (error: any) {
+    log('warn', 'Failed to load Instructions.md resource', {
+      error: String(error?.message || error),
+    });
+  }
+
   // Create McpServer instance
-  const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION });
+  const server = new McpServer(
+    { name: SERVER_NAME, version: APP_VERSION },
+    instructionsContent
+      ? { instructions: 'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.' }
+      : {}
+  );
 
   // Surface MCP server errors to stderr and notify client if possible
   (server as any).onerror = (error: unknown) => {
@@ -220,10 +239,6 @@ async function run() {
     serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
     availableTools: tools.map((t) => t.method),
   };
-
-  // Initialize template renderer
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
   const viewsDir = join(__dirname, './views');
   const renderTemplate = createTemplateRenderer(viewsDir);
   const errorsDir = join(__dirname, './views/errors');
@@ -285,17 +300,12 @@ async function run() {
             if (typeof httpStatus === 'number') {
               const rawBody = String((error.data as Record<string, unknown>)?.cause ?? '');
               let parsedBody: Record<string, unknown> | null = null;
-              try {
-                parsedBody = JSON.parse(rawBody) as Record<string, unknown>;
-              } catch {
-                /* not JSON */
-              }
+              try { parsedBody = JSON.parse(rawBody) as Record<string, unknown>; } catch { /* not JSON */ }
 
               // Unwrap common { error: { ... } } API response pattern
-              const errorObj =
-                parsedBody?.error && typeof parsedBody.error === 'object'
-                  ? (parsedBody.error as Record<string, unknown>)
-                  : parsedBody;
+              const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
+                ? parsedBody.error as Record<string, unknown>
+                : parsedBody;
 
               const rendered = renderErrorTemplate(toolName, httpStatus, {
                 toolName,
@@ -315,6 +325,18 @@ async function run() {
         }
       }
     );
+  }
+
+  if (instructionsContent) {
+    server.registerResource(
+      'instructions',
+      'postman://instructions',
+      { description: 'Instructions for using the Postman MCP server', mimeType: 'text/markdown' },
+      async (uri) => ({
+        contents: [{ uri: uri.href, mimeType: 'text/markdown', text: instructionsContent }],
+      })
+    );
+    log('info', 'Registered resource: instructions');
   }
 
   // API key validation is handled by the singleton client
