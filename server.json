@@ -6,12 +6,12 @@
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
   },
-  "version": "2.8.3-beta.1",
+  "version": "2.8.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@postman/postman-mcp-server",
-      "version": "2.8.3-beta.1",
+      "version": "2.8.2",
       "transport": {
         "type": "stdio"
       },
@@ -26,8 +26,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.8.3-beta.1/postman-mcp-server-minimal.mcpb",
-      "fileSha256": "f4c9bdc67b24b8b7ef30ae18641fd75e078b690688f45102316b32d1245544ee",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.8.2/postman-mcp-server-minimal.mcpb",
+      "fileSha256": "4acff770f98e7fe5e583b960ea94e53b558e055af472a6ec4f145f3538fafb05",
       "transport": {
         "type": "stdio"
       },
@@ -42,8 +42,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.8.3-beta.1/postman-mcp-server-full.mcpb",
-      "fileSha256": "54025cb84e09a277e7540ff020dde0eb243eecabd6147cdb9d893b1c472e932d",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.8.2/postman-mcp-server-full.mcpb",
+      "fileSha256": "ff24434508ced7d873de5559d95f960efab1b8e594795a9dc9702ac73b3729e9",
       "transport": {
         "type": "stdio"
       },
@@ -58,8 +58,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.8.3-beta.1/postman-mcp-server-code.mcpb",
-      "fileSha256": "6c5a8d49ddda78c1842060b178e39b0a033930aed55fb351a93c859b756621ac",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.8.2/postman-mcp-server-code.mcpb",
+      "fileSha256": "1e616eda47f56ca0cb861d9497f4fc16e36fc55b705628bf429890fa9a834c05",
       "transport": {
         "type": "stdio"
       },
