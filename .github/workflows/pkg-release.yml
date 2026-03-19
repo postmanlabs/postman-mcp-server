@@ -4,6 +4,16 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      dist-tag:
+        description: 'npm dist-tag (latest is not allowed here — use a git tag release instead)'
+        required: true
+        type: choice
+        options:
+          - beta
+          - next
+          - rc
 
 permissions:
   contents: read
@@ -29,8 +39,23 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Publish to npm
+      - name: Publish to npm (stable)
         if: github.ref_type == 'tag'
         run: pnpm publish --provenance --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.POSTMAN_NPM_TOKEN }}
+
+      - name: Verify prerelease version
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ ! "$VERSION" =~ -${{ inputs.dist-tag }} ]]; then
+            echo "::error::package.json version '$VERSION' does not contain a '-${{ inputs.dist-tag }}' prerelease suffix. Run the release script first: pnpm run release-custom <version>-${{ inputs.dist-tag }}.<n>"
+            exit 1
+          fi
+
+      - name: Publish to npm (prerelease)
+        if: github.event_name == 'workflow_dispatch'
+        run: pnpm publish --provenance --access public --no-git-checks --tag ${{ inputs.dist-tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.POSTMAN_NPM_TOKEN }}
