@@ -28,8 +28,8 @@ function calculateSHA256(filePath) {
 }
 
 function incrementVersion(currentVersion, type) {
-    // Clean the version string and split
-    const cleanVersion = currentVersion.replace(/^v/, ''); // Remove 'v' prefix if present
+    // Clean the version string: remove 'v' prefix and prerelease suffix (e.g. -beta.1)
+    const cleanVersion = currentVersion.replace(/^v/, '').replace(/-.*$/, '');
     const parts = cleanVersion.split('.');
 
     if (parts.length !== 3) {
