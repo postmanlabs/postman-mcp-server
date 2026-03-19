@@ -11,6 +11,7 @@ if (!versionType) {
     console.error('  pnpm run release-custom patch');
     console.error('  pnpm run release-custom minor');
     console.error('  pnpm run release-custom 2.3.3');
+    console.error('  pnpm run release-custom 2.4.0-beta.1');
     process.exit(1);
 }
 
@@ -53,9 +54,9 @@ function incrementVersion(currentVersion, type) {
         case 'patch':
             return `${major}.${minor}.${patch + 1}`;
         default:
-            // Validate specific version format
-            if (!/^\d+\.\d+\.\d+$/.test(type)) {
-                throw new Error(`Invalid version format: ${type}. Use 'major', 'minor', 'patch', or a version like '1.2.3'`);
+            // Validate specific version format (supports prerelease like 1.2.3-beta.1)
+            if (!/^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/.test(type)) {
+                throw new Error(`Invalid version format: ${type}. Use 'major', 'minor', 'patch', or a version like '1.2.3' or '1.2.3-beta.1'`);
             }
             return type;
     }
@@ -66,8 +67,12 @@ try {
     const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
     const currentVersion = pkg.version;
     const newVersion = incrementVersion(currentVersion, versionType);
+    const isPrerelease = newVersion.includes('-');
 
     console.log(`📦 Updating version from ${currentVersion} to ${newVersion}`);
+    if (isPrerelease) {
+        console.log('🔶 Prerelease detected — git tag will be skipped');
+    }
 
     // Update package.json version
     pkg.version = newVersion;
@@ -180,13 +185,19 @@ try {
     execSync('rm -f postman-mcp-server-minimal.mcpb postman-mcp-server-full.mcpb postman-mcp-server-code.mcpb', { stdio: 'inherit' });
 
     // Commit and tag
-    console.log('📤 Committing and tagging...');
     execSync('git add .', { stdio: 'inherit' });
     execSync(`git commit -m "chore: v${newVersion}"`, { stdio: 'inherit' });
-    execSync(`git tag -a v${newVersion} -m "v${newVersion}"`, { stdio: 'inherit' });
 
-    console.log(`✅ Released version ${newVersion}`);
-    console.log(`🚀 Push with: git push origin main --tags`);
+    if (isPrerelease) {
+        console.log('📤 Committed (no tag for prerelease)');
+        console.log(`✅ Prerelease version ${newVersion} ready`);
+        console.log(`🚀 Push with: git push origin main`);
+    } else {
+        console.log('📤 Committing and tagging...');
+        execSync(`git tag -a v${newVersion} -m "v${newVersion}"`, { stdio: 'inherit' });
+        console.log(`✅ Released version ${newVersion}`);
+        console.log(`🚀 Push with: git push origin main --tags`);
+    }
 } catch (error) {
     console.error('❌ Release failed:', error.message);
     process.exit(1);
