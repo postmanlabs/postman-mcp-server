@@ -21,7 +21,23 @@ export async function handler(args, extra) {
         const options = {
             headers: extra.headers,
         };
-        const result = await extra.client.get(url, options);
+        const result = (await extra.client.get(url, options));
+        if (result && typeof result === 'object' && Array.isArray(result.environments)) {
+            result.environments.forEach((env) => {
+                if (env.values && Array.isArray(env.values)) {
+                    env.values = env.values.map((v) => {
+                        if (v.type === 'secret') {
+                            return {
+                                ...v,
+                                value: '***REDACTED BY MCP SERVER***',
+                                ...(v.initial_value ? { initial_value: '***REDACTED BY MCP SERVER***' } : {}),
+                            };
+                        }
+                        return v;
+                    });
+                }
+            });
+        }
         return {
             content: [
                 {

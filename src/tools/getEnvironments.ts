@@ -29,7 +29,30 @@ export async function handler(
     const options: any = {
       headers: extra.headers,
     };
-    const result = await extra.client.get(url, options);
+    
+    const result = await extra.client.get(url, options) as any;
+
+    // --- SECURITY PATCH: Redact secrets if present in list view ---
+    if (result?.environments && Array.isArray(result.environments)) {
+      result.environments.forEach((env: any) => {
+        if (env.values && Array.isArray(env.values)) {
+          env.values = env.values.map((v: any) => {
+            if (v.type === 'secret') {
+              const redacted = '***REDACTED BY MCP SERVER***';
+              return { 
+                ...v, 
+                value: redacted,
+                ...(v.initial_value !== undefined ? { initial_value: redacted } : {}),
+                ...(v.initialValue !== undefined ? { initialValue: redacted } : {})
+              };
+            }
+            return v;
+          });
+        }
+      });
+    }
+    // -------------------------------------------------------------
+
     return {
       content: [
         {
