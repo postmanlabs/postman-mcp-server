@@ -1,8 +1,14 @@
 import { z } from 'zod';
+import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteWorkspace';
 export const description = 'Deletes an existing workspace.';
-export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
+export const parameters = z.object({
+    workspaceId: z.string().describe("The workspace's ID."),
+    confirmDeletion: z
+        .boolean()
+        .describe('CRITICAL SAFETY FLAG: You MUST explicitly ask the user for confirmation before executing this tool. Set to true only after the user agrees.'),
+});
 export const annotations = {
     title: 'Deletes an existing workspace.',
     readOnlyHint: false,
@@ -10,6 +16,9 @@ export const annotations = {
     idempotentHint: true,
 };
 export async function handler(args, extra) {
+    if (args.confirmDeletion !== true) {
+        throw new McpError(ErrorCode.InvalidParams, "Destructive Action Blocked: You must explicitly ask the user for permission and set 'confirmDeletion' to true to execute this deletion.");
+    }
     try {
         const endpoint = `/workspaces/${args.workspaceId}`;
         const query = new URLSearchParams();

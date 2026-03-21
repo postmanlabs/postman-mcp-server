@@ -1,22 +1,37 @@
 import { z } from 'zod';
+import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'deleteWorkspace';
 export const description = 'Deletes an existing workspace.';
-export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
+// 1. Update the schema to require a boolean flag
+export const parameters = z.object({
+  workspaceId: z.string().describe("The workspace's ID."),
+  confirmDeletion: z
+    .boolean()
+    .describe(
+      'CRITICAL SAFETY FLAG: You MUST explicitly ask the user for confirmation before executing this tool. Set to true only after the user agrees.'
+    ),
+});
 export const annotations = {
   title: 'Deletes an existing workspace.',
   readOnlyHint: false,
   destructiveHint: true,
   idempotentHint: true,
 };
-
 export async function handler(
   args: z.infer<typeof parameters>,
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
+  // 2. Add the guardrail before hitting the API
+  if (args.confirmDeletion !== true) {
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      "Destructive Action Blocked: You must explicitly ask the user for permission and set 'confirmDeletion' to true to execute this deletion."
+    );
+  }
   try {
     const endpoint = `/workspaces/${args.workspaceId}`;
     const query = new URLSearchParams();
