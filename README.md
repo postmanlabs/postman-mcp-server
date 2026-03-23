@@ -57,6 +57,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
   * [**Antigravity**](#install-in-antigravity-1)
   * [**GitHub Copilot CLI**](#install-in-github-copilot-cli-1)
   * [**Gemini CLI**](#use-as-a-gemini-cli-extension)
+  * [**Install in Kiro**](#install-in-kiro)
   * [**Docker**](#install-in-docker)
 * [**Questions and support**](#questions-and-support)
 * [**Migration from Postman MCP Server v1 to v2**](#migration-from-v1x-to-v2x)
