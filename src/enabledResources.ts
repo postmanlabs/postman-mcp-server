@@ -45,6 +45,9 @@ const full = [
   'updateCollectionResponse',
   'transferCollectionResponses',
 
+  // Collection Runner
+  'runCollection',
+
   // Comments
   'createCollectionComment',
   'deleteCollectionComment',
@@ -196,6 +199,7 @@ const minimal = [
   'createCollectionResponse',
   'duplicateCollection',
   'getDuplicateCollectionTaskStatus',
+  'runCollection',
   'getEnabledTools',
   'updateCollectionRequest',
 ] as const;
@@ -216,6 +220,7 @@ const code = [
 ] as const;
 
 const excludedFromGeneration = [
+  'runCollection',
   'getEnabledTools',
   'getCodeGenerationInstructions',
   'getCollectionMap',
@@ -229,7 +234,7 @@ const excludedFromGeneration = [
  * Each subtool is defined with:
  * - orchestrator: The main tool that will be exposed (the index.ts file)
  * - subtools: Array of tools that will be placed in the orchestrator's folder
- * 
+ *
  * Example structure for 'getCollection':
  * tools/
  *   getCollection/
@@ -244,10 +249,7 @@ const subtools = {
   },
 } as const;
 
-const templated = [
-  'getCollections',
-  'getWorkspaces',
-] as const;
+const templated = ['getCollections', 'getWorkspaces'] as const;
 
 export const enabledResources = {
   full,
