@@ -25,7 +25,10 @@ function setRegionEnvironment(region) {
     }
     env.POSTMAN_API_BASE_URL = SUPPORTED_REGIONS[region];
 }
+const quietMode = process.argv.includes('--quiet');
 function log(level, message, context) {
+    if (quietMode && (level === 'debug' || level === 'info'))
+        return;
     const timestamp = new Date().toISOString();
     const suffix = context ? ` ${JSON.stringify(context)}` : '';
     console.error(`[${timestamp}] [${level.toUpperCase()}] ${message}${suffix}`);
@@ -145,9 +148,7 @@ async function run() {
         });
     }
     const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION }, instructionsContent
-        ? {
-            instructions: 'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.',
-        }
+        ? { instructions: 'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.' }
         : {});
     server.onerror = (error) => {
         const msg = String(error?.message || error);
@@ -210,8 +211,7 @@ async function run() {
                         try {
                             parsedBody = JSON.parse(rawBody);
                         }
-                        catch {
-                        }
+                        catch { }
                         const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
                             ? parsedBody.error
                             : parsedBody;
