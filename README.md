@@ -427,6 +427,7 @@ The local server supports the following tool configurations:
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 * **Code** — Includes tools for searching public and internal API definitions and generating client code.
 * **Full** — Includes all available Postman API tools (100+ tools).
+* **Quiet** — This option suppresses `debug` and `info` logs in stderr, and returns only `warn` and `error`. This mode is required for **Windsurf** users on Windows, as it avoids a stderr pipe buffer deadlock that results in MCP initializing a request to timeout. You can enable this mode along with the the **Minimal**, **Code**, or **Full** configuration.
 
 **Note:**
 * Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
@@ -584,7 +585,11 @@ Copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file
     "mcpServers": {
         "postman": {
             "args": [
-                "@postman/postman-mcp-server"
+                "@postman/postman-mcp-server",
+                "--minimal" // (Default) Use this flag to enable minimal mode.
+                // "--full" — Use this flag to enable full mode.
+                // "--code" — Use this flag to enable code mode.
+                // "--quiet" — Use this flag to enable quiet mode alongside your mode of choice.
             ],
             "command": "npx",
             "disabled": false,
@@ -596,6 +601,8 @@ Copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file
     }
 }
 ```
+
+> Windows users running Windsurf may run into a timeout on startup. The problem: Windsurf's Go-based MCP client doesn't drain the stderr pipe quickly enough, so the ~120 "Loaded tool" log messages that fire at startup flood the 4KB pipe buffer. Once that buffer fills, Node.js `console.error()` calls start blocking. Because those calls are blocking the event loop, the server never gets a chance to respond to the MCP initialize request before Windsurf's 60-second timeout kicks in. The `--quiet` flag suppresses the startup logs and prevents the pipe from reaching its buffer limit.
 
 ### Install in Antigravity
 
