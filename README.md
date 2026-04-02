@@ -576,7 +576,7 @@ To install the MCP server in Windsurf, do the following:
 1. Select the tools that you want to enable, or click **All Tools** to select all available tools.
 1. Turn on **Enabled** to enable the Postman MCP server.
 
-> Windows users running Windsurf may run into a timeout on startup. The problem: Windsurf's Go-based MCP client doesn't drain the stderr pipe quickly enough, so the ~120 "Loaded tool" log messages that fire at startup flood the 4KB pipe buffer. Once that buffer fills, Node.js `console.error()` calls start blocking. Because those calls are blocking the event loop, the server never gets a chance to respond to the MCP initialize request before Windsurf's 60-second timeout kicks in. The `--quiet` flag suppresses the startup logs and prevents the pipe from reaching its buffer limit.
+> Windows users on Windsurf can hit a startup timeout because too many startup logs fill the stderr buffer, which blocks the server before MCP initialization completes. Using the `--quiet` configuration suppresses those logs and avoids the issue.
 
 #### Manual installation
 
