@@ -427,7 +427,7 @@ The local server supports the following tool configurations:
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 * **Code** — Includes tools for searching public and internal API definitions and generating client code.
 * **Full** — Includes all available Postman API tools (100+ tools).
-* **Quiet** — This option suppresses `debug` and `info` logs in stderr, and returns only `warn` and `error`. This mode is required for **Windsurf** users on Windows, as it avoids a stderr pipe buffer deadlock that results in MCP initializing a request to timeout. You can enable this mode along with the the **Minimal**, **Code**, or **Full** configuration.
+* **Quiet** — This option suppresses `debug` and `info` logs in stderr, and returns only `warn` and `error`. This mode is required for **Windsurf** users on Windows, as it avoids a stderr pipe buffer deadlock that results in MCP initializing a request to timeout. You can enable this mode along with the **Minimal**, **Code**, or **Full** configuration.
 
 **Note:**
 * Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
