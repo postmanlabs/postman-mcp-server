@@ -45,6 +45,9 @@ const full = [
   'updateCollectionResponse',
   'transferCollectionResponses',
 
+  // Collection Runner
+  'runCollection',
+
   // Comments
   'createCollectionComment',
   'deleteCollectionComment',
@@ -196,6 +199,7 @@ const minimal = [
   'createCollectionResponse',
   'duplicateCollection',
   'getDuplicateCollectionTaskStatus',
+  'runCollection',
   'getEnabledTools',
   'updateCollectionRequest',
 ] as const;
@@ -216,6 +220,7 @@ const code = [
 ] as const;
 
 const excludedFromGeneration = [
+  'runCollection',
   'getEnabledTools',
   'getCodeGenerationInstructions',
   'getCollectionMap',

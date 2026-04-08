@@ -35,6 +35,7 @@ const full = [
     'getCollectionResponse',
     'updateCollectionResponse',
     'transferCollectionResponses',
+    'runCollection',
     'createCollectionComment',
     'deleteCollectionComment',
     'getCollectionComments',
@@ -155,6 +156,7 @@ const minimal = [
     'createCollectionResponse',
     'duplicateCollection',
     'getDuplicateCollectionTaskStatus',
+    'runCollection',
     'getEnabledTools',
     'updateCollectionRequest',
 ];
@@ -173,6 +175,7 @@ const code = [
     'searchPostmanElementsInPrivateNetwork',
 ];
 const excludedFromGeneration = [
+    'runCollection',
     'getEnabledTools',
     'getCodeGenerationInstructions',
     'getCollectionMap',
