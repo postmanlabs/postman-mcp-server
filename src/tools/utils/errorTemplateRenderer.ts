@@ -31,11 +31,7 @@ export function createErrorTemplateRenderer(errorsDir: string): ErrorTemplateRen
     val === undefined || val === null ? defaultVal : val
   );
 
-  return (
-    toolName: string,
-    statusCode: number,
-    context: Record<string, unknown>
-  ): string | null => {
+  return (toolName: string, statusCode: number, context: Record<string, unknown>): string | null => {
     const templateFile = `${toolName}.${statusCode}.njk`;
     const templatePath = join(errorsDir, templateFile);
     if (!existsSync(templatePath)) return null;

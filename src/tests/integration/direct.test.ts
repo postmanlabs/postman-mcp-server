@@ -254,9 +254,7 @@ describe('Postman MCP - Direct Integration Tests', () => {
       try {
         await client.get('/test-endpoint');
 
-        expect(capturedHeaders['user-agent']).toBe(
-          `${expectedPackageName}/${expectedPackageVersion}`
-        );
+        expect(capturedHeaders['user-agent']).toBe(`${expectedPackageName}/${expectedPackageVersion}`);
         expect(capturedHeaders['x-api-key']).toBe('test-api-key');
       } finally {
         global.fetch = originalFetch;
@@ -411,16 +409,30 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdWorkspaceIds).toHaveLength(1);
       expect(createdWorkspaceIds[0]).toBe(workspaceId);
 
-      const listResult = await client.callTool(
-        {
-          name: 'getWorkspaces',
-          arguments: {},
-        },
-        undefined,
-        { timeout: 100000 }
-      );
-      expect(WorkspaceDataFactory.validateResponse(listResult)).toBe(true);
-      expect((listResult.content as any)[0].text).toContain(workspaceId);
+      // Paginate through workspaces to find the created workspace
+      let found = false;
+      let cursor: string | undefined;
+      do {
+        const listResult = await client.callTool(
+          {
+            name: 'getWorkspaces',
+            arguments: { limit: 100, ...(cursor ? { cursor } : {}) },
+          },
+          undefined,
+          { timeout: 100000 }
+        );
+        expect(WorkspaceDataFactory.validateResponse(listResult)).toBe(true);
+        const text = (listResult.content as any)[0].text;
+        if (text.includes(workspaceId)) {
+          found = true;
+          break;
+        }
+        // Extract nextCursor from the rendered markdown or raw JSON response
+        const mdMatch = text.match(/\*\*nextCursor\*\*:\s*(\S+)/);
+        const jsonMatch = text.match(/"nextCursor"\s*:\s*"([^"]+)"/);
+        cursor = mdMatch?.[1] || jsonMatch?.[1] || undefined;
+      } while (cursor);
+      expect(found).toBe(true);
 
       const searchResult = await client.callTool(
         {
