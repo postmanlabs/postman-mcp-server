@@ -13,7 +13,7 @@ import {
 
 import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { z } from 'zod';
 import dotenv from 'dotenv';
 import { enabledResources } from './enabledResources.js';
@@ -98,7 +98,6 @@ async function loadAllTools(): Promise<ToolModule[]> {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   const generatedToolsDir = join(__dirname, './tools');
-  const isWindows = process.platform === 'win32';
 
   const tools: ToolModule[] = [];
 
@@ -109,27 +108,32 @@ async function loadAllTools(): Promise<ToolModule[]> {
     const toolFiles = files.filter((file) => file.endsWith('.js'));
     log('debug', 'Discovered tool files', { count: toolFiles.length });
 
-    for (const file of toolFiles) {
-      try {
+    const importResults = await Promise.allSettled(
+      toolFiles.map(async (file) => {
         const toolPath = join(generatedToolsDir, file);
-        const toolModule = await import(isWindows ? `file://${toolPath}` : toolPath);
+        const toolModule = await import(pathToFileURL(toolPath).href);
+        return { toolModule, file };
+      })
+    );
 
-        if (
-          toolModule.method &&
-          toolModule.description &&
-          toolModule.parameters &&
-          toolModule.handler
-        ) {
-          tools.push(toolModule as ToolModule);
-          log('info', 'Loaded tool', { method: toolModule.method, file });
-        } else {
-          log('warn', 'Tool module missing required exports; skipping', { file });
-        }
-      } catch (error: any) {
+    for (const result of importResults) {
+      if (result.status === 'rejected') {
         log('error', 'Failed to load tool module', {
-          file,
-          error: String(error?.message || error),
+          error: String(result.reason?.message || result.reason),
         });
+        continue;
+      }
+      const { toolModule, file } = result.value;
+      if (
+        toolModule.method &&
+        toolModule.description &&
+        toolModule.parameters &&
+        toolModule.handler
+      ) {
+        tools.push(toolModule as ToolModule);
+        log('info', 'Loaded tool', { method: toolModule.method, file });
+      } else {
+        log('warn', 'Tool module missing required exports; skipping', { file });
       }
     }
   } catch (error: any) {

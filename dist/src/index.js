@@ -4,7 +4,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol/sdk/types.js';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import dotenv from 'dotenv';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
@@ -49,33 +49,34 @@ async function loadAllTools() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     const generatedToolsDir = join(__dirname, './tools');
-    const isWindows = process.platform === 'win32';
     const tools = [];
     try {
         log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir });
         const files = await readdir(generatedToolsDir);
         const toolFiles = files.filter((file) => file.endsWith('.js'));
         log('debug', 'Discovered tool files', { count: toolFiles.length });
-        for (const file of toolFiles) {
-            try {
-                const toolPath = join(generatedToolsDir, file);
-                const toolModule = await import(isWindows ? `file://${toolPath}` : toolPath);
-                if (toolModule.method &&
-                    toolModule.description &&
-                    toolModule.parameters &&
-                    toolModule.handler) {
-                    tools.push(toolModule);
-                    log('info', 'Loaded tool', { method: toolModule.method, file });
-                }
-                else {
-                    log('warn', 'Tool module missing required exports; skipping', { file });
-                }
-            }
-            catch (error) {
+        const importResults = await Promise.allSettled(toolFiles.map(async (file) => {
+            const toolPath = join(generatedToolsDir, file);
+            const toolModule = await import(pathToFileURL(toolPath).href);
+            return { toolModule, file };
+        }));
+        for (const result of importResults) {
+            if (result.status === 'rejected') {
                 log('error', 'Failed to load tool module', {
-                    file,
-                    error: String(error?.message || error),
+                    error: String(result.reason?.message || result.reason),
                 });
+                continue;
+            }
+            const { toolModule, file } = result.value;
+            if (toolModule.method &&
+                toolModule.description &&
+                toolModule.parameters &&
+                toolModule.handler) {
+                tools.push(toolModule);
+                log('info', 'Loaded tool', { method: toolModule.method, file });
+            }
+            else {
+                log('warn', 'Tool module missing required exports; skipping', { file });
             }
         }
     }

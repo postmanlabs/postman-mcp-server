@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'syncCollectionWithSpec';
-export const description = 'Syncs a collection generated from an API specification. This is an asynchronous endpoint that returns an HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- This endpoint only supports the OpenAPI 3.0 specification type.\n- You can only sync collections generated from the given spec ID.\n';
+export const description = 'Syncs a collection generated from an API specification. This is an asynchronous endpoint that returns an HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- This endpoint only supports the OpenAPI 2.0, 3.0, and 3.1 specification types.\n- You can only sync collections generated from the given spec ID.\n';
 export const parameters = z.object({
     collectionUid: z.string().describe("The collection's unique ID."),
     specId: z.string().describe("The spec's ID."),

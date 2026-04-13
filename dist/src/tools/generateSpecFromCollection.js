@@ -7,7 +7,9 @@ export const parameters = z.object({
     collectionUid: z.string().describe("The collection's unique ID."),
     elementType: z.literal('spec').describe('The `spec` value.'),
     name: z.string().describe("The API specification's name."),
-    type: z.literal('OPENAPI:3.0').describe("The specification's type."),
+    type: z
+        .preprocess((v) => (typeof v === 'string' ? v.toUpperCase() : v), z.enum(['OPENAPI:2.0', 'OPENAPI:3.0', 'OPENAPI:3.1']))
+        .describe("The specification's type."),
     format: z
         .preprocess((v) => (typeof v === 'string' ? v.toUpperCase() : v), z.enum(['JSON', 'YAML']))
         .describe('The format of the API specification.'),
