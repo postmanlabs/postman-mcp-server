@@ -427,6 +427,7 @@ The local server supports the following tool configurations:
 * **Minimal** — (Default) Only includes essential tools for basic Postman operations.
 * **Code** — Includes tools for searching public and internal API definitions and generating client code.
 * **Full** — Includes all available Postman API tools (100+ tools).
+* **Quiet** — This option suppresses `debug` and `info` logs in stderr, and returns only `warn` and `error`. This mode is required for **Windsurf** users on Windows, as it avoids a stderr pipe buffer deadlock that results in MCP initializing a request to timeout. You can enable this mode along with the **Minimal**, **Code**, or **Full** configuration.
 
 **Note:**
 * Use the `--region` flag to specify the Postman API region (`us` or `eu`), or set the `POSTMAN_API_BASE_URL` environment variable directly. By default, the server uses the `us` option.
@@ -566,7 +567,7 @@ codex mcp add postman --env POSTMAN_API_KEY=<POSTMAN_API_KEY> -- npx @postman/po
 
 ### Install in Windsurf
 
-To manually install the MCP server in Windsurf, do the following:
+To install the MCP server in Windsurf, do the following:
 
 1. Click **Open MCP Marketplace** in Windsurf.
 1. Type "Postman" in the search text box to filter the marketplace results.
@@ -574,6 +575,8 @@ To manually install the MCP server in Windsurf, do the following:
 1. When prompted, enter a valid Postman API key.
 1. Select the tools that you want to enable, or click **All Tools** to select all available tools.
 1. Turn on **Enabled** to enable the Postman MCP server.
+
+> Windows users on Windsurf can hit a startup timeout because too many startup logs fill the stderr buffer, which blocks the server before MCP initialization completes. Using the `--quiet` configuration suppresses those logs and avoids the issue.
 
 #### Manual installation
 
@@ -584,7 +587,11 @@ Copy the following JSON config into the `.codeium/windsurf/mcp_config.json` file
     "mcpServers": {
         "postman": {
             "args": [
-                "@postman/postman-mcp-server"
+                "@postman/postman-mcp-server",
+                "--minimal" // (Default) Use this flag to enable minimal mode.
+                // "--full" — Use this flag to enable full mode.
+                // "--code" — Use this flag to enable code mode.
+                // "--quiet" — Use this flag to enable quiet mode alongside your mode of choice.
             ],
             "command": "npx",
             "disabled": false,
