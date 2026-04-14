@@ -225,10 +225,7 @@ async function run() {
   const server = new McpServer(
     { name: SERVER_NAME, version: APP_VERSION },
     instructionsContent
-      ? {
-          instructions:
-            'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.',
-        }
+      ? { instructions: 'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.' }
       : {}
   );
 
@@ -310,17 +307,12 @@ async function run() {
             if (typeof httpStatus === 'number') {
               const rawBody = String((error.data as Record<string, unknown>)?.cause ?? '');
               let parsedBody: Record<string, unknown> | null = null;
-              try {
-                parsedBody = JSON.parse(rawBody) as Record<string, unknown>;
-              } catch {
-                /* not JSON */
-              }
+              try { parsedBody = JSON.parse(rawBody) as Record<string, unknown>; } catch { /* not JSON */ }
 
               // Unwrap common { error: { ... } } API response pattern
-              const errorObj =
-                parsedBody?.error && typeof parsedBody.error === 'object'
-                  ? (parsedBody.error as Record<string, unknown>)
-                  : parsedBody;
+              const errorObj = parsedBody?.error && typeof parsedBody.error === 'object'
+                ? parsedBody.error as Record<string, unknown>
+                : parsedBody;
 
               const rendered = renderErrorTemplate(toolName, httpStatus, {
                 toolName,
