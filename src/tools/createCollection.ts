@@ -618,6 +618,12 @@ export const parameters = z.object({
                 'The [settings](https://learning.postman.com/docs/sending-requests/create-requests/request-settings/) used to alter the [Protocol Profile Behavior](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md) of sending a request.'
               )
               .optional(),
+            item: z
+              .array(z.unknown())
+              .describe(
+                'For folder items, a list of nested items (requests or further folders). See the [Postman Collection v2.1.0 spec](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html) — an item may be either a request (has a `request` property) or a folder (has an `item` array).'
+              )
+              .optional(),
           })
           .describe('Information about the collection request or folder.')
       ),
