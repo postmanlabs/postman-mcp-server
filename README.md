@@ -49,7 +49,6 @@ The Postman MCP Server supports the EU region for remote and local servers:
   * [**GitHub Copilot CLI**](#install-in-github-copilot-cli)
   * [**Gemini CLI**](#install-in-gemini-cli)
   * [**Kiro**](#install-in-kiro)
-  * [**Manual**](#manual-istallation)
 * [**Local server**](#local-server)
   * [**Claude Code**](#install-in-claude-code-1)
   * [**Cursor**](#install-in-cursor-1)
@@ -361,22 +360,6 @@ Use the Copilot CLI to interactively add the MCP server:
 /mcp add
 ```
 
-### Install in Gemini CLI
-
-To add the MCP server to your Gemini CLI run the following command in your terminal
-
-```bash
-gemini mcp add postman https://mcp.postman.com/mcp --transport http
-```
-
-### Install in Kiro
-
-To install the remote Postman MCP Server in Kiro, click the install button for the version that you want to use:
-
-| **Minimal** | **Code** | **Full**
-| --- | -- | -- |
-| [![Add Postman MCP Minimal server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fminimal%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) | [![Add Postman MCP Code server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fcode%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) | [![Add Postman MCP Full server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fmcp%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) |
-
 #### Manual installation
 
 Or, add the following to your `~/.copilot/mcp-config.json` config file:
@@ -424,6 +407,22 @@ Use the following method to install if API key authentication is required for EU
 By default, this uses **Minimal** mode. To access **Full** mode, change the `url` value to `https://mcp.postman.com/mcp`. To access **Code** mode, change the value to `https://mcp.postman.com/code`.
 
 For more information, see the [Copilot CLI documentation](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli).
+
+### Install in Gemini CLI
+
+To add the MCP server to your Gemini CLI run the following command in your terminal
+
+```bash
+gemini mcp add postman https://mcp.postman.com/mcp --transport http
+```
+
+### Install in Kiro
+
+To install the remote Postman MCP Server in Kiro, click the install button for the version that you want to use:
+
+| **Minimal** | **Code** | **Full**
+| --- | -- | -- |
+| [![Add Postman MCP Minimal server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fminimal%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) | [![Add Postman MCP Code server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fcode%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) | [![Add Postman MCP Full server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fmcp%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) |
 
 ---
 
