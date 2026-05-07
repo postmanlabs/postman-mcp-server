@@ -171,6 +171,7 @@ export const parameters = z.object({
                   .object({
                     type: z
                       .enum([
+                        'noauth',
                         'basic',
                         'bearer',
                         'apikey',
@@ -703,6 +704,12 @@ export const parameters = z.object({
               .describe('The date and time at which the collection item was updated.')
               .optional(),
             uid: z.string().describe("The collection item's unique ID.").optional(),
+            item: z
+              .array(z.unknown())
+              .describe(
+                'For folder items, a list of nested items (requests or further folders). See the [Postman Collection v2.1.0 spec](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html) — an item may be either a request (has a `request` property) or a folder (has an `item` array).'
+              )
+              .optional(),
           })
           .describe('Information about the collection request or folder.')
       ),
@@ -770,6 +777,7 @@ export const parameters = z.object({
         .object({
           type: z
             .enum([
+              'noauth',
               'basic',
               'bearer',
               'apikey',
