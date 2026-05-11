@@ -153,6 +153,7 @@ export const parameters = z.object({
                         'edgegrid',
                         'jwt',
                         'asap',
+                        'noauth',
                     ])
                         .describe('The authorization type.'),
                     apikey: z
@@ -556,6 +557,164 @@ export const parameters = z.object({
                 .describe('The date and time at which the collection item was updated.')
                 .optional(),
             uid: z.string().describe("The collection item's unique ID.").optional(),
+            item: z
+                .array(z
+                .object({
+                id: z.string().describe("The collection item's ID.").optional(),
+                name: z.string().describe("The item's name.").optional(),
+                description: z
+                    .string()
+                    .nullable()
+                    .describe("The item's description.")
+                    .optional(),
+                request: z
+                    .object({
+                    url: z
+                        .union([
+                        z.string().describe("The request's URL string."),
+                        z.object({
+                            raw: z.string().describe("The request's raw URL.").optional(),
+                            protocol: z.string().optional(),
+                            host: z.array(z.string()).optional(),
+                            path: z.array(z.string()).optional(),
+                            query: z
+                                .array(z.object({
+                                key: z.string().optional(),
+                                value: z.string().optional(),
+                            }))
+                                .optional(),
+                        }),
+                    ])
+                        .optional(),
+                    method: z
+                        .preprocess((v) => (typeof v === 'string' ? v.toUpperCase() : v), z.enum([
+                        'GET',
+                        'PUT',
+                        'POST',
+                        'PATCH',
+                        'DELETE',
+                        'COPY',
+                        'HEAD',
+                        'OPTIONS',
+                        'LINK',
+                        'UNLINK',
+                        'PURGE',
+                        'LOCK',
+                        'UNLOCK',
+                        'PROPFIND',
+                        'VIEW',
+                    ]))
+                        .describe('The HTTP method.')
+                        .optional(),
+                    header: z
+                        .array(z.object({
+                        key: z.string().optional(),
+                        value: z.string().optional(),
+                        description: z.string().optional(),
+                    }))
+                        .optional(),
+                    body: z
+                        .object({
+                        mode: z
+                            .enum(['raw', 'urlencoded', 'formdata', 'file', 'graphql'])
+                            .optional(),
+                        raw: z.string().optional(),
+                        options: z
+                            .object({
+                            raw: z.object({ language: z.string().optional() }).optional(),
+                        })
+                            .optional(),
+                    })
+                        .optional(),
+                    auth: z
+                        .object({
+                        type: z
+                            .enum([
+                            'noauth',
+                            'basic',
+                            'bearer',
+                            'apikey',
+                            'digest',
+                            'oauth1',
+                            'oauth2',
+                            'hawk',
+                            'awsv4',
+                            'ntlm',
+                            'edgegrid',
+                        ])
+                            .optional(),
+                    })
+                        .optional(),
+                })
+                    .describe('The request definition. Include for request items, omit for folder items.')
+                    .optional(),
+                item: z
+                    .array(z.object({
+                    id: z.string().describe("The collection item's ID.").optional(),
+                    name: z.string().describe("The item's name.").optional(),
+                    description: z
+                        .string()
+                        .nullable()
+                        .describe("The item's description.")
+                        .optional(),
+                    request: z
+                        .object({
+                        url: z
+                            .union([z.string(), z.object({ raw: z.string().optional() })])
+                            .optional(),
+                        method: z
+                            .preprocess((v) => (typeof v === 'string' ? v.toUpperCase() : v), z.enum([
+                            'GET',
+                            'PUT',
+                            'POST',
+                            'PATCH',
+                            'DELETE',
+                            'COPY',
+                            'HEAD',
+                            'OPTIONS',
+                            'LINK',
+                            'UNLINK',
+                            'PURGE',
+                            'LOCK',
+                            'UNLOCK',
+                            'PROPFIND',
+                            'VIEW',
+                        ]))
+                            .optional(),
+                        header: z
+                            .array(z.object({
+                            key: z.string().optional(),
+                            value: z.string().optional(),
+                        }))
+                            .optional(),
+                        body: z
+                            .object({ mode: z.string().optional(), raw: z.string().optional() })
+                            .optional(),
+                    })
+                        .describe('The request definition.')
+                        .optional(),
+                    item: z
+                        .array(z.object({
+                        id: z.string().optional(),
+                        name: z.string().optional(),
+                        request: z
+                            .object({
+                            url: z
+                                .union([z.string(), z.object({ raw: z.string().optional() })])
+                                .optional(),
+                            method: z.string().optional(),
+                        })
+                            .optional(),
+                    }))
+                        .describe('Further nested folder items.')
+                        .optional(),
+                }))
+                    .describe('Nested folder items for deeper folder structures.')
+                    .optional(),
+            })
+                .describe("A nested collection item — either a request (has 'request') or a folder (has 'item')."))
+                .describe("A list of items contained in this folder. Use this property to create folder structures within the collection. Each item can be a request (with a 'request' property) or a nested folder (with its own 'item' property). Omit the 'request' property for folder items.")
+                .optional(),
         })
             .describe('Information about the collection request or folder.')),
         event: z

@@ -48,58 +48,62 @@ These instructions apply any time the user wants to find, discover, or locate an
 
 ---
 
-### Decision Framework: Private vs Public Network
+### Decision Framework: Which Ownership to Use
 
-**Default to the Private API Network** for most requests. Only use the Public API Network when the user explicitly signals public discovery intent.
+Use the `searchPostmanElements` tool with the appropriate `ownership` and optional `filters` parameters.
 
-#### Use `searchPostmanElementsInPrivateNetwork` (Default) When:
+**Default to `ownership: "organization"`** for all requests. Use filters to narrow the results.
 
-- The user asks to "find an API", "search for a service", or "look up an endpoint" without specifying public
-- The user mentions internal services (e.g., "find the notification service", "search for our payment API", "look up the auth microservice")
+#### Use `ownership: "organization"` (Default) When:
+
+- The user asks to "find an API", "search for a service", or "look up an endpoint"
+- The user mentions internal services (e.g., "find the notification service", "search for our payment API")
 - The user wants to integrate with a team or company API
 - The user says "find a trusted API for X" or "what APIs do we have for Y"
 - The user references internal infrastructure, microservices, or team-shared resources
-- The request is ambiguous — **always prefer Private Network first**
+- The request is ambiguous — **always prefer organization scope**
 
-#### Use `searchPostmanElementsInPublicNetwork` ONLY When:
+**Narrow with filters as needed:**
 
-- The user explicitly mentions a well-known public API by name (e.g., "find the Stripe API", "search for the GitHub API", "look up Twilio")
-- The user explicitly says "public API", "public network", or "Postman public network"
-- The user wants to explore third-party or open-source APIs (e.g., "find an open source weather API")
-- The context makes it unambiguous that the user is looking for an external, publicly available API
+| Goal                                                            | Filter to add                                           |
+|-----------------------------------------------------------------|---------------------------------------------------------|
+| Trusted internal APIs in the organization (Private API Network) | `filters: {"$and":[{"privateNetwork":{"$eq":true}}]}`   |
+| All internal APIs in the organization                           | `filters: {"$and":[{"visibility":{"$eq":"internal"}}]}` |
+| Publicly visible APIs (e.g. Stripe, GitHub)                     | `filters: {"$and":[{"visibility":{"$eq":"public"}}]}`   |
+| Specific workspace                                              | `filters: {"$and":[{"workspaceId":{"$eq":"<id>"}}]}`    |
+#### Use `ownership: "external"` When:
 
-**When in doubt, search the Private API Network first.** If no relevant results are found, then try the Public API Network and let the user know you're expanding the search.
+- The user explicitly wants to search beyond the organization (Third party APIs)
+- The user asks for a well-known public API (e.g., "find the Stripe API", "search for the GitHub API")
+
+**When in doubt, use `ownership: "organization"` first.** If no relevant results are found, broaden to `ownership: "all"` and try different visibility filters while letting the user know.
 
 ---
 
 ### Search Workflow
 
-#### Step 1: Determine Search Target
+#### Step 1: Determine Search Ownership
 
-Based on the user's request, decide which network to search using the decision framework above.
+Based on the user's request, decide which ownership to use using the decision framework above.
 
 #### Step 2: Execute the Search
 
-**For Private API Network (default):**
-
-`searchPostmanElementsInPrivateNetwork(q, entityType)`
+`searchPostmanElements(entityType, q, ownership: organization, filters?)`
 - Use `entityType: "collections"` to find API collections (recommended starting point)
 - Use `entityType: "requests"` to find specific API requests
+- Use `entityType: "workspaces"`, `"apis"`, `"specs"`, or `"flows"` for other entity types
 - Craft a concise, relevant search query from the user's intent (e.g., "notification", "payment", "authentication")
-
-**For Public API Network:**
-
-`searchPostmanElementsInPublicNetwork(q, entityType)`
-- Use `entityType: "collections"` to find API collections (recommended starting point)
-- Use `entityType: "requests"` to find specific API requests
-- Use the API name or domain as the query (e.g., "stripe", "github", "twilio")
+- For Private API Network results: add `filters: {"$and":[{"privateNetwork":{"$eq":true}}]}`
+- For internally visible APIs (e.g. API of another team in the organization): add `filters: {"$and":[{"visibility":{"$eq":"internal"}}]}`
+- For publicly visible APIs (e.g. Stripe, GitHub): add `filters: {"$and":[{"visibility":{"$eq":"public"}}]}`
+- To filter by workspace: add `filters: {"$and":[{"workspaceId":{"$eq":"<id>"}}]}`
 
 #### Step 3: Present Results
 
 - Summarize the search results clearly to the user
 - Highlight the most relevant matches based on the user's intent
 - If multiple results are found, briefly describe each and ask the user which one to explore
-- If no results are found in the Private Network, suggest searching the Public Network
+- If no results are found, broaden to `ownership: "all"` with different visibility filters and let the user know
 
 #### Step 4: Explore the Selected API
 
@@ -109,6 +113,6 @@ Once the user selects a collection:
 2. `getCollectionRequest(requestId, collectionId, uid: true, populate: false)` — Explore individual requests
 3. `getCollectionFolder(folderId, collectionId, uid: true, populate: false)` — Explore folders
 
-**IMPORTANT:** After establishing a collection, do NOT call `searchPostmanElementsInPublicNetwork` or `searchPostmanElementsInPrivateNetwork` again to find requests within it. Use `getCollectionRequest` and `getCollectionFolder` to navigate the collection's contents.
+**IMPORTANT:** After establishing a collection, do NOT call `searchPostmanElements` again to find requests within it. Use `getCollectionRequest` and `getCollectionFolder` to navigate the collection's contents.
 
 - **Never conclude that an API doesn't exist based solely on the MCP tool list.** The tool list covers tools for *using* Postman, not the full universe of APIs your organization may have published. Always search before concluding.

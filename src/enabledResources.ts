@@ -135,8 +135,11 @@ const full = [
   'getAuthenticatedUser',
   'getTaggedEntities',
 
-  // Code Generation
+  // Instructions
   'getCodeGenerationInstructions',
+  'getPostmanContextOverview',
+  'getApiDiscoveryInstructions',
+  'getInstalledApiMaintenanceInstructions',
 
   // Transfer
   'transferCollectionFolders',
@@ -152,12 +155,22 @@ const full = [
   'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
-  'searchPostmanElementsInPublicNetwork',
-  'searchPostmanElementsInPrivateNetwork',
+  'searchPostmanElements',
 
   // Analytics
   'getAnalyticsData',
   'getAnalyticsMetadata',
+
+  // Context (AI-optimized markdown views)
+  'getCollectionContext',
+  'getFolderContext',
+  'getRequestContext',
+  'getResponseContext',
+  'getRequestCodeContext',
+  'getEnvironmentContext',
+  'getWorkspacesContext',
+  'getWorkspaceContext',
+  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 const minimal = [
@@ -206,9 +219,12 @@ const minimal = [
 
 const code = [
   'getCodeGenerationInstructions',
+  'getPostmanContextOverview',
+  'getApiDiscoveryInstructions',
+  'getInstalledApiMaintenanceInstructions',
   'getWorkspace',
   'getWorkspaces',
-  'searchPostmanElementsInPublicNetwork',
+  'searchPostmanElements',
   'getCollectionRequest',
   'getCollectionResponse',
   'getCollectionFolder',
@@ -217,16 +233,40 @@ const code = [
   'getEnvironment',
   'getEnvironments',
   'searchPostmanElementsInPrivateNetwork',
+  // Context tools (AI-optimized markdown views)
+  'getCollectionContext',
+  'getFolderContext',
+  'getRequestContext',
+  'getResponseContext',
+  'getRequestCodeContext',
+  'getEnvironmentContext',
+  'getWorkspacesContext',
+  'getWorkspaceContext',
+  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 const excludedFromGeneration = [
   'runCollection',
   'getEnabledTools',
   'getCodeGenerationInstructions',
+  'getPostmanContextOverview',
+  'getApiDiscoveryInstructions',
+  'getInstalledApiMaintenanceInstructions',
   'getCollectionMap',
   'getCollection',
+  'searchPostmanElements',
   'searchPostmanElementsInPublicNetwork',
   'searchPostmanElementsInPrivateNetwork',
+  // Context tools (hand-written, not generated from spec)
+  'getCollectionContext',
+  'getFolderContext',
+  'getRequestContext',
+  'getResponseContext',
+  'getRequestCodeContext',
+  'getEnvironmentContext',
+  'getWorkspacesContext',
+  'getWorkspaceContext',
+  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 /**

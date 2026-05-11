@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext } from './utils/toolHelpers.js';
 
 export const method = 'getCodeGenerationInstructions';
-export const description = `This tool returns essential instructions for searching Postman, calling other tools to get data from Postman (e.g. getCollection, getCollectionRequest, etc.), and generating API client code.
+export const description = `Returns the full workflow instructions for discovering APIs, exploring collections, and generating client code from Postman. Includes step-by-step guidance, tool usage patterns, and code generation rules.
 
 MANDATORY: You MUST call this tool when the user says to "use postman", or when the user wants to do something that requires locating a specific API for the purpose of answering questions, planning a build, and in most cases proceeding to generate code that calls the API. ALWAYS call getCodeGenerationInstructions BEFORE calling other tools in this workflow. This tool returns comprehensive step-by-step instructions on how to search for APIs, gather API-specific context from other tools, and then generate client code based on the context retrieved.`;
 
@@ -53,15 +53,15 @@ First, locate the collection the user wants to work with. Determine whether the 
 
 ### For Public APIs
 
-Use \`searchPostmanElementsInPublicNetwork\` to find public API collections:
+Use \`searchPostmanElements\` with \`visibility: public\` filter to find publicly visible API collections:
 
-- \`searchPostmanElementsInPublicNetwork(q, entityType: collections)\` - Search for public collections. E.g. if the user says "find the Stripe API and build a demo" then call this tool with the query "stripe" and entityType "collections". Review the collection(s) returned and select the best match. If multiple collections look viable, ask the user which one to use.
+- \`searchPostmanElements(q, entityType: collections, filters: {"$and":[{"visibility":{"$eq":"public"}}]})\` - Search for publicly visible collections. E.g. if the user says "find the Stripe API and build a demo" then call this tool with the query "stripe", entityType "collections", ownership "organization", and the visibility public filter. Review the collection(s) returned and select the best match. If multiple collections look viable, ask the user which one to use.
 
 ### For Private APIs in the user's organization
 
-Use \`searchPostmanElementsInPrivateNetwork\` to find API collections in the Private API Network which is a central repository of trusted Workspaces within the organisation meant for discovery and reuse :
+Use \`searchPostmanElements\` with \`ownership: organization\` to find API collections across the organization. To restrict results to resources that are only exposed within the organization and are not public, add a \'visibility\' filter:
 
-- \`searchPostmanElementsInPrivateNetwork(q, entityType: collections)\` - Search for API collections in the Private API Network. E.g. if the user says "find the notification API and integrate it" then call this tool with the query "notification" and entityType "collections". Review the collection(s) returned and select the best match. If multiple API requests look viable, ask the user which one to use.
+- \`searchPostmanElements(q, entityType: collections, ownership: organization, filters: {"$and":[{"visibility":{"$eq":"internal"}}]})\` - Search for internal API collections in the organization. E.g. if the user says "find the notification API and integrate it" then call this tool with the query "notification", entityType "collections", ownership "organization", and the privateNetwork filter. Review the collection(s) returned and select the best match. If multiple API requests look viable, ask the user which one to use.
 
 ### For user owned APIs
 
@@ -77,7 +77,7 @@ Once you've identified the target collection (from either path above):
 
 - \`getCollection(collectionId)\` - Fetch the collection details by passing its uid. IMPORTANT: Do NOT pass model=minimal or model=full, omit the model parameter entirely. The response will include collection-level documentation and a recursive itemRefs array with the names and uids of all folders and requests.
 
-**IMPORTANT:** Once you have established the collection, do NOT call searchPostmanElementsInPublicNetwork or searchPostmanElementsInPrivateNetwork or getWorkspaces again to find requests. Use getCollectionRequest to explore individual requests within the collection.
+**IMPORTANT:** Once you have established the collection, do NOT call searchPostmanElements or getWorkspaces again to find requests. Use getCollectionRequest to explore individual requests within the collection.
 
 ## 1.2 Explore Requests and Plan
 
@@ -103,7 +103,7 @@ Once you know which requests need code generated, gather all remaining context t
 
 - \`getCollectionResponse(responseId, collectionId, uid: true, populate: false)\` - Call this for response example uids returned from getCollectionRequest. Use the information for: creating response types in typed languages, adding response schema comments in untyped languages, and understanding both success and error cases.
 
-- \`getEnvironments(workspaceId)\` - Fetch all environments for the workspace that the collection belongs to (the workspaceId was returned from searchPostmanElementsInPublicNetwork or searchPostmanElementsInPrivateNetwork). ALWAYS pass a workspaceId. If you do not have a workspaceId, do NOT call this tool.
+- \`getEnvironments(workspaceId)\` - Fetch all environments for the workspace that the collection belongs to (the workspaceId was returned from searchPostmanElements). ALWAYS pass a workspaceId. If you do not have a workspaceId, do NOT call this tool.
 
 - \`getEnvironment(environmentId)\` - For each environment, fetch the full details to see what variables have been defined and retrieve their values.
 
@@ -480,14 +480,19 @@ Ensure all generated code meets these standards:
 
 export async function handler(
   _args: z.infer<typeof parameters>,
-  _extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
+  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
-  return {
-    content: [
-      {
-        type: 'text',
-        text: CODE_GENERATION_INSTRUCTIONS,
-      },
-    ],
-  };
+  try {
+    const result = await extra.client.get('/context/instructions/code-generation', {
+      headers: extra.headers,
+    });
+    return {
+      content: [{ type: 'text', text: result as string }],
+    };
+  } catch {
+    // Fall back to hardcoded instructions if the context service is unavailable
+    return {
+      content: [{ type: 'text', text: CODE_GENERATION_INSTRUCTIONS }],
+    };
+  }
 }
