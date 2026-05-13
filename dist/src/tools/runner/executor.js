@@ -1,4 +1,5 @@
 import newman from 'newman';
+import { getRequestAgents } from './agents.js';
 export class OutputBuilder {
     lines = [];
     add(line) {
@@ -61,6 +62,7 @@ export class TestTracker {
     }
 }
 export function buildNewmanOptions(params, collection, environment) {
+    const requestAgents = getRequestAgents();
     return {
         collection: collection,
         environment: environment,
@@ -77,10 +79,7 @@ export function buildNewmanOptions(params, collection, environment) {
         reporter: {},
         color: 'off',
         verbose: false,
-        requestAgents: {
-            http: undefined,
-            https: undefined,
-        },
+        requestAgents,
     };
 }
 export async function executeCollection(context) {
