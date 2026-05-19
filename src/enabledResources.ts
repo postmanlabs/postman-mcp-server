@@ -160,17 +160,6 @@ const full = [
   // Analytics
   'getAnalyticsData',
   'getAnalyticsMetadata',
-
-  // Context (AI-optimized markdown views)
-  'getCollectionContext',
-  'getFolderContext',
-  'getRequestContext',
-  'getResponseContext',
-  'getRequestCodeContext',
-  'getEnvironmentContext',
-  'getWorkspacesContext',
-  'getWorkspaceContext',
-  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 const minimal = [
