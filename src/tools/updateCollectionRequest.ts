@@ -431,7 +431,23 @@ export async function handler(
     if (args.graphqlModeData !== undefined) bodyPayload.graphqlModeData = args.graphqlModeData;
     if (args.dataOptions !== undefined) bodyPayload.dataOptions = args.dataOptions;
     if (args.auth !== undefined) bodyPayload.auth = args.auth;
-    if (args.events !== undefined) bodyPayload.events = args.events;
+    if (args.events !== undefined) {
+      // Fetch existing request to get current events and merge by listen type
+      const existingRequest = await extra.client.get<{ events?: any[] }>(endpoint);
+      const existingEvents = existingRequest?.events ?? [];
+      // Build a map of existing events keyed by listen type
+      const eventsMap = new Map<string, any>();
+      for (const event of existingEvents) {
+        if (event.listen) {
+          eventsMap.set(event.listen, event);
+        }
+      }
+      // Merge incoming events, overwriting existing ones by listen type
+      for (const event of args.events) {
+        if (event.listen) eventsMap.set(event.listen, event);
+      }
+      bodyPayload.events = Array.from(eventsMap.values());
+    }
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
