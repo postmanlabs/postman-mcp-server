@@ -887,6 +887,7 @@ export const parameters = z.object({
               )
               .optional(),
           })
+          .optional()
           .describe('Information about the collection request or folder.')
       ),
       event: z
