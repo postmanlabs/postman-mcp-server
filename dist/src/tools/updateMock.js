@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateMock';
-export const description = 'Updates a mock server.\n- Resource: Mock server entity associated with a collection UID.\n- Use this to change name, environment, privacy, or default server response.\n';
+export const description = "Updates a mock server.\n- Resource: Mock server entity associated with a collection UID.\n- Use this to change name, environment, privacy, or default server response.\n- To activate a server response, set \\`config.serverResponseId\\` to the server response's \\`id\\`. Pass \\`null\\` to deactivate.\n";
 export const parameters = z.object({
     mockId: z.string().describe("The mock's ID."),
     mock: z

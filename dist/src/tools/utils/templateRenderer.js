@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import nunjucks from 'nunjucks';
 export function createTemplateRenderer(viewsDir) {
     const env = nunjucks.configure(viewsDir, {
-        autoescape: false,
+        autoescape: true,
         noCache: false,
         throwOnUndefined: false,
     });

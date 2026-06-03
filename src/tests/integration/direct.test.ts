@@ -411,29 +411,33 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdWorkspaceIds).toHaveLength(1);
       expect(createdWorkspaceIds[0]).toBe(workspaceId);
 
-      // Paginate through workspaces to find the created workspace
+      // Paginate through workspaces to find the created workspace.
+      // Retry to handle eventual consistency (workspace may not appear immediately after create).
       let found = false;
-      let cursor: string | undefined;
-      do {
-        const listResult = await client.callTool(
-          {
-            name: 'getWorkspaces',
-            arguments: { limit: 100, ...(cursor ? { cursor } : {}) },
-          },
-          undefined,
-          { timeout: 100000 }
-        );
-        expect(WorkspaceDataFactory.validateResponse(listResult)).toBe(true);
-        const text = (listResult.content as any)[0].text;
-        if (text.includes(workspaceId)) {
-          found = true;
-          break;
-        }
-        // Extract nextCursor from the rendered markdown or raw JSON response
-        const mdMatch = text.match(/\*\*nextCursor\*\*:\s*(\S+)/);
-        const jsonMatch = text.match(/"nextCursor"\s*:\s*"([^"]+)"/);
-        cursor = mdMatch?.[1] || jsonMatch?.[1] || undefined;
-      } while (cursor);
+      for (let attempt = 0; attempt < 3 && !found; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
+        let cursor: string | undefined;
+        do {
+          const listResult = await client.callTool(
+            {
+              name: 'getWorkspaces',
+              arguments: { limit: 100, ...(cursor ? { cursor } : {}) },
+            },
+            undefined,
+            { timeout: 100000 }
+          );
+          expect(WorkspaceDataFactory.validateResponse(listResult)).toBe(true);
+          const text = (listResult.content as any)[0].text;
+          if (text.includes(workspaceId)) {
+            found = true;
+            break;
+          }
+          // Extract nextCursor from the rendered markdown or raw JSON response
+          const mdMatch = text.match(/\*\*nextCursor\*\*:\s*(\S+)/);
+          const jsonMatch = text.match(/"nextCursor"\s*:\s*"([^"]+)"/);
+          cursor = mdMatch?.[1] || jsonMatch?.[1] || undefined;
+        } while (cursor);
+      }
       expect(found).toBe(true);
 
       const searchResult = await client.callTool(

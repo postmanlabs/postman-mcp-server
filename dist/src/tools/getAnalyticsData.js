@@ -1,17 +1,47 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getAnalyticsData';
-export const description = 'Gets analytics data based on the specified resource, metrics, and given filters for team, internal, and public workspaces, as well as Partner Workspaces.\n\n**Note:**\n\nThis endpoint only accepts the following resource:metric query parameter combinations:\n- \\`user\\` — \\`workspace_active_users\\`, \\`active_users\\`\n- \\`workspace\\` — \\`elements_in_workspace\\`, \\`active_workspaces\\`, \\`api_calls\\`, \\`active_collections\\`, \\`response_status\\`, \\`pending_invites\\`, \\`needs_attention\\`, \\`success_rate\\`, \\`user_requests\\`, \\`collection_error_aggregate\\`\n- \\`team\\` — \\`user_api_journey\\`, \\`workspace_distribution\\`, \\`internal_workspace_distribution\\`, \\`license_consumption\\`, \\`partner_engagement_funnel\\`\n\nThe \\`view\\` query parameter only accepts the following values when called with the following resource:metric pairs:\n- \\`detailed\\` or \\`summary\\` — \\`user:active_users\\`, \\`workspace:active_workspaces\\`, \\`workspace:pending_invites\\`, \\`workspace:needs_attention\\`, \\`workspace:success_rate\\`, \\`team:partner_engagement_funnel\\`\n\\`summary\\` only — \\`workspace:elements_in_workspace\\`, \\`workspace:workspace_active_users\\`, \\`workspace:api_calls\\`, \\`workspace:response_status\\`, \\`team:user_api_journey\\`, \\`team:workspace_distribution\\`, \\`team:internal_workspace_distribution\\`, \\`team:license_consumption\\`\n- \\`detailed\\` only — \\`workspace:active_collections\\`, \\`workspace:user_requests\\`\n';
+export const description = 'Gets analytics data based on the specified resource, metrics, and given filters for team, internal, and public workspaces, as well as Partner Workspaces.\n\n**Note:**\n\nThis endpoint only accepts the following resource:metric query parameter combinations:\n- \\`user\\` — \\`workspace_active_users\\`, \\`active_users\\`\n- \\`workspace\\` — \\`elements_in_workspace\\`, \\`active_workspaces\\`, \\`api_calls\\`, \\`active_collections\\`, \\`response_status\\`, \\`pending_invites\\`, \\`needs_attention\\`, \\`success_rate\\`, \\`user_requests\\`, \\`collection_error_aggregate\\`\n- \\`team\\` — \\`user_api_journey\\`, \\`workspace_distribution\\`, \\`internal_workspace_distribution\\`, \\`license_consumption\\`, \\`members\\`, \\`last_autoflex_cycle\\`, \\`partner_engagement_funnel\\`\n- \\`ai\\` — \\`top_agent_models_by_usage\\`, \\`activity_distribution\\`, \\`peak_activity\\`, \\`usage_leaderboard\\`, \\`credit_usage_by_model\\`, \\`messages_sent\\`, \\`credit_usage\\`, \\`agent_mode_sessions\\`, \\`new_vs_returning_users\\`, \\`agent_mode_users\\`\n\nThe \\`view\\` query parameter only accepts the following values when called with the following resource:metric pairs:\n- \\`detailed\\` or \\`summary\\` — \\`user:active_users\\`, \\`workspace:active_workspaces\\`, \\`workspace:pending_invites\\`, \\`workspace:needs_attention\\`, \\`workspace:success_rate\\`, \\`team:partner_engagement_funnel\\`\n\\`summary\\` only — \\`workspace:elements_in_workspace\\`, \\`workspace:workspace_active_users\\`, \\`workspace:api_calls\\`, \\`workspace:response_status\\`, \\`team:user_api_journey\\`, \\`team:workspace_distribution\\`, \\`team:internal_workspace_distribution\\`, \\`team:license_consumption\\`\n- \\`detailed\\` only — \\`workspace:active_collections\\`, \\`workspace:user_requests\\`\n';
 export const parameters = z.object({
     resource: z
-        .enum(['user', 'team', 'workspace'])
-        .describe('Returns metrics and insights for API usage, success, and workspace/team trends in Postman:\n\n- `user` — Data related to individual user activities and engagement within Postman workspaces.\n- `team` — Team-level analytics, license consumption, and organizational trends.\n- `workspace` — Workspace-level activities, elements, and collaboration patterns.\n'),
+        .enum(['user', 'team', 'workspace', 'ai'])
+        .describe('Returns metrics and insights for API usage, success, and workspace/team trends in Postman:\n\n- `user` — Data related to individual user activities and engagement within Postman workspaces.\n- `team` — Team-level analytics, license consumption, and organizational trends.\n- `workspace` — Workspace-level activities, elements, and collaboration patterns.\n- `ai` — Analytics related to Agent Mode usage across workspaces, covering user activity, model usage, and credit consumption patterns.\n'),
     metrics: z
-        .string()
+        .enum([
+        'active_users',
+        'workspace_active_users',
+        'elements_in_workspace',
+        'active_workspaces',
+        'api_calls',
+        'active_collections',
+        'response_status',
+        'pending_invites',
+        'needs_attention',
+        'success_rate',
+        'user_requests',
+        'user_api_journey',
+        'workspace_distribution',
+        'internal_workspace_distribution',
+        'license_consumption',
+        'members',
+        'last_autoflex_cycle',
+        'partner_engagement_funnel',
+        'collection_error_aggregate',
+        'agent_mode_users',
+        'new_vs_returning_users',
+        'agent_mode_sessions',
+        'messages_sent',
+        'credit_usage',
+        'credit_usage_by_model',
+        'usage_leaderboard',
+        'peak_activity',
+        'activity_distribution',
+        'top_agent_models_by_usage',
+    ])
         .describe('Filters the response by only the given metrics. The metric must match the given `resource` value.\n\nFor a list of metrics and their related `resource` value, call the GET `/analytics-metadata` endpoint.\n'),
     view: z
-        .enum(['detailed', 'summary'])
-        .describe('The view type for the analytics data:\n  - `detailed` — Return extensive information.\n  - `summary` — Return aggregated information.\n')
+        .enum(['detailed', 'summary', 'trend'])
+        .describe('The view type for the analytics data:\n  - `detailed` — Return extensive information.\n  - `summary` — Return aggregated information.\n  - `trend` — Return trend information over a duration.\n')
         .optional(),
     workspaceType: z
         .string()
@@ -22,7 +52,14 @@ export const parameters = z.object({
         .describe('A comma-separated list of user IDs to filter the results by. Only pass this parameter when calling the `user_requests` metric for the `workspace` resource.')
         .optional(),
     duration: z
-        .enum(['last_30_days', 'last_180_days', 'last_month', 'last_6_months'])
+        .enum([
+        'last_30_days',
+        'last_180_days',
+        'last_month',
+        'last_6_months',
+        'last_7_days',
+        'last_1_year',
+    ])
         .describe('Filters the response by the given duration.')
         .optional(),
     requestId: z
@@ -36,6 +73,14 @@ export const parameters = z.object({
     attentionType: z
         .string()
         .describe('A comma-separated list of issues types to filter the results by. Attention types provide details about issues users or partners are facing. Accepts the `high_non_200OK_rate_for_partner` and `no_success_on_tried_request` values. Only pass this parameter when using the `needs_attention` metric.')
+        .optional(),
+    period: z
+        .string()
+        .describe('Filters results for a given period of time (as opposed to a range) for supported views. Use a YEAR-MONTH value for month filtering or YEAR-MONTH-DAY day filtering.')
+        .optional(),
+    userType: z
+        .enum(['new', 'returning'])
+        .describe('Filters results by a specific user type for supported views.')
         .optional(),
     limit: z
         .number()
@@ -80,6 +125,10 @@ export async function handler(args, extra) {
             query.set('responseStatus', String(args.responseStatus));
         if (args.attentionType !== undefined)
             query.set('attentionType', String(args.attentionType));
+        if (args.period !== undefined)
+            query.set('period', String(args.period));
+        if (args.userType !== undefined)
+            query.set('userType', String(args.userType));
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));
         if (args.offset !== undefined)

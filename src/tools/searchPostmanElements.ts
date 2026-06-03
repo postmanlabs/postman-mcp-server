@@ -5,7 +5,7 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'searchPostmanElements';
 
-export const description = `Search for Postman entities (requests, collections, workspaces, specs, and flows).
+export const description = `Search for Postman entities (requests, collections, workspaces, specs, flows, and environments).
 
 **Ownership:**
 - \`organization\` — Search within all resources owned by your organization (default).
@@ -30,6 +30,7 @@ export const description = `Search for Postman entities (requests, collections, 
 - \`workspaces\`: Search for Postman workspaces.
 - \`specs\`: Search for API specifications.
 - \`flows\`: Search for Postman Flows.
+- \`environments\`: Search for Postman Environments.
 
 **Filters:**
 
@@ -51,7 +52,7 @@ Supported filter fields:
 | \`createdBy\` | \`$eq\`, \`$ne\`, \`$in\`, \`$nin\` | All element types. |
 | \`organizationId\` | \`$eq\`, \`$ne\`, \`$in\`, \`$nin\` | All element types. |
 | \`teamId\` | \`$eq\`, \`$ne\`, \`$in\`, \`$nin\` | All element types. |
-| \`isGitConnected\` | \`$eq\`, \`$ne\` | Boolean. Workspaces, collections, requests, specs, flows. |
+| \`isGitConnected\` | \`$eq\`, \`$ne\` | Boolean. Workspaces, collections, requests, specs, flows, environments. |
 | \`type\` | \`$eq\`, \`$ne\`, \`$in\`, \`$nin\` | Requests only. |
 
 **Filter examples:**
@@ -60,7 +61,8 @@ Supported filter fields:
 - Multiple workspaces: \`{"$and":[{"workspaceId":{"$in":["ws-1","ws-2"]}}]}\`
 - Public visibility: \`{"$and":[{"visibility":{"$eq":"public"}}]}\`
 - GET requests only: \`{"$and":[{"method":{"$eq":"GET"}}]}\`
-- Combine conditions: \`{"$and":[{"visibility":{"$eq":"public"}},{"workspaceId":{"$eq":"ws-abc123"}}]}\``;
+- Combine conditions: \`{"$and":[{"visibility":{"$eq":"public"}},{"workspaceId":{"$eq":"ws-abc123"}}]}\`
+- Environments in a workspace: \`{"$and":[{"workspaceId":{"$eq":"ws-abc123"}}]}\``;
 
 /** Boolean operator: { "$eq": boolean } or { "$ne": boolean } */
 const booleanOperator = z
@@ -138,9 +140,9 @@ const filtersSchema = z
 
 export const parameters = z.object({
   entityType: z
-    .enum(['requests', 'collections', 'workspaces', 'specs', 'flows'])
+    .enum(['requests', 'collections', 'workspaces', 'specs', 'flows', 'environments'])
     .describe(
-      'The type of Postman entity to search for: `requests` (individual API requests), `collections` (API collections), `workspaces` (Postman workspaces), `specs` (API specifications), or `flows` (Postman Flows).'
+      'The type of Postman entity to search for: `requests` (individual API requests), `collections` (API collections), `workspaces` (Postman workspaces), `specs` (API specifications), `flows` (Postman Flows), or `environments` (Postman Environments).'
     )
     .default('requests'),
   q: z
@@ -172,7 +174,8 @@ export const parameters = z.object({
 });
 
 export const annotations = {
-  title: 'Search for Postman entities (requests, collections, workspaces, specs, flows).',
+  title:
+    'Search for Postman entities (requests, collections, workspaces, specs, flows, environments).',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

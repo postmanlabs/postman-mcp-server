@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'generateSpecFromCollection';
-export const description = 'Generates an API specification for the given collection. The response contains a polling link to the task status.';
+export const description = 'Generates an OpenAPI 2.0, 3.0, or 3.1 specification for the given collection. The response contains a polling link to the task status.';
 export const parameters = z.object({
     collectionUid: z.string().describe("The collection's unique ID."),
     elementType: z.literal('spec').describe('The `spec` value.'),
@@ -15,7 +15,7 @@ export const parameters = z.object({
         .describe('The format of the API specification.'),
 });
 export const annotations = {
-    title: 'Generates an API specification for the given collection. The response contains a polling link to the task status.',
+    title: 'Generates an OpenAPI 2.0, 3.0, or 3.1 specification for the given collection. The response contains a polling link to the task status.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: false,

@@ -91,7 +91,7 @@ Based on the user's request, decide which ownership to use using the decision fr
 `searchPostmanElements(entityType, q, ownership: organization, filters?)`
 - Use `entityType: "collections"` to find API collections (recommended starting point)
 - Use `entityType: "requests"` to find specific API requests
-- Use `entityType: "workspaces"`, `"apis"`, `"specs"`, or `"flows"` for other entity types
+- Use `entityType: "workspaces"`, `"apis"`, `"specs"`, `"flows"`, or `"environments"` for other entity types
 - Craft a concise, relevant search query from the user's intent (e.g., "notification", "payment", "authentication")
 - For Private API Network results: add `filters: {"$and":[{"privateNetwork":{"$eq":true}}]}`
 - For internally visible APIs (e.g. API of another team in the organization): add `filters: {"$and":[{"visibility":{"$eq":"internal"}}]}`

@@ -3,12 +3,12 @@ import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'getSpecDefinition';
+export const method = 'getMockServerResponses';
 export const description =
-  "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.";
-export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
+  "Gets all server responses configured for a mock server.\n\n- Server responses simulate 5xx server-level failures (e.g. 500, 503) independently of any specific route or example.\n- This endpoint returns summary metadata only (id, name, statusCode, timestamps). To get the full body and headers of a specific response, call \\`getMockServerResponse\\` with the response's \\`id\\`.\n- To see which server response is currently active, call \\`getMock\\` and check \\`config.serverResponseId\\`.\n";
+export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });
 export const annotations = {
-  title: "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.",
+  title: 'Gets all server responses configured for a mock server.',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
@@ -19,7 +19,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/specs/${args.specId}/definitions`;
+    const endpoint = `/mocks/${args.mockId}/server-responses`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {

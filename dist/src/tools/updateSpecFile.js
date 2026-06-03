@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateSpecFile';
-export const description = "Updates an API specification's file.\n\n**Note:**\n\n- This endpoint does not accept an empty request body. You must pass one of the accepted values.\n- This endpoint does not accept multiple request body properties in a single call. For example, you cannot pass both the \\`content\\` and \\`type\\` property at the same time.\n- Multi-file specifications can only have one root file.\n- When updating a file type to \\`ROOT\\`, the previous root file is updated to the \\`DEFAULT\\` file type.\n- Files cannot exceed a maximum of 10 MB in size.\n";
+export const description = 'Updates a file for an OpenAPI or protobuf 2 or 3 specification.\n\n**Note:**\n\n- This endpoint does not accept an empty request body. You must pass one of the accepted values.\n- This endpoint does not accept multiple request body properties in a single call. For example, you cannot pass both the \\`content\\` and \\`type\\` property at the same time.\n- Multi-file specifications can only have one root file.\n- When updating a file type to \\`ROOT\\`, the previous root file is updated to the \\`DEFAULT\\` file type.\n- Files cannot exceed a maximum of 10 MB in size.\n';
 export const parameters = z.object({
     specId: z.string().describe("The spec's ID."),
     filePath: z.string().describe('The path to the file.'),
@@ -14,7 +14,7 @@ export const parameters = z.object({
     content: z.string().describe("The specification's stringified contents.").optional(),
 });
 export const annotations = {
-    title: "Updates an API specification's file.",
+    title: 'Updates a file for an OpenAPI or protobuf 2 or 3 specification.',
     readOnlyHint: false,
     destructiveHint: false,
     idempotentHint: true,
