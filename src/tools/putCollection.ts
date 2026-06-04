@@ -953,6 +953,7 @@ export const parameters = z.object({
         .object({
           type: z
             .enum([
+              'noauth',
               'basic',
               'bearer',
               'apikey',
@@ -967,6 +968,7 @@ export const parameters = z.object({
               'asap',
             ])
             .describe('The authorization type.'),
+          noauth: z.unknown().optional(),
           apikey: z
             .array(
               z

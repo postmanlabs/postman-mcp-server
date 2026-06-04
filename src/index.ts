@@ -363,9 +363,21 @@ async function run() {
   );
 }
 
-run().catch((error: unknown) => {
-  log('error', 'Unhandled error during server execution', {
+function fatalStartupError(label: string, error: unknown) {
+  log('error', label, {
     error: String((error as any)?.message || error),
   });
   process.exit(1);
+}
+
+process.on('unhandledRejection', (reason) => {
+  fatalStartupError('Unhandled promise rejection', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  fatalStartupError('Uncaught exception', error);
+});
+
+run().catch((error: unknown) => {
+  fatalStartupError('Unhandled error during server execution', error);
 });

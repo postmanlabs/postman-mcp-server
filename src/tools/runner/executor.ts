@@ -99,7 +99,13 @@ export function buildNewmanOptions(
     delayRequest: 1000,
     ignoreRedirects: false,
     insecure: false,
-    bail: params.stopOnFailure ? ['failure'] : false,
+    bail: params.stopOnFailure
+      ? ['failure']
+      : params.stopOnError || params.abortOnError
+        ? true
+        : params.abortOnFailure
+          ? ['failure']
+          : false,
     suppressExitCode: true,
     reporters: [],
     reporter: {},
@@ -166,6 +172,10 @@ function runNewman(options: any, tracker: TestTracker, output: OutputBuilder): P
             output.add(testResults);
           }
         }
+      })
+      .on('exception', (_err: any, args: any) => {
+        const msg = args?.error?.message ?? String(args?.error ?? 'unknown');
+        output.add('\n❌ Runtime exception: ' + msg);
       })
       .on('done', (err: any, summary: any) => {
         if (err) {

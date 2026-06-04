@@ -250,9 +250,18 @@ async function run() {
     const toolsetName = useCode ? 'code' : useFull ? 'full' : 'minimal';
     logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`);
 }
-run().catch((error) => {
-    log('error', 'Unhandled error during server execution', {
+function fatalStartupError(label, error) {
+    log('error', label, {
         error: String(error?.message || error),
     });
     process.exit(1);
+}
+process.on('unhandledRejection', (reason) => {
+    fatalStartupError('Unhandled promise rejection', reason);
+});
+process.on('uncaughtException', (error) => {
+    fatalStartupError('Uncaught exception', error);
+});
+run().catch((error) => {
+    fatalStartupError('Unhandled error during server execution', error);
 });
