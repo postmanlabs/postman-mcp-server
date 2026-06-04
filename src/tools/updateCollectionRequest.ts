@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import { extractRequestEvents, mergeEventsByListen } from './utils/mergeRequestEvents.js';
 
 export const method = 'updateCollectionRequest';
 export const description =
@@ -399,7 +400,9 @@ export const parameters = z.object({
       })
     )
     .nullable()
-    .describe('A list of scripts configured to run when specific events occur.')
+    .describe(
+      'Scripts to add or update, merged by `listen` (`prerequest`, `test`). Existing event types not listed here are preserved (unlike a raw PUT that replaces the whole array).'
+    )
     .optional(),
 });
 export const annotations = {
@@ -431,7 +434,12 @@ export async function handler(
     if (args.graphqlModeData !== undefined) bodyPayload.graphqlModeData = args.graphqlModeData;
     if (args.dataOptions !== undefined) bodyPayload.dataOptions = args.dataOptions;
     if (args.auth !== undefined) bodyPayload.auth = args.auth;
-    if (args.events !== undefined) bodyPayload.events = args.events;
+    if (args.events != null) {
+      const getOptions: any = { headers: extra.headers };
+      const current = await extra.client.get(url, getOptions);
+      const existing = extractRequestEvents(current);
+      bodyPayload.events = mergeEventsByListen(existing, args.events);
+    }
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,

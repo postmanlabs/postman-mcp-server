@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { extractRequestEvents, mergeEventsByListen } from './utils/mergeRequestEvents.js';
 export const method = 'updateCollectionRequest';
 export const description = 'Updates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- You must pass a collection ID (\\`12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), not a collection(\\`12345678-12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), in this endpoint.\n- This endpoint does not support changing the folder of a request.\n- This endpoint acts like a PATCH method. It only updates the values that you pass in the request body.';
 export const parameters = z.object({
@@ -331,7 +332,7 @@ export const parameters = z.object({
             .optional(),
     }))
         .nullable()
-        .describe('A list of scripts configured to run when specific events occur.')
+        .describe('Scripts to add or update, merged by `listen` (`prerequest`, `test`). Existing event types not listed here are preserved (unlike a raw PUT that replaces the whole array).')
         .optional(),
 });
 export const annotations = {
@@ -370,8 +371,12 @@ export async function handler(args, extra) {
             bodyPayload.dataOptions = args.dataOptions;
         if (args.auth !== undefined)
             bodyPayload.auth = args.auth;
-        if (args.events !== undefined)
-            bodyPayload.events = args.events;
+        if (args.events != null) {
+            const getOptions = { headers: extra.headers };
+            const current = await extra.client.get(url, getOptions);
+            const existing = extractRequestEvents(current);
+            bodyPayload.events = mergeEventsByListen(existing, args.events);
+        }
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
