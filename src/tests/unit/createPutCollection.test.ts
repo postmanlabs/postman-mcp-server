@@ -26,7 +26,12 @@ function nestedCollectionPayload() {
 
 function mockClient(method: 'post' | 'put') {
   const fn = vi.fn().mockResolvedValue({ collection: { id: 'owner-abc', uid: 'owner-abc' } });
-  return { [method]: fn, get: vi.fn(), patch: vi.fn(), delete: vi.fn() } as unknown as PostmanAPIClient & {
+  return {
+    [method]: fn,
+    get: vi.fn(),
+    patch: vi.fn(),
+    delete: vi.fn(),
+  } as unknown as PostmanAPIClient & {
     [K in typeof method]: ReturnType<typeof vi.fn>;
   };
 }
@@ -36,7 +41,7 @@ describe('createCollection / putCollection nested folders', () => {
     const client = mockClient('post');
     await createCollectionHandler(
       { workspace: 'ws-1', collection: nestedCollectionPayload() },
-      { client },
+      { client }
     );
 
     expect(client.post).toHaveBeenCalledOnce();
@@ -54,7 +59,7 @@ describe('createCollection / putCollection nested folders', () => {
         collectionId: '12345-33823532ab9e41c9b6fd12d0fd459b8b',
         collection: nestedCollectionPayload(),
       },
-      { client },
+      { client }
     );
 
     expect(client.put).toHaveBeenCalledOnce();

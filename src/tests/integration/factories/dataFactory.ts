@@ -253,7 +253,9 @@ export class CollectionDataFactory extends TestDataFactory {
     };
   }
 
-  public static createNestedFolderCollection(overrides: Partial<TestCollection> = {}): TestCollection {
+  public static createNestedFolderCollection(
+    overrides: Partial<TestCollection> = {}
+  ): TestCollection {
     return {
       info: {
         name: '[Integration Test] Nested Folder Collection',

@@ -13,7 +13,7 @@ export type CollectionItemInput = {
  * Strips `request` from folder nodes and `item` from request leaves recursively.
  */
 export function sanitizeCollectionItems(
-  items: CollectionItemInput[] | undefined,
+  items: CollectionItemInput[] | undefined
 ): CollectionItemInput[] | undefined {
   if (!items) return items;
   return items.map(sanitizeCollectionItem);
@@ -32,7 +32,7 @@ function sanitizeCollectionItem(item: CollectionItemInput): CollectionItemInput 
 }
 
 export function sanitizeCollectionPayload<T extends { item?: CollectionItemInput[] }>(
-  collection: T,
+  collection: T
 ): T {
   if (!collection?.item) return collection;
   return { ...collection, item: sanitizeCollectionItems(collection.item) };
