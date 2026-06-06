@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import { sanitizeCollectionPayload } from './utils/collectionItems.js';
 
 export const method = 'createCollection';
 export const description =
@@ -1198,7 +1199,9 @@ export async function handler(
     if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
-    if (args.collection !== undefined) bodyPayload.collection = args.collection;
+    if (args.collection !== undefined) {
+      bodyPayload.collection = sanitizeCollectionPayload(args.collection);
+    }
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
