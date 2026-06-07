@@ -39,4 +39,12 @@ describe('collection tool schemas', () => {
     });
     expect(result.success).toBe(true);
   });
+
+  it('putCollection accepts collection-level noauth', () => {
+    const result = putCollectionParameters.safeParse({
+      collectionId: 'collection-id',
+      collection: { ...folderCollection, auth: { type: 'noauth' } },
+    });
+    expect(result.success).toBe(true);
+  });
 });
