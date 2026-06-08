@@ -1,4 +1,6 @@
+import dotenv from 'dotenv';
 import { z } from 'zod';
+dotenv.config({ quiet: true });
 const envSchema = z.object({
     POSTMAN_API_KEY: z.string(),
     POSTMAN_API_BASE_URL: z.string().url().default('https://api.postman.com'),
