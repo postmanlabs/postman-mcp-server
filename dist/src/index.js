@@ -90,6 +90,7 @@ async function loadAllTools() {
     return tools;
 }
 let clientInfo = undefined;
+let serverReady = false;
 async function run() {
     const args = process.argv.slice(2);
     const useFull = args.includes('--full');
@@ -249,6 +250,7 @@ async function run() {
     await server.connect(transport);
     const toolsetName = useCode ? 'code' : useFull ? 'full' : 'minimal';
     logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`);
+    serverReady = true;
 }
 function fatalStartupError(label, error) {
     log('error', label, {
@@ -257,7 +259,12 @@ function fatalStartupError(label, error) {
     process.exit(1);
 }
 process.on('unhandledRejection', (reason) => {
-    fatalStartupError('Unhandled promise rejection', reason);
+    log('error', 'Unhandled promise rejection', {
+        error: String(reason?.message || reason),
+    });
+    if (!serverReady) {
+        process.exit(1);
+    }
 });
 process.on('uncaughtException', (error) => {
     fatalStartupError('Uncaught exception', error);

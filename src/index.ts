@@ -150,6 +150,8 @@ async function loadAllTools(): Promise<ToolModule[]> {
 
 let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefined;
 
+let serverReady = false;
+
 async function run() {
   const args = process.argv.slice(2);
   const useFull = args.includes('--full');
@@ -361,6 +363,7 @@ async function run() {
     'info',
     `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`
   );
+  serverReady = true;
 }
 
 function fatalStartupError(label: string, error: unknown) {
@@ -371,7 +374,12 @@ function fatalStartupError(label: string, error: unknown) {
 }
 
 process.on('unhandledRejection', (reason) => {
-  fatalStartupError('Unhandled promise rejection', reason);
+  log('error', 'Unhandled promise rejection', {
+    error: String((reason as any)?.message || reason),
+  });
+  if (!serverReady) {
+    process.exit(1);
+  }
 });
 
 process.on('uncaughtException', (error) => {

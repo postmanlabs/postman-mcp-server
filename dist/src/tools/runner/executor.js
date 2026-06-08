@@ -111,8 +111,15 @@ export async function executeCollection(context) {
 }
 function runNewman(options, tracker, output) {
     return new Promise((resolve, reject) => {
-        newman
-            .run(options)
+        let run;
+        try {
+            run = newman.run(options);
+        }
+        catch (error) {
+            reject(error);
+            return;
+        }
+        run
             .on('start', () => {
             output.add('🎯 Starting collection run...\n');
         })

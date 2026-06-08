@@ -149,8 +149,15 @@ export async function executeCollection(context: ExecutionContext): Promise<Exec
 
 function runNewman(options: any, tracker: TestTracker, output: OutputBuilder): Promise<any> {
   return new Promise((resolve, reject) => {
-    newman
-      .run(options)
+    let run: ReturnType<typeof newman.run>;
+    try {
+      run = newman.run(options);
+    } catch (error: any) {
+      reject(error);
+      return;
+    }
+
+    run
       .on('start', () => {
         output.add('🎯 Starting collection run...\n');
       })
