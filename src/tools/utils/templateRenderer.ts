@@ -16,7 +16,7 @@ type TemplateRenderFn = (toolName: string, rawText: string) => string | null;
  */
 export function createTemplateRenderer(viewsDir: string): TemplateRenderFn {
   const env = nunjucks.configure(viewsDir, {
-    autoescape: false,
+    autoescape: true,
     noCache: false,
     throwOnUndefined: false,
   });

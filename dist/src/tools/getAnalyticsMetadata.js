@@ -9,10 +9,40 @@ export const parameters = z.object({
         .optional(),
     resources: z
         .string()
-        .describe('A comma-separated list of resource types to filter the metrics by. Accepts the `user`, `workspace`, and `team` values.')
+        .describe('A comma-separated list of resource types to filter the metrics by. Accepts the `user`, `workspace`, `team`, and `ai` values.')
         .optional(),
     metrics: z
-        .string()
+        .enum([
+        'active_users',
+        'workspace_active_users',
+        'elements_in_workspace',
+        'active_workspaces',
+        'api_calls',
+        'active_collections',
+        'response_status',
+        'pending_invites',
+        'needs_attention',
+        'success_rate',
+        'user_requests',
+        'user_api_journey',
+        'workspace_distribution',
+        'internal_workspace_distribution',
+        'license_consumption',
+        'members',
+        'last_autoflex_cycle',
+        'partner_engagement_funnel',
+        'collection_error_aggregate',
+        'agent_mode_users',
+        'new_vs_returning_users',
+        'agent_mode_sessions',
+        'messages_sent',
+        'credit_usage',
+        'credit_usage_by_model',
+        'usage_leaderboard',
+        'peak_activity',
+        'activity_distribution',
+        'top_agent_models_by_usage',
+    ])
         .describe("A comma-separated list of metrics values to use to filter the response.\n\nIf you don't pass this query parameter, then the response returns all metadata for all available metrics.\n")
         .optional(),
 });

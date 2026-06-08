@@ -779,6 +779,7 @@ export const parameters = z.object({
                 'edgegrid',
                 'jwt',
                 'asap',
+                'noauth',
             ])
                 .describe('The authorization type.'),
             apikey: z

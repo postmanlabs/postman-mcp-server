@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import nunjucks from 'nunjucks';
 export function createErrorTemplateRenderer(errorsDir) {
     const env = nunjucks.configure(errorsDir, {
-        autoescape: false,
+        autoescape: true,
         noCache: false,
         throwOnUndefined: false,
     });

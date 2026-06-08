@@ -85,6 +85,13 @@ const full = [
   'publishMock',
   'unpublishMock',
 
+  // Mock Server Responses
+  'createMockServerResponse',
+  'deleteMockServerResponse',
+  'getMockServerResponse',
+  'getMockServerResponses',
+  'updateMockServerResponse',
+
   // Monitors
   'createMonitor',
   'deleteMonitor',
@@ -92,6 +99,9 @@ const full = [
   'getMonitors',
   'updateMonitor',
   'runMonitor',
+  'listMonitorExecutions',
+  'listRunsForExecution',
+  'getMonitorRunResults',
 
   // Specs
   'createSpec',
@@ -160,17 +170,6 @@ const full = [
   // Analytics
   'getAnalyticsData',
   'getAnalyticsMetadata',
-
-  // Context (AI-optimized markdown views)
-  'getCollectionContext',
-  'getFolderContext',
-  'getRequestContext',
-  'getResponseContext',
-  'getRequestCodeContext',
-  'getEnvironmentContext',
-  'getWorkspacesContext',
-  'getWorkspaceContext',
-  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 const minimal = [
@@ -215,6 +214,7 @@ const minimal = [
   'runCollection',
   'getEnabledTools',
   'updateCollectionRequest',
+  'searchPostmanElements',
 ] as const;
 
 const code = [
@@ -232,7 +232,6 @@ const code = [
   'getCollection',
   'getEnvironment',
   'getEnvironments',
-  'searchPostmanElementsInPrivateNetwork',
   // Context tools (AI-optimized markdown views)
   'getCollectionContext',
   'getFolderContext',
@@ -248,6 +247,9 @@ const code = [
 const excludedFromGeneration = [
   'runCollection',
   'getEnabledTools',
+  'listMonitorExecutions',
+  'listRunsForExecution',
+  'getMonitorRunResults',
   'getCodeGenerationInstructions',
   'getPostmanContextOverview',
   'getApiDiscoveryInstructions',

@@ -68,10 +68,7 @@ function logBoth(
   if (server) sendClientLog(server, level, message);
 }
 
-type FullResourceMethod = (typeof enabledResources.full)[number];
-type MinimalResourceMethod = (typeof enabledResources.minimal)[number];
-type CodeResourceMethod = (typeof enabledResources.code)[number];
-type EnabledResourceMethod = FullResourceMethod;
+type EnabledResourceMethod = (typeof enabledResources.full)[number];
 
 interface ToolModule {
   method: EnabledResourceMethod;

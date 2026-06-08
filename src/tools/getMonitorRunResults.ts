@@ -3,12 +3,17 @@ import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'getSpecDefinition';
+export const method = 'getMonitorRunResults';
 export const description =
-  "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.";
-export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
+  'Gets results for a monitor run, including trimmed execution logs (beforeItem and assertion events only) and result counts. Use this to inspect per-request assertions and failure details for a specific run.';
+
+export const parameters = z.object({
+  monitorId: z.string().describe("The monitor's ID."),
+  runId: z.string().describe("The run's ID."),
+});
+
 export const annotations = {
-  title: "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.",
+  title: 'Get Monitor Run Results',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
@@ -19,18 +24,13 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/specs/${args.specId}/definitions`;
-    const query = new URLSearchParams();
-    const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
-    const options: any = {
-      headers: extra.headers,
-    };
-    const result = await extra.client.get(url, options);
+    const endpoint = `/monitors/${encodeURIComponent(args.monitorId)}/runs/${encodeURIComponent(args.runId)}/results`;
+    const result = await extra.client.get(endpoint, { headers: extra.headers });
     return {
       content: [
         {
           type: 'text',
-          text: `${typeof result === 'string' ? result : JSON.stringify(result, null, 2)}`,
+          text: typeof result === 'string' ? result : JSON.stringify(result, null, 2),
         },
       ],
     };

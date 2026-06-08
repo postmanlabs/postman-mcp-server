@@ -408,7 +408,7 @@ export const parameters = z.object({
           .optional(),
       })
     )
-    .nullable()
+    .nullish()
     .describe('A list of scripts configured to run when specific events occur.')
     .optional(),
 });
