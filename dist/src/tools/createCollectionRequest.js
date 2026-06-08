@@ -336,7 +336,6 @@ export const parameters = z.object({
             .describe('Information about the Javascript code that can be used to to perform setup or teardown operations in a response.')
             .optional(),
     }))
-        .nullable()
         .describe('A list of scripts configured to run when specific events occur.')
         .optional(),
 });

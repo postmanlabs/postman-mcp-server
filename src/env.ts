@@ -1,9 +1,13 @@
+import dotenv from 'dotenv';
 import { z } from 'zod';
 
 /**
  * Public environment configuration for the Postman MCP Server (STDIO mode).
  * This file contains only the variables needed for the public open-source version.
  */
+
+// dotenv v17 logs to stdout by default; MCP stdio transport uses stdout for JSON-RPC.
+dotenv.config({ quiet: true });
 
 const envSchema = z.object({
   POSTMAN_API_KEY: z.string(),
