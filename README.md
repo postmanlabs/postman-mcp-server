@@ -10,9 +10,9 @@ Postman also offers the server as an [npm package](https://www.npmjs.com/package
 
 The [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7) is the quickest way to explore, test, and connect to the Postman MCP Server. Use it to:
 
-- Browse the complete list of available tools across all configurations
-- Connect to and test the remote server — [Full](https://www.postman.com/postman/postman-public-workspace/mcp-request/6821a76b17ccb90a86df48d3) and [Minimal](https://www.postman.com/postman/postman-public-workspace/mcp-request/689e1c635be722a98b723238)
-- Connect to and test the [local server](https://www.postman.com/postman/postman-public-workspace/mcp-request/6866a655b36c67cc435b5033)
+- Browse the complete list of available tools across all configurations.
+- Connect to and test the remote server — [Full](https://www.postman.com/postman/postman-public-workspace/mcp-request/6821a76b17ccb90a86df48d3) and [Minimal](https://www.postman.com/postman/postman-public-workspace/mcp-request/689e1c635be722a98b723238).
+- Connect to and test the [local server](https://www.postman.com/postman/postman-public-workspace/mcp-request/6866a655b36c67cc435b5033).
 
 ---
 
