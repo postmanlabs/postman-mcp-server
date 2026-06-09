@@ -15,7 +15,6 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { z } from 'zod';
-import dotenv from 'dotenv';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
@@ -69,10 +68,7 @@ function logBoth(
   if (server) sendClientLog(server, level, message);
 }
 
-type FullResourceMethod = (typeof enabledResources.full)[number];
-type MinimalResourceMethod = (typeof enabledResources.minimal)[number];
-type CodeResourceMethod = (typeof enabledResources.code)[number];
-type EnabledResourceMethod = FullResourceMethod;
+type EnabledResourceMethod = (typeof enabledResources.full)[number];
 
 interface ToolModule {
   method: EnabledResourceMethod;
@@ -98,14 +94,16 @@ async function loadAllTools(): Promise<ToolModule[]> {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
   const generatedToolsDir = join(__dirname, './tools');
+  // Match the extension of the running entrypoint: tsx runs us from .ts,
+  // node runs the compiled .js from dist/. Avoids needing a dev-mode flag.
+  const ext = __filename.endsWith('.ts') ? '.ts' : '.js';
 
   const tools: ToolModule[] = [];
 
-  // Load generated tools from ./tools/*.js
   try {
-    log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir });
+    log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir, ext });
     const files = await readdir(generatedToolsDir);
-    const toolFiles = files.filter((file) => file.endsWith('.js'));
+    const toolFiles = files.filter((file) => file.endsWith(ext));
     log('debug', 'Discovered tool files', { count: toolFiles.length });
 
     const importResults = await Promise.allSettled(
@@ -147,20 +145,6 @@ async function loadAllTools(): Promise<ToolModule[]> {
   return tools;
 }
 
-const dotEnvOutput = dotenv.config({ quiet: true });
-
-if (dotEnvOutput.error) {
-  if ((dotEnvOutput.error as NodeJS.ErrnoException).code !== 'ENOENT') {
-    log('error', `Error loading .env file: ${dotEnvOutput.error}`);
-    process.exit(1);
-  }
-} else {
-  log(
-    'info',
-    `Environment variables loaded: ${dotEnvOutput.parsed ? Object.keys(dotEnvOutput.parsed).length : 0} environment variables: ${Object.keys(dotEnvOutput.parsed || {}).join(', ')}`
-  );
-}
-
 let clientInfo: InitializeRequest['params']['clientInfo'] | undefined = undefined;
 
 async function run() {
@@ -198,14 +182,18 @@ async function run() {
     toolCount: allGeneratedTools.length,
   });
 
-  const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
-  const minimalTools = allGeneratedTools.filter((t) =>
-    enabledResources.minimal.includes(t.method as MinimalResourceMethod)
-  );
-  const codeTools = allGeneratedTools.filter((t) =>
-    enabledResources.code.includes(t.method as CodeResourceMethod)
-  );
-  const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
+  const enabledMethods = useCode
+    ? enabledResources.code
+    : useFull
+      ? enabledResources.full
+      : enabledResources.minimal;
+
+  // Sort alphabetically for deterministic tools/list ordering (MCP spec minor change #3).
+  const toolSorter = (a: ToolModule, b: ToolModule) =>
+    a.method < b.method ? -1 : a.method > b.method ? 1 : 0;
+  const tools = allGeneratedTools
+    .filter((t) => (enabledMethods as readonly string[]).includes(t.method))
+    .sort(toolSorter);
 
   // Load instructions
   const __filename = fileURLToPath(import.meta.url);
@@ -227,7 +215,7 @@ async function run() {
     instructionsContent
       ? {
           instructions:
-            'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.',
+            'Before answering any API-related questions, fetch the MCP resource at URI `postman://instructions` using FetchMcpResource from this MCP server, and follow the usage instructions contained within.',
         }
       : {}
   );

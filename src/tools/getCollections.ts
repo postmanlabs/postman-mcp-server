@@ -8,7 +8,12 @@ export const description =
   'The workspace ID query is required for this endpoint. If not provided, the LLM should ask the user to provide it.';
 export const parameters = z.object({
   workspace: z.string().describe("The workspace's ID."),
-  name: z.string().describe('Filter results by collections that match the given name.').optional(),
+  name: z
+    .string()
+    .describe(
+      'Filter results by collections whose name exactly matches the given value. Partial or substring matches are not supported.'
+    )
+    .optional(),
   limit: z
     .number()
     .int()

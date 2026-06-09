@@ -4,10 +4,11 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getSpecDefinition';
-export const description = "Gets the complete contents of an API specification's definition.";
+export const description =
+  "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.";
 export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
 export const annotations = {
-  title: "Gets the complete contents of an API specification's definition.",
+  title: "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.",
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

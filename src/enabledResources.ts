@@ -85,6 +85,13 @@ const full = [
   'publishMock',
   'unpublishMock',
 
+  // Mock Server Responses
+  'createMockServerResponse',
+  'deleteMockServerResponse',
+  'getMockServerResponse',
+  'getMockServerResponses',
+  'updateMockServerResponse',
+
   // Monitors
   'createMonitor',
   'deleteMonitor',
@@ -92,6 +99,9 @@ const full = [
   'getMonitors',
   'updateMonitor',
   'runMonitor',
+  'listMonitorExecutions',
+  'listRunsForExecution',
+  'getMonitorRunResults',
 
   // Specs
   'createSpec',
@@ -135,8 +145,11 @@ const full = [
   'getAuthenticatedUser',
   'getTaggedEntities',
 
-  // Code Generation
+  // Instructions
   'getCodeGenerationInstructions',
+  'getPostmanContextOverview',
+  'getApiDiscoveryInstructions',
+  'getInstalledApiMaintenanceInstructions',
 
   // Transfer
   'transferCollectionFolders',
@@ -152,8 +165,7 @@ const full = [
   'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
-  'searchPostmanElementsInPublicNetwork',
-  'searchPostmanElementsInPrivateNetwork',
+  'searchPostmanElements',
 
   // Analytics
   'getAnalyticsData',
@@ -202,13 +214,17 @@ const minimal = [
   'runCollection',
   'getEnabledTools',
   'updateCollectionRequest',
+  'searchPostmanElements',
 ] as const;
 
 const code = [
   'getCodeGenerationInstructions',
+  'getPostmanContextOverview',
+  'getApiDiscoveryInstructions',
+  'getInstalledApiMaintenanceInstructions',
   'getWorkspace',
   'getWorkspaces',
-  'searchPostmanElementsInPublicNetwork',
+  'searchPostmanElements',
   'getCollectionRequest',
   'getCollectionResponse',
   'getCollectionFolder',
@@ -216,17 +232,43 @@ const code = [
   'getCollection',
   'getEnvironment',
   'getEnvironments',
-  'searchPostmanElementsInPrivateNetwork',
+  // Context tools (AI-optimized markdown views)
+  'getCollectionContext',
+  'getFolderContext',
+  'getRequestContext',
+  'getResponseContext',
+  'getRequestCodeContext',
+  'getEnvironmentContext',
+  'getWorkspacesContext',
+  'getWorkspaceContext',
+  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 const excludedFromGeneration = [
   'runCollection',
   'getEnabledTools',
+  'listMonitorExecutions',
+  'listRunsForExecution',
+  'getMonitorRunResults',
   'getCodeGenerationInstructions',
+  'getPostmanContextOverview',
+  'getApiDiscoveryInstructions',
+  'getInstalledApiMaintenanceInstructions',
   'getCollectionMap',
   'getCollection',
+  'searchPostmanElements',
   'searchPostmanElementsInPublicNetwork',
   'searchPostmanElementsInPrivateNetwork',
+  // Context tools (hand-written, not generated from spec)
+  'getCollectionContext',
+  'getFolderContext',
+  'getRequestContext',
+  'getResponseContext',
+  'getRequestCodeContext',
+  'getEnvironmentContext',
+  'getWorkspacesContext',
+  'getWorkspaceContext',
+  'getWorkspaceEnvironmentsContext',
 ] as const;
 
 /**

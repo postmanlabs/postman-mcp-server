@@ -5,7 +5,6 @@ import { ErrorCode, isInitializeRequest, McpError, } from '@modelcontextprotocol
 import { readdir, readFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import dotenv from 'dotenv';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
@@ -49,11 +48,12 @@ async function loadAllTools() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     const generatedToolsDir = join(__dirname, './tools');
+    const ext = __filename.endsWith('.ts') ? '.ts' : '.js';
     const tools = [];
     try {
-        log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir });
+        log('info', 'Loading tools from directory', { toolsDir: generatedToolsDir, ext });
         const files = await readdir(generatedToolsDir);
-        const toolFiles = files.filter((file) => file.endsWith('.js'));
+        const toolFiles = files.filter((file) => file.endsWith(ext));
         log('debug', 'Discovered tool files', { count: toolFiles.length });
         const importResults = await Promise.allSettled(toolFiles.map(async (file) => {
             const toolPath = join(generatedToolsDir, file);
@@ -89,16 +89,6 @@ async function loadAllTools() {
     log('info', 'Tool loading completed', { totalLoaded: tools.length });
     return tools;
 }
-const dotEnvOutput = dotenv.config({ quiet: true });
-if (dotEnvOutput.error) {
-    if (dotEnvOutput.error.code !== 'ENOENT') {
-        log('error', `Error loading .env file: ${dotEnvOutput.error}`);
-        process.exit(1);
-    }
-}
-else {
-    log('info', `Environment variables loaded: ${dotEnvOutput.parsed ? Object.keys(dotEnvOutput.parsed).length : 0} environment variables: ${Object.keys(dotEnvOutput.parsed || {}).join(', ')}`);
-}
 let clientInfo = undefined;
 async function run() {
     const args = process.argv.slice(2);
@@ -131,10 +121,15 @@ async function run() {
         version: APP_VERSION,
         toolCount: allGeneratedTools.length,
     });
-    const fullTools = allGeneratedTools.filter((t) => enabledResources.full.includes(t.method));
-    const minimalTools = allGeneratedTools.filter((t) => enabledResources.minimal.includes(t.method));
-    const codeTools = allGeneratedTools.filter((t) => enabledResources.code.includes(t.method));
-    const tools = useCode ? codeTools : useFull ? fullTools : minimalTools;
+    const enabledMethods = useCode
+        ? enabledResources.code
+        : useFull
+            ? enabledResources.full
+            : enabledResources.minimal;
+    const toolSorter = (a, b) => a.method < b.method ? -1 : a.method > b.method ? 1 : 0;
+    const tools = allGeneratedTools
+        .filter((t) => enabledMethods.includes(t.method))
+        .sort(toolSorter);
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     let instructionsContent;
@@ -150,7 +145,7 @@ async function run() {
     }
     const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION }, instructionsContent
         ? {
-            instructions: 'Read the instructions resource completely for detailed usage instructions before answering any API-related questions.',
+            instructions: 'Before answering any API-related questions, fetch the MCP resource at URI `postman://instructions` using FetchMcpResource from this MCP server, and follow the usage instructions contained within.',
         }
         : {});
     server.onerror = (error) => {

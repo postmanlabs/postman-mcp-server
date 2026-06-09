@@ -21,7 +21,7 @@ type ErrorTemplateRenderFn = (
  */
 export function createErrorTemplateRenderer(errorsDir: string): ErrorTemplateRenderFn {
   const env = nunjucks.configure(errorsDir, {
-    autoescape: false,
+    autoescape: true,
     noCache: false,
     throwOnUndefined: false,
   });

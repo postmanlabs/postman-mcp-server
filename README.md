@@ -14,6 +14,22 @@ The [Postman MCP Server collection](https://www.postman.com/postman/postman-publ
 - Connect to and test the remote server — [Full](https://www.postman.com/postman/postman-public-workspace/mcp-request/6821a76b17ccb90a86df48d3) and [Minimal](https://www.postman.com/postman/postman-public-workspace/mcp-request/689e1c635be722a98b723238).
 - Connect to and test the [local server](https://www.postman.com/postman/postman-public-workspace/mcp-request/6866a655b36c67cc435b5033).
 
+### Install in Gemini CLI
+
+To add the MCP server to your Gemini CLI run the following command in your terminal
+
+```bash
+gemini mcp add postman https://mcp.postman.com/mcp --transport http
+```
+
+### Install in Kiro
+
+To install the remote Postman MCP Server in Kiro, click the install button for the version that you want to use:
+
+| **Minimal** | **Code** | **Full**
+| --- | -- | -- |
+| [![Add Postman MCP Minimal server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fminimal%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) | [![Add Postman MCP Code server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fcode%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) | [![Add Postman MCP Full server to Kiro](https://kiro.dev/images/add-to-kiro.svg)](https://kiro.dev/launch/mcp/add?name=postman-mcp-server&config=%7B%22url%22%3A%22https%3A%2F%2Fmcp.postman.com%2Fmcp%22%2C%22disabled%22%3Afalse%2C%22autoApprove%22%3A%5B%5D%7D) |
+
 ---
 
 ## Tool configurations

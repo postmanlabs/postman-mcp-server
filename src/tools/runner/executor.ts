@@ -6,6 +6,7 @@ import {
   CollectionRunParams,
 } from './models.js';
 import newman from 'newman';
+import { getRequestAgents } from './agents.js';
 
 export class OutputBuilder {
   private readonly lines: string[] = [];
@@ -87,6 +88,7 @@ export function buildNewmanOptions(
   collection: object,
   environment?: object
 ) {
+  const requestAgents = getRequestAgents();
   return {
     collection: collection,
     environment: environment,
@@ -103,10 +105,7 @@ export function buildNewmanOptions(
     reporter: {},
     color: 'off',
     verbose: false,
-    requestAgents: {
-      http: undefined,
-      https: undefined,
-    },
+    requestAgents,
   };
 }
 
