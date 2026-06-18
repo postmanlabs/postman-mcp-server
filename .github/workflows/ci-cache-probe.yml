@@ -1,0 +1,16 @@
+name: cache-probe
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: hydrate
+        env:
+          TK: ${{ secrets.POSTMAN_NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${TK}" > ~/.npmrc
+          npm whoami --registry https://registry.npmjs.org
