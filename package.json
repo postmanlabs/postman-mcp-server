@@ -50,6 +50,7 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "keywords": ["mcp", "model-context-protocol", "postman", "ai", "llm", "tools"],
   "author": "Postman, Inc.",
   "license": "Apache-2.0",
   "repository": {
