@@ -4,7 +4,7 @@ The Postman MCP Server connects Postman to AI tools, giving AI agents and assist
 
 Postman also offers the server as an [npm package](https://www.npmjs.com/package/@postman/postman-mcp-server).
 
-For the full installation guide with agent-specific setup, visit [**postman.com/product/mcp-server**](https://www.postman.com/product/mcp-server/).
+For the full installation guide with agent-specific setup, see Postman's [MCP Server product page](https://www.postman.com/product/mcp-server/).
 
 ---
 
