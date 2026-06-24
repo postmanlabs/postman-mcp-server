@@ -54,7 +54,7 @@ npx @postman/postman-mcp-server
 
 Add `--code` or `--full` for Code or Full mode. Set `POSTMAN_API_KEY` as an environment variable.
 
-For IDE-specific setup instructions, see the table below. For more information, see the [Postman MCP Server docs](https://learning.postman.com/latest-v-12/docs/reference/postman-api/postman-mcp-server/overview).
+For IDE-specific setup instructions, see the table below. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
 
 ---
 
@@ -101,7 +101,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
 
 ## Docker
 
-For Docker setup and installation, see [DOCKER.md](./DOCKER.md).
+For Docker setup and installation, see [DOCKER.md](https://github.com/postmanlabs/postman-mcp-server/blob/main/DOCKER.md).
 
 ---
 

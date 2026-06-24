@@ -51,7 +51,10 @@
     "node": ">=20.0.0"
   },
   "keywords": ["mcp", "model-context-protocol", "postman", "ai", "llm", "tools"],
-  "author": "Postman, Inc.",
+  "author": {
+    "name": "Postman, Inc.",
+    "url": "https://www.postman.com"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
