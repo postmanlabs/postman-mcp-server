@@ -1,8 +1,10 @@
 # Postman MCP Server
 
-The Postman MCP Server connects Postman to AI tools, giving AI agents and assistants the ability to access workspaces, manage collections and environments, evaluate APIs, and automate workflows through natural language interactions. Learn more on the [Postman MCP Server product page](https://www.postman.com/product/mcp-server/).
+The Postman MCP Server connects Postman to AI tools, giving AI agents and assistants the ability to access workspaces, manage collections and environments, evaluate APIs, and automate workflows through natural language interactions.
 
 Postman also offers the server as an [npm package](https://www.npmjs.com/package/@postman/postman-mcp-server).
+
+For the full installation guide with agent-specific setup, see Postman's [MCP Server product page](https://www.postman.com/product/mcp-server/).
 
 ---
 
@@ -52,7 +54,7 @@ npx @postman/postman-mcp-server
 
 Add `--code` or `--full` for Code or Full mode. Set `POSTMAN_API_KEY` as an environment variable.
 
-For IDE-specific setup instructions, see the table below. For more information, see the [Postman MCP Server docs](https://learning.postman.com/latest-v-12/docs/reference/postman-api/postman-mcp-server/overview).
+For IDE-specific setup instructions, see the following table. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
 
 ---
 
@@ -99,7 +101,7 @@ The Postman MCP Server supports the EU region for remote and local servers:
 
 ## Docker
 
-For Docker setup and installation, see [DOCKER.md](./DOCKER.md).
+For Docker setup and installation, see [DOCKER.md](https://github.com/postmanlabs/postman-mcp-server/blob/main/DOCKER.md).
 
 ---
 

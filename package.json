@@ -1,7 +1,7 @@
 {
   "name": "@postman/postman-mcp-server",
   "version": "2.9.1",
-  "description": "A simple MCP server to operate on the Postman API",
+  "description": "MCP server for Postman — connect AI agents to your workspaces, collections, and APIs",
   "mcpName": "com.postman/postman-mcp-server",
   "main": "dist/src/index.js",
   "type": "module",
@@ -50,7 +50,11 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "author": "Postman, Inc.",
+  "keywords": ["mcp", "model-context-protocol", "postman", "ai", "llm", "tools"],
+  "author": {
+    "name": "Postman, Inc.",
+    "url": "https://www.postman.com"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -59,5 +63,5 @@
   "bugs": {
     "url": "https://github.com/postmanlabs/postman-mcp-server/issues"
   },
-  "homepage": "https://github.com/postmanlabs/postman-mcp-server#readme"
+  "homepage": "https://www.postman.com/product/mcp-server/"
 }
