@@ -54,7 +54,7 @@ npx @postman/postman-mcp-server
 
 Add `--code` or `--full` for Code or Full mode. Set `POSTMAN_API_KEY` as an environment variable.
 
-For IDE-specific setup instructions, see the table below. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
+For IDE-specific setup instructions, see the following table. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
 
 ---
 
