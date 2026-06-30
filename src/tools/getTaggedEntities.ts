@@ -49,7 +49,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/tags/${args.slug}/entities`;
+    const endpoint = `/tags/${encodeURIComponent(String(args.slug))}/entities`;
     const query = new URLSearchParams();
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     if (args.direction !== undefined) query.set('direction', String(args.direction));

@@ -11,6 +11,7 @@ import { SERVER_NAME, APP_VERSION } from './constants.js';
 import { env } from './env.js';
 import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
 import { createErrorTemplateRenderer } from './tools/utils/errorTemplateRenderer.js';
+import { createTelemetryClient, detectPaginationUsed, parseTelemetryFlag, TelemetrySession } from './telemetry/index.js';
 const SUPPORTED_REGIONS = {
     us: 'https://api.postman.com',
     eu: 'https://api.eu.postman.com',
@@ -94,6 +95,7 @@ async function run() {
     const args = process.argv.slice(2);
     const useFull = args.includes('--full');
     const useCode = args.includes('--code');
+    const useLearn = args.includes('--learn');
     const regionIndex = args.findIndex((arg) => arg === '--region');
     if (regionIndex !== -1 && regionIndex + 1 < args.length) {
         const region = args[regionIndex + 1];
@@ -121,15 +123,36 @@ async function run() {
         version: APP_VERSION,
         toolCount: allGeneratedTools.length,
     });
-    const enabledMethods = useCode
-        ? enabledResources.code
-        : useFull
-            ? enabledResources.full
-            : enabledResources.minimal;
+    const enabledMethods = useLearn
+        ? enabledResources.learn
+        : useCode
+            ? enabledResources.code
+            : useFull
+                ? enabledResources.full
+                : enabledResources.minimal;
     const toolSorter = (a, b) => a.method < b.method ? -1 : a.method > b.method ? 1 : 0;
     const tools = allGeneratedTools
         .filter((t) => enabledMethods.includes(t.method))
         .sort(toolSorter);
+    const region = (regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1]))
+        ? args[regionIndex + 1]
+        : 'us';
+    const telemetryEnabled = parseTelemetryFlag(process.env.POSTMAN_MCP_TELEMETRY) ?? false;
+    if (telemetryEnabled) {
+        log('info', 'Telemetry enabled (POSTMAN_MCP_TELEMETRY=true). Set POSTMAN_MCP_TELEMETRY=false to disable.');
+    }
+    const telemetry = createTelemetryClient({
+        telemetryEnabled,
+        apiKey,
+    });
+    const telemetrySession = new TelemetrySession({
+        installId: TelemetrySession.loadOrCreateInstallIdFromDisk(),
+        region,
+        transport: 'stdio',
+        toolset: useLearn ? 'learn' : useCode ? 'code' : useFull ? 'full' : 'minimal',
+        serverVersion: APP_VERSION,
+    });
+    telemetrySession.setToolNames(tools.map((t) => t.method));
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     let instructionsContent;
@@ -154,11 +177,12 @@ async function run() {
     };
     process.on('SIGINT', async () => {
         logBoth(server, 'warn', 'SIGINT received; shutting down');
+        await telemetry.shutdown();
         await server.close();
         process.exit(0);
     });
     const serverContext = {
-        serverType: useCode ? 'code' : useFull ? 'full' : 'minimal',
+        serverType: useLearn ? 'learn' : useCode ? 'code' : useFull ? 'full' : 'minimal',
         availableTools: tools.map((t) => t.method),
     };
     const viewsDir = join(__dirname, './views');
@@ -175,8 +199,10 @@ async function run() {
         }, async (args, extra) => {
             const toolName = tool.method;
             log('info', `Tool invocation started: ${toolName}`, { toolName });
+            const start = Date.now();
+            const paginationUsed = detectPaginationUsed(args);
+            const metaRaw = extra?._meta ? JSON.stringify(extra._meta) : '';
             try {
-                const start = Date.now();
                 const result = await tool.handler(args, {
                     client,
                     headers: {
@@ -190,6 +216,22 @@ async function run() {
                     toolName,
                     durationMs,
                 });
+                telemetry.toolCall(telemetrySession, {
+                    toolName,
+                    args: args,
+                    result,
+                    latencyMs: durationMs,
+                    isError: result.isError ?? false,
+                    authMethod: 'api_key',
+                    paginationUsed,
+                    meta: extra?._meta ? {
+                        trigger: extra._meta.trigger ?? '',
+                        conversation_id: extra._meta.conversation_id ?? '',
+                        task_type: extra._meta.task_type ?? '',
+                        model_name: extra._meta.model_name ?? '',
+                    } : undefined,
+                    metaRaw,
+                });
                 if (result.content?.[0]?.type === 'text') {
                     const rendered = renderTemplate(toolName, result.content[0].text);
                     if (rendered) {
@@ -201,9 +243,37 @@ async function run() {
             catch (error) {
                 const errMsg = String(error?.message || error);
                 logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
+                const errDurationMs = Date.now() - start;
+                const errorMeta = extra?._meta ? {
+                    trigger: extra._meta.trigger ?? '',
+                    conversation_id: extra._meta.conversation_id ?? '',
+                    task_type: extra._meta.task_type ?? '',
+                    model_name: extra._meta.model_name ?? '',
+                } : undefined;
                 if (error instanceof McpError) {
                     const httpStatus = error.data?.httpStatus;
                     if (typeof httpStatus === 'number') {
+                        telemetry.toolCall(telemetrySession, {
+                            toolName,
+                            args: args,
+                            result: { content: [] },
+                            latencyMs: errDurationMs,
+                            isError: true,
+                            authMethod: 'api_key',
+                            paginationUsed,
+                            errorType: 'tool',
+                            errorCode: typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
+                                ? 'AUTH_ERROR'
+                                : typeof httpStatus === 'number' && httpStatus === 429
+                                    ? 'RATE_LIMITED'
+                                    : 'UPSTREAM_ERROR',
+                            errorStage: typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
+                                ? 'auth' : 'upstream',
+                            errorUpstream: 'postman-api',
+                            rateLimited: typeof httpStatus === 'number' && httpStatus === 429,
+                            meta: errorMeta,
+                            metaRaw,
+                        });
                         const rawBody = String(error.data?.cause ?? '');
                         let parsedBody = null;
                         try {
@@ -226,8 +296,40 @@ async function run() {
                             throw new McpError(error.code, rendered, error.data);
                         }
                     }
+                    else {
+                        telemetry.toolCall(telemetrySession, {
+                            toolName,
+                            args: args,
+                            result: { content: [] },
+                            latencyMs: errDurationMs,
+                            isError: true,
+                            authMethod: 'api_key',
+                            paginationUsed,
+                            errorType: 'tool',
+                            errorCode: 'UPSTREAM_ERROR',
+                            errorStage: 'upstream',
+                            errorUpstream: 'postman-api',
+                            rateLimited: false,
+                            meta: errorMeta,
+                            metaRaw,
+                        });
+                    }
                     throw error;
                 }
+                telemetry.toolCall(telemetrySession, {
+                    toolName,
+                    args: args,
+                    result: { content: [] },
+                    latencyMs: errDurationMs,
+                    isError: true,
+                    authMethod: 'api_key',
+                    paginationUsed,
+                    errorType: 'protocol',
+                    errorCode: 'INTERNAL_ERROR',
+                    errorStage: '',
+                    meta: errorMeta,
+                    metaRaw,
+                });
                 throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
             }
         });
@@ -244,10 +346,16 @@ async function run() {
         if (isInitializeRequest(message)) {
             clientInfo = message.params.clientInfo;
             log('debug', '📥 Received MCP initialize request', { clientInfo });
+            telemetrySession.setClientInfo({ name: clientInfo?.name ?? 'unknown', version: clientInfo?.version ?? 'unknown' }, message.params.protocolVersion ?? '');
+            telemetrySession.setClientCapabilities(message.params.capabilities);
+            telemetry.sessionInit(telemetrySession, {
+                clientCapabilities: telemetrySession.clientCapabilities,
+                serverCapabilities: ['tools', 'resources'],
+            });
         }
     };
     await server.connect(transport);
-    const toolsetName = useCode ? 'code' : useFull ? 'full' : 'minimal';
+    const toolsetName = useLearn ? 'learn' : useCode ? 'code' : useFull ? 'full' : 'minimal';
     logBoth(server, 'info', `Server connected and ready: ${SERVER_NAME}@${APP_VERSION} with ${tools.length} tools (${toolsetName})`);
 }
 run().catch((error) => {

@@ -36,7 +36,7 @@ export const annotations = {
 };
 export async function handler(params, extra) {
     try {
-        const output = await runCollection(params, extra.client);
+        const output = await runCollection(params, extra.client, extra.progress);
         return {
             content: [
                 {

@@ -124,6 +124,7 @@ const full = [
     'deleteSpecFile',
     'getEnabledTools',
     'searchPostmanElements',
+    'searchLearningCenter',
     'getAnalyticsData',
     'getAnalyticsMetadata',
 ];
@@ -196,6 +197,7 @@ const code = [
     'getWorkspaceContext',
     'getWorkspaceEnvironmentsContext',
 ];
+const learn = ['searchLearningCenter'];
 const excludedFromGeneration = [
     'runCollection',
     'getEnabledTools',
@@ -211,6 +213,7 @@ const excludedFromGeneration = [
     'searchPostmanElements',
     'searchPostmanElementsInPublicNetwork',
     'searchPostmanElementsInPrivateNetwork',
+    'searchLearningCenter',
     'getCollectionContext',
     'getFolderContext',
     'getRequestContext',
@@ -232,6 +235,7 @@ export const enabledResources = {
     full,
     minimal,
     code,
+    learn,
     excludedFromGeneration,
     subtools,
     templated,

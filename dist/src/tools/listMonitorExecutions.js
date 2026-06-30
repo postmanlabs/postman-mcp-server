@@ -17,7 +17,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/monitors/${encodeURIComponent(args.monitorId)}/executions`;
+        const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/executions`;
         const query = new URLSearchParams();
         if (args.cursor)
             query.set('cursor', args.cursor);

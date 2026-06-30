@@ -32,7 +32,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/network/private/network-entity/request/${args.requestId}`;
+    const endpoint = `/network/private/network-entity/request/${encodeURIComponent(String(args.requestId))}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

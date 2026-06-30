@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${args.specId}/generations/${args.elementType}`;
+        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/generations/${encodeURIComponent(String(args.elementType))}`;
         const query = new URLSearchParams();
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));

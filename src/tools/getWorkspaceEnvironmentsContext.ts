@@ -23,7 +23,8 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const result = await extra.client.get(`/context/workspaces/${args.workspaceId}/environments`, {
+    const endpoint = `/context/workspaces/${encodeURIComponent(String(args.workspaceId))}/environments`;
+    const result = await extra.client.get(endpoint, {
       headers: extra.headers,
     });
     return {

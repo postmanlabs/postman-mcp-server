@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/comments-resolutions/${args.threadId}`;
+        const endpoint = `/comments-resolutions/${encodeURIComponent(String(args.threadId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

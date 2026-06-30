@@ -7,7 +7,7 @@ export async function fetchCollection(
   client: PostmanAPIClient
 ): Promise<CollectionData> {
   try {
-    const response = await client.get(`/collections/${collectionId}`);
+    const response = await client.get(`/collections/${encodeURIComponent(collectionId)}`);
     const collectionJSON = response.collection || response;
 
     return {
@@ -27,7 +27,7 @@ export async function fetchEnvironment(
   client: PostmanAPIClient
 ): Promise<EnvironmentData> {
   try {
-    const response = await client.get(`/environments/${environmentId}`);
+    const response = await client.get(`/environments/${encodeURIComponent(environmentId)}`);
     const environmentJSON = response.environment || response;
 
     return {

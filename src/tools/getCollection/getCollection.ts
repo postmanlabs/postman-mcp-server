@@ -38,7 +38,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${args.collectionId}`;
+    const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
     const query = new URLSearchParams();
     if (args.access_key !== undefined) query.set('access_key', String(args.access_key));
     if (args.model !== undefined) query.set('model', String(args.model));

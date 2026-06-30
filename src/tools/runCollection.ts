@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import type { ProgressReporter } from './utils/progress.js';
 import { runCollection } from './runner/index.js';
 
 export const method = 'runCollection';
@@ -47,10 +48,15 @@ export const annotations = {
 
 export async function handler(
   params: z.infer<typeof parameters>,
-  extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
+  extra: {
+    client: PostmanAPIClient;
+    headers?: IsomorphicHeaders;
+    serverContext?: ServerContext;
+    progress?: ProgressReporter;
+  }
 ): Promise<CallToolResult> {
   try {
-    const output = await runCollection(params, extra.client);
+    const output = await runCollection(params, extra.client, extra.progress);
 
     return {
       content: [

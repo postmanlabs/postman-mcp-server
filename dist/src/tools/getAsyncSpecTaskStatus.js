@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/${args.elementType}/${args.elementId}/tasks/${args.taskId}`;
+        const endpoint = `/${encodeURIComponent(String(args.elementType))}/${encodeURIComponent(String(args.elementId))}/tasks/${encodeURIComponent(String(args.taskId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

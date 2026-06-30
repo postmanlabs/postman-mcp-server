@@ -24,7 +24,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/network/private/network-entity/request/${args.requestId}`;
+        const endpoint = `/network/private/network-entity/request/${encodeURIComponent(String(args.requestId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -25,7 +25,7 @@ export async function handler(
 ): Promise<CallToolResult> {
   try {
     const result = await extra.client.get(
-      `/context/collections/${args.collectionId}/requests/${args.requestId}/context`,
+      `/context/collections/${encodeURIComponent(String(args.collectionId))}/requests/${encodeURIComponent(String(args.requestId))}/context`,
       { headers: extra.headers }
     );
 

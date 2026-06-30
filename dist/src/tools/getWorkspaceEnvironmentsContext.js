@@ -13,7 +13,8 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const result = await extra.client.get(`/context/workspaces/${args.workspaceId}/environments`, {
+        const endpoint = `/context/workspaces/${encodeURIComponent(String(args.workspaceId))}/environments`;
+        const result = await extra.client.get(endpoint, {
             headers: extra.headers,
         });
         return {

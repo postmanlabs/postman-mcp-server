@@ -27,7 +27,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/monitors/${args.monitorId}/run`;
+    const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/run`;
     const query = new URLSearchParams();
     if (args.async !== undefined) query.set('async', String(args.async));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

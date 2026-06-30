@@ -24,7 +24,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/apis/${args.apiId}/tasks/${args.taskId}`;
+    const endpoint = `/apis/${encodeURIComponent(String(args.apiId))}/tasks/${encodeURIComponent(String(args.taskId))}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {

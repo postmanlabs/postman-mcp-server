@@ -7,6 +7,7 @@ import {
 } from './models.js';
 import newman from 'newman';
 import { getRequestAgents } from './agents.js';
+import type { ProgressReporter } from '../utils/progress.js';
 
 export class OutputBuilder {
   private readonly lines: string[] = [];
@@ -109,7 +110,10 @@ export function buildNewmanOptions(
   };
 }
 
-export async function executeCollection(context: ExecutionContext): Promise<ExecutionResult> {
+export async function executeCollection(
+  context: ExecutionContext,
+  progress?: ProgressReporter
+): Promise<ExecutionResult> {
   const tracker = new TestTracker();
   const output = new OutputBuilder();
 
@@ -126,7 +130,7 @@ export async function executeCollection(context: ExecutionContext): Promise<Exec
 
   const startTime = Date.now();
 
-  const summary = await runNewman(newmanOptions, tracker, output);
+  const summary = await runNewman(newmanOptions, tracker, output, progress);
 
   const endTime = Date.now();
   const durationMs = endTime - startTime;
@@ -141,12 +145,18 @@ export async function executeCollection(context: ExecutionContext): Promise<Exec
   };
 }
 
-function runNewman(options: any, tracker: TestTracker, output: OutputBuilder): Promise<any> {
+function runNewman(
+  options: any,
+  tracker: TestTracker,
+  output: OutputBuilder,
+  progress?: ProgressReporter
+): Promise<any> {
   return new Promise((resolve, reject) => {
     newman
       .run(options)
       .on('start', () => {
         output.add('🎯 Starting collection run...\n');
+        void progress?.heartbeat('starting collection run');
       })
       .on('assertion', (_err: any, args: any) => {
         if (args.assertion) {
@@ -165,6 +175,7 @@ function runNewman(options: any, tracker: TestTracker, output: OutputBuilder): P
             output.add(`\n📝 Request: ${args.item.name}`);
             output.add(testResults);
           }
+          void progress?.heartbeat(`ran request: ${String(args.item.name ?? 'unnamed')}`);
         }
       })
       .on('done', (err: any, summary: any) => {
