@@ -209,24 +209,27 @@ export class SpecDataFactory extends TestDataFactory {
   }
 }
 
+export interface TestCollectionItem {
+  name: string;
+  request?: {
+    url?: string;
+    method?: string;
+    header?: Array<{ key: string; value: string }>;
+    body?: {
+      mode?: string;
+      raw?: string;
+    };
+  };
+  item?: TestCollectionItem[];
+}
+
 export interface TestCollection {
   info: {
     name: string;
     description?: string;
     schema: string;
   };
-  item: Array<{
-    name: string;
-    request?: {
-      url?: string;
-      method?: string;
-      header?: Array<{ key: string; value: string }>;
-      body?: {
-        mode?: string;
-        raw?: string;
-      };
-    };
-  }>;
+  item: TestCollectionItem[];
 }
 
 export class CollectionDataFactory extends TestDataFactory {
@@ -244,6 +247,33 @@ export class CollectionDataFactory extends TestDataFactory {
             url: 'https://postman-echo.com/get',
             method: 'GET',
           },
+        },
+      ],
+      ...overrides,
+    };
+  }
+
+  public static createNestedFolderCollection(
+    overrides: Partial<TestCollection> = {}
+  ): TestCollection {
+    return {
+      info: {
+        name: '[Integration Test] Nested Folder Collection',
+        description: 'Collection with nested folder items',
+        schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+      },
+      item: [
+        {
+          name: 'API',
+          item: [
+            {
+              name: 'Echo GET',
+              request: {
+                url: 'https://postman-echo.com/get',
+                method: 'GET',
+              },
+            },
+          ],
         },
       ],
       ...overrides,

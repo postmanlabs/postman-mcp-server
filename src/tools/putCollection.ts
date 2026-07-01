@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import { sanitizeCollectionPayload } from './utils/collectionItems.js';
 
 export const method = 'putCollection';
 export const description =
@@ -53,7 +54,12 @@ export const parameters = z.object({
       item: z.array(
         z
           .object({
-            id: z.string().describe("The collection item's ID."),
+            id: z
+              .string()
+              .describe(
+                "The collection item's ID. Required for existing items when replacing a collection; omit for new folder/request items."
+              )
+              .optional(),
             name: z.string().describe("The item's name.").optional(),
             description: z.string().nullable().describe("The item's description.").optional(),
             variable: z
@@ -953,6 +959,7 @@ export const parameters = z.object({
         .object({
           type: z
             .enum([
+              'noauth',
               'basic',
               'bearer',
               'apikey',
@@ -968,6 +975,7 @@ export const parameters = z.object({
               'noauth',
             ])
             .describe('The authorization type.'),
+          noauth: z.unknown().optional(),
           apikey: z
             .array(
               z
@@ -1337,7 +1345,9 @@ export async function handler(
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
-    if (args.collection !== undefined) bodyPayload.collection = args.collection;
+    if (args.collection !== undefined) {
+      bodyPayload.collection = sanitizeCollectionPayload(args.collection);
+    }
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
