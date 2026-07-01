@@ -13,7 +13,8 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const result = await extra.client.get(`/context/collections/${args.collectionId}`, {
+        const endpoint = `/context/collections/${encodeURIComponent(String(args.collectionId))}`;
+        const result = await extra.client.get(endpoint, {
             headers: extra.headers,
         });
         return {

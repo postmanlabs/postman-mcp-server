@@ -17,7 +17,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${args.workspaceId}`;
+        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

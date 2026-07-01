@@ -20,7 +20,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/mocks/${args.mockId}/publish`;
+    const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/publish`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {

@@ -26,7 +26,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${args.collectionId}/forks`;
+        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/forks`;
         const query = new URLSearchParams();
         if (args.cursor !== undefined)
             query.set('cursor', String(args.cursor));

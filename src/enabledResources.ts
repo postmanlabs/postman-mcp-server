@@ -167,6 +167,9 @@ const full = [
   'getEnabledTools',
   'searchPostmanElements',
 
+  // Learning Center
+  'searchLearningCenter',
+
   // Analytics
   'getAnalyticsData',
   'getAnalyticsMetadata',
@@ -244,6 +247,8 @@ const code = [
   'getWorkspaceEnvironmentsContext',
 ] as const;
 
+const learn = ['searchLearningCenter'] as const;
+
 const excludedFromGeneration = [
   'runCollection',
   'getEnabledTools',
@@ -259,6 +264,7 @@ const excludedFromGeneration = [
   'searchPostmanElements',
   'searchPostmanElementsInPublicNetwork',
   'searchPostmanElementsInPrivateNetwork',
+  'searchLearningCenter',
   // Context tools (hand-written, not generated from spec)
   'getCollectionContext',
   'getFolderContext',
@@ -297,6 +303,7 @@ export const enabledResources = {
   full,
   minimal,
   code,
+  learn,
   excludedFromGeneration,
   subtools,
   templated,

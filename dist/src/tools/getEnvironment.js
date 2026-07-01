@@ -11,7 +11,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/environments/${args.environmentId}`;
+        const endpoint = `/environments/${encodeURIComponent(String(args.environmentId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

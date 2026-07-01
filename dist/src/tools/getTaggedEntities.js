@@ -36,7 +36,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/tags/${args.slug}/entities`;
+        const endpoint = `/tags/${encodeURIComponent(String(args.slug))}/entities`;
         const query = new URLSearchParams();
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));

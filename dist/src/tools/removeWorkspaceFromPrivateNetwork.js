@@ -11,7 +11,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/network/private/workspace/${args.workspaceId}`;
+        const endpoint = `/network/private/workspace/${encodeURIComponent(String(args.workspaceId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

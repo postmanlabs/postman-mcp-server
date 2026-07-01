@@ -29,7 +29,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/apis/${args.apiId}/collections/${args.collectionId}/comments/${args.commentId}`;
+        const endpoint = `/apis/${encodeURIComponent(String(args.apiId))}/collections/${encodeURIComponent(String(args.collectionId))}/comments/${encodeURIComponent(String(args.commentId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -82,7 +82,7 @@ export function buildNewmanOptions(params, collection, environment) {
         requestAgents,
     };
 }
-export async function executeCollection(context) {
+export async function executeCollection(context, progress) {
     const tracker = new TestTracker();
     const output = new OutputBuilder();
     output.add(`🚀 Starting collection: ${context.collection.name}`);
@@ -91,7 +91,7 @@ export async function executeCollection(context) {
     }
     const newmanOptions = buildNewmanOptions(context.params, context.collection.json, context.environment?.json);
     const startTime = Date.now();
-    const summary = await runNewman(newmanOptions, tracker, output);
+    const summary = await runNewman(newmanOptions, tracker, output, progress);
     const endTime = Date.now();
     const durationMs = endTime - startTime;
     return {
@@ -103,12 +103,13 @@ export async function executeCollection(context) {
         durationMs,
     };
 }
-function runNewman(options, tracker, output) {
+function runNewman(options, tracker, output, progress) {
     return new Promise((resolve, reject) => {
         newman
             .run(options)
             .on('start', () => {
             output.add('🎯 Starting collection run...\n');
+            void progress?.heartbeat('starting collection run');
         })
             .on('assertion', (_err, args) => {
             if (args.assertion) {
@@ -127,6 +128,7 @@ function runNewman(options, tracker, output) {
                     output.add(`\n📝 Request: ${args.item.name}`);
                     output.add(testResults);
                 }
+                void progress?.heartbeat(`ran request: ${String(args.item.name ?? 'unnamed')}`);
             }
         })
             .on('done', (err, summary) => {

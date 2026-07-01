@@ -1,7 +1,7 @@
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 export async function fetchCollection(collectionId, client) {
     try {
-        const response = await client.get(`/collections/${collectionId}`);
+        const response = await client.get(`/collections/${encodeURIComponent(collectionId)}`);
         const collectionJSON = response.collection || response;
         return {
             json: collectionJSON,
@@ -17,7 +17,7 @@ export async function fetchCollection(collectionId, client) {
 }
 export async function fetchEnvironment(environmentId, client) {
     try {
-        const response = await client.get(`/environments/${environmentId}`);
+        const response = await client.get(`/environments/${encodeURIComponent(environmentId)}`);
         const environmentJSON = response.environment || response;
         return {
             json: environmentJSON,

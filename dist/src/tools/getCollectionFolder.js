@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${args.collectionId}/folders/${args.folderId}`;
+        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/folders/${encodeURIComponent(String(args.folderId))}`;
         const query = new URLSearchParams();
         if (args.ids !== undefined)
             query.set('ids', String(args.ids));

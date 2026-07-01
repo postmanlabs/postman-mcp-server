@@ -32,7 +32,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/specs/${args.specId}/generations/${args.elementType}`;
+    const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/generations/${encodeURIComponent(String(args.elementType))}`;
     const query = new URLSearchParams();
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));

@@ -25,7 +25,7 @@ export async function handler(
 ): Promise<CallToolResult> {
   try {
     const result = await extra.client.get(
-      `/context/collections/${args.collectionId}/folders/${args.folderId}`,
+      `/context/collections/${encodeURIComponent(String(args.collectionId))}/folders/${encodeURIComponent(String(args.folderId))}`,
       { headers: extra.headers }
     );
 

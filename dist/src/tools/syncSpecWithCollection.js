@@ -14,7 +14,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${args.specId}/synchronizations`;
+        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/synchronizations`;
         const query = new URLSearchParams();
         if (args.collectionUid !== undefined)
             query.set('collectionUid', String(args.collectionUid));

@@ -109,7 +109,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${args.collectionId}/responses`;
+        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/responses`;
         const query = new URLSearchParams();
         if (args.request !== undefined)
             query.set('request', String(args.request));

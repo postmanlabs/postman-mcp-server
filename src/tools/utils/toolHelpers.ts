@@ -3,7 +3,7 @@ import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 export { McpError };
 
 export interface ServerContext {
-  serverType: 'full' | 'minimal' | 'code';
+  serverType: 'full' | 'minimal' | 'code' | 'learn';
   availableTools: string[];
 }
 

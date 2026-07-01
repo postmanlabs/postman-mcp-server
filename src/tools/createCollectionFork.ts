@@ -24,7 +24,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/fork/${args.collectionId}`;
+    const endpoint = `/collections/fork/${encodeURIComponent(String(args.collectionId))}`;
     const query = new URLSearchParams();
     if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

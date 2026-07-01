@@ -11,7 +11,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${args.specId}/files`;
+        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/files`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

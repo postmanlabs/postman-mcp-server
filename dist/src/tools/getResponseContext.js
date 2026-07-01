@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const result = await extra.client.get(`/context/collections/${args.collectionId}/requests/${args.requestId}/responses/${args.responseId}`, { headers: extra.headers });
+        const result = await extra.client.get(`/context/collections/${encodeURIComponent(String(args.collectionId))}/requests/${encodeURIComponent(String(args.requestId))}/responses/${encodeURIComponent(String(args.responseId))}`, { headers: extra.headers });
         return {
             content: [{ type: 'text', text: result }],
         };

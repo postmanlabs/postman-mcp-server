@@ -11,7 +11,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collection-duplicate-tasks/${args.taskId}`;
+        const endpoint = `/collection-duplicate-tasks/${encodeURIComponent(String(args.taskId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

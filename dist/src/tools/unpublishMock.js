@@ -11,7 +11,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${args.mockId}/unpublish`;
+        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/unpublish`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

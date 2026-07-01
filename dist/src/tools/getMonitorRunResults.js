@@ -14,7 +14,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/monitors/${encodeURIComponent(args.monitorId)}/runs/${encodeURIComponent(args.runId)}/results`;
+        const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/runs/${encodeURIComponent(String(args.runId))}/results`;
         const result = await extra.client.get(endpoint, { headers: extra.headers });
         return {
             content: [

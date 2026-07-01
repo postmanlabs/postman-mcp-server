@@ -13,7 +13,8 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const result = await extra.client.get(`/context/environments/${args.environmentId}`, {
+        const endpoint = `/context/environments/${encodeURIComponent(String(args.environmentId))}`;
+        const result = await extra.client.get(endpoint, {
             headers: extra.headers,
         });
         return {

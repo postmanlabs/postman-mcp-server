@@ -30,7 +30,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/specs/${args.specId}/files/${args.filePath}`;
+    const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/files/${encodeURIComponent(String(args.filePath))}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

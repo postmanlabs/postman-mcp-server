@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${args.collectionId}`;
+        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
         const query = new URLSearchParams();
         if (args.access_key !== undefined)
             query.set('access_key', String(args.access_key));

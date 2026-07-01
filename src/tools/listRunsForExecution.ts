@@ -24,7 +24,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/monitors/${encodeURIComponent(args.monitorId)}/executions/${encodeURIComponent(args.executionId)}/runs`;
+    const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/executions/${encodeURIComponent(String(args.executionId))}/runs`;
     const result = await extra.client.get(endpoint, { headers: extra.headers });
     return {
       content: [

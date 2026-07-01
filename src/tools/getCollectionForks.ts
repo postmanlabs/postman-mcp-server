@@ -39,7 +39,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${args.collectionId}/forks`;
+    const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/forks`;
     const query = new URLSearchParams();
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
     if (args.limit !== undefined) query.set('limit', String(args.limit));

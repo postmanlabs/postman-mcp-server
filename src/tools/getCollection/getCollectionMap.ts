@@ -66,7 +66,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${args.collectionId}`;
+    const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
     const query = new URLSearchParams();
     if (args.access_key !== undefined) query.set('access_key', String(args.access_key));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
