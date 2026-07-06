@@ -115,5 +115,5 @@ For Docker setup and installation, see [DOCKER.md](https://github.com/postmanlab
 
 ## Keywords
 
-Model Context Protocol · MCP Server · Postman · AI Agents · Claude Code · Cursor · VS Code · OpenAPI · REST API · API Testing · TypeScript
+Model Context Protocol · MCP Server · Postman · AI Agents · Claude Code · Cursor · VS Code · Specifications · REST API · API Testing · TypeScript · OpenAPI
 
