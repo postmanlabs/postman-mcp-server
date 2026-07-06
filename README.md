@@ -1,6 +1,6 @@
 # Postman MCP Server
 
-The **Postman MCP Server** implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to connect AI agents and coding assistants — including Claude Code, Cursor, VS Code Copilot, GitHub Copilot CLI, and Gemini CLI — directly to your Postman workspaces, collections, OpenAPI specs, and environments.
+The **Postman MCP Server** implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to connect AI agents and coding assistants — including Claude Code, Cursor, VS Code Copilot, GitHub Copilot CLI, and Gemini CLI — directly to your Postman workspaces, collections, specifications, and environments.
 
 Postman also offers the server as an [npm package](https://www.npmjs.com/package/@postman/postman-mcp-server).
 
