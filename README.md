@@ -1,6 +1,6 @@
 # Postman MCP Server
 
-The Postman MCP Server connects Postman to AI tools, giving AI agents and assistants the ability to access workspaces, manage collections and environments, evaluate APIs, and automate workflows through natural language interactions.
+The **Postman MCP Server** implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to connect AI agents and coding assistants — including Claude Code, Cursor, VS Code Copilot, GitHub Copilot CLI, and Gemini CLI — directly to your Postman workspaces, collections, specifications, and environments.
 
 Postman also offers the server as an [npm package](https://www.npmjs.com/package/@postman/postman-mcp-server).
 
@@ -110,4 +110,10 @@ For Docker setup and installation, see [DOCKER.md](https://github.com/postmanlab
 - See [Add your MCP requests to your collections](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/) to learn how to use Postman to perform MCP requests.
 - Visit the [Postman Community](https://community.postman.com/) to share what you've built, ask questions, and get help.
 - You can connect to both the remote and local servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
+
+---
+
+## Keywords
+
+Model Context Protocol · MCP Server · Postman · AI Agents · Claude Code · Cursor · VS Code · Specifications · REST API · API Testing · TypeScript · OpenAPI
 
