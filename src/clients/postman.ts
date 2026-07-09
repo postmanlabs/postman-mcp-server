@@ -39,16 +39,19 @@ export class PostmanAPIClient implements IPostmanAPIClient {
   private readonly baseUrl: string;
   private readonly apiKey?: string;
   private readonly serverContext?: ServerContext;
+  private readonly srvTraceId?: string;
   private static instance: PostmanAPIClient | null = null;
 
   constructor(
     apiKey?: string,
     baseUrl: string = env.POSTMAN_API_BASE_URL,
-    serverContext?: ServerContext
+    serverContext?: ServerContext,
+    srvTraceId?: string
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
     this.serverContext = serverContext;
+    this.srvTraceId = srvTraceId;
   }
 
   /**
@@ -127,6 +130,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
       'host',
       'accept-encoding',
       'keep-alive',
+      'x-srv-trace',
     ]);
     const extra = Object.fromEntries(
       Object.entries(options.headers ?? {}).filter(([k]) => !disallowed.has(k.toLowerCase()))
@@ -139,6 +143,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
       ...extra,
       'x-api-key': currentApiKey,
       'user-agent': userAgentHeader,
+      ...(this.srvTraceId ? { 'x-srv-trace': this.srvTraceId } : {}),
     };
 
     const { headers: _ignored, ...optionsWithoutHeaders } = options;

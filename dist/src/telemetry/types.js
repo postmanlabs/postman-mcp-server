@@ -57,6 +57,7 @@ export const ToolCallEventSchema = BaseTelemetryEventSchema.extend({
     task_type: z.string(),
     model_name: z.string(),
     meta_raw: z.string(),
+    srv_trace_id: z.string(),
 });
 export const TelemetryEventSchema = z.discriminatedUnion('event_type', [
     SessionInitEventSchema,

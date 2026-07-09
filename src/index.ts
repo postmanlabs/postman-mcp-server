@@ -22,13 +22,8 @@ import { ServerContext } from './tools/utils/toolHelpers.js';
 import { env } from './env.js';
 import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
 import { createErrorTemplateRenderer } from './tools/utils/errorTemplateRenderer.js';
-import {
-  createTelemetryClient,
-  detectPaginationUsed,
-  parseTelemetryFlag,
-  TelemetrySession,
-  type ITelemetryClient,
-} from './telemetry/index.js';
+import { createTelemetryClient, detectPaginationUsed, parseTelemetryFlag, TelemetrySession, type ITelemetryClient } from './telemetry/index.js';
+import { generateSrvTrace } from '../shared/telemetry/srvTrace.js';
 
 const SUPPORTED_REGIONS = {
   us: 'https://api.postman.com',
@@ -206,20 +201,16 @@ async function run() {
     .sort(toolSorter);
 
   // Determine region for telemetry
-  const region: 'us' | 'eu' =
-    regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1])
-      ? (args[regionIndex + 1] as 'us' | 'eu')
-      : 'us';
+  const region: 'us' | 'eu' = (regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1]))
+    ? args[regionIndex + 1] as 'us' | 'eu'
+    : 'us';
 
   // Telemetry is OFF by default for the open-source STDIO server. Users must
   // opt in explicitly with POSTMAN_MCP_TELEMETRY=true; any other value (or
   // unset) keeps telemetry disabled.
   const telemetryEnabled = parseTelemetryFlag(process.env.POSTMAN_MCP_TELEMETRY) ?? false;
   if (telemetryEnabled) {
-    log(
-      'info',
-      'Telemetry enabled (POSTMAN_MCP_TELEMETRY=true). Set POSTMAN_MCP_TELEMETRY=false to disable.'
-    );
+    log('info', 'Telemetry enabled (POSTMAN_MCP_TELEMETRY=true). Set POSTMAN_MCP_TELEMETRY=false to disable.');
   }
   const telemetry: ITelemetryClient = createTelemetryClient({
     telemetryEnabled,
@@ -286,9 +277,6 @@ async function run() {
   const errorsDir = join(__dirname, './views/errors');
   const renderErrorTemplate = createErrorTemplateRenderer(errorsDir);
 
-  // Create a client instance with the API key and server context for STDIO mode
-  const client = new PostmanAPIClient(apiKey, undefined, serverContext);
-
   log('info', 'Registering tools with McpServer');
 
   // Register all tools using the McpServer registerTool method
@@ -308,6 +296,14 @@ async function run() {
         const start = Date.now();
         const paginationUsed = detectPaginationUsed(args as Record<string, unknown>);
         const metaRaw = extra?._meta ? JSON.stringify(extra._meta) : '';
+
+        // One correlation id per tool call: sent as x-srv-trace on every
+        // outbound API request AND recorded on the telemetry event, so the
+        // two systems join row-to-row.
+        const srvTraceId = generateSrvTrace();
+        // Create a client instance with the API key, server context, and
+        // this call's trace id for STDIO mode.
+        const client = new PostmanAPIClient(apiKey, undefined, serverContext, srvTraceId);
         try {
           const result = await tool.handler(args, {
             client,
@@ -334,14 +330,13 @@ async function run() {
             isError: result.isError ?? false,
             authMethod: 'api_key',
             paginationUsed,
-            meta: extra?._meta
-              ? {
-                  trigger: (extra._meta as any).trigger ?? '',
-                  conversation_id: (extra._meta as any).conversation_id ?? '',
-                  task_type: (extra._meta as any).task_type ?? '',
-                  model_name: (extra._meta as any).model_name ?? '',
-                }
-              : undefined,
+            srvTraceId,
+            meta: extra?._meta ? {
+              trigger: (extra._meta as any).trigger ?? '',
+              conversation_id: (extra._meta as any).conversation_id ?? '',
+              task_type: (extra._meta as any).task_type ?? '',
+              model_name: (extra._meta as any).model_name ?? '',
+            } : undefined,
             metaRaw,
           });
 
@@ -360,14 +355,12 @@ async function run() {
           logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
 
           const errDurationMs = Date.now() - start;
-          const errorMeta = extra?._meta
-            ? {
-                trigger: (extra._meta as any).trigger ?? '',
-                conversation_id: (extra._meta as any).conversation_id ?? '',
-                task_type: (extra._meta as any).task_type ?? '',
-                model_name: (extra._meta as any).model_name ?? '',
-              }
-            : undefined;
+          const errorMeta = extra?._meta ? {
+            trigger: (extra._meta as any).trigger ?? '',
+            conversation_id: (extra._meta as any).conversation_id ?? '',
+            task_type: (extra._meta as any).task_type ?? '',
+            model_name: (extra._meta as any).model_name ?? '',
+          } : undefined;
 
           if (error instanceof McpError) {
             const httpStatus = (error.data as Record<string, unknown>)?.httpStatus;
@@ -381,17 +374,15 @@ async function run() {
                 isError: true,
                 authMethod: 'api_key',
                 paginationUsed,
+                srvTraceId,
                 errorType: 'tool',
-                errorCode:
-                  typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
-                    ? 'AUTH_ERROR'
-                    : typeof httpStatus === 'number' && httpStatus === 429
-                      ? 'RATE_LIMITED'
-                      : 'UPSTREAM_ERROR',
-                errorStage:
-                  typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
-                    ? 'auth'
-                    : 'upstream',
+                errorCode: typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
+                  ? 'AUTH_ERROR'
+                  : typeof httpStatus === 'number' && httpStatus === 429
+                    ? 'RATE_LIMITED'
+                    : 'UPSTREAM_ERROR',
+                errorStage: typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
+                  ? 'auth' : 'upstream',
                 errorUpstream: 'postman-api',
                 rateLimited: typeof httpStatus === 'number' && httpStatus === 429,
                 meta: errorMeta,
@@ -432,6 +423,7 @@ async function run() {
                 isError: true,
                 authMethod: 'api_key',
                 paginationUsed,
+                srvTraceId,
                 errorType: 'tool',
                 errorCode: 'UPSTREAM_ERROR',
                 errorStage: 'upstream',
@@ -452,6 +444,7 @@ async function run() {
             isError: true,
             authMethod: 'api_key',
             paginationUsed,
+            srvTraceId,
             errorType: 'protocol',
             errorCode: 'INTERNAL_ERROR',
             errorStage: '',
