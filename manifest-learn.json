@@ -1,0 +1,67 @@
+{
+  "manifest_version": "0.2",
+  "version": "2.11.0",
+  "name": "postman-mcp-server-learn",
+  "display_name": "Postman MCP Server (Learn)",
+  "description": "Search the official Postman documentation and learning resources.",
+  "long_description": "This extension enables AI assistants to search the official Postman documentation and learning resources at https://learning.postman.com through Model Context Protocol (MCP). This learn version exposes a single tool for authoritative, up-to-date guidance on how to use Postman features. All secured with your Postman API key.",
+  "author": {
+    "name": "Postman, Inc.",
+    "email": "help@postman.com",
+    "url": "https://www.postman.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/postmanlabs/postman-mcp-server"
+  },
+  "homepage": "https://github.com/postmanlabs/postman-mcp-server",
+  "documentation": "https://learning.postman.com/docs/developer/postman-api/postman-mcp-server/overview",
+  "support": "https://github.com/postmanlabs/postman-api-mcp/issues",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/src/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/dist/src/index.js",
+        "--learn"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": "${user_config.postman_api_key}"
+      }
+    }
+  },
+  "keywords": [
+    "postman",
+    "api",
+    "mcp",
+    "postman-api",
+    "documentation",
+    "learning-center",
+    "docs",
+    "learn"
+  ],
+  "license": "Apache-2.0",
+  "user_config": {
+    "postman_api_key": {
+      "type": "string",
+      "title": "Postman API Key",
+      "description": "A valid Postman API key used to authenticate requests.",
+      "sensitive": true,
+      "required": true
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": [
+      "darwin",
+      "win32",
+      "linux"
+    ],
+    "runtimes": {
+      "node": ">=20.0.0"
+    }
+  },
+  "tools_generated": true
+}
