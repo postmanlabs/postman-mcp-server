@@ -23,6 +23,7 @@ The [Postman MCP Server collection](https://www.postman.com/postman/postman-publ
 - **Minimal** — (Default) Only includes essential tools for basic Postman operations. Ideal for users who want to modify a single Postman element, such as collections, workspaces, or environments.
 - **Code** — Includes tools to generate high-quality, well-organized client code from public and internal API definitions. Ideal for users who need to consume APIs or get API context to their agents.
 - **Full** — Includes all available Postman API tools (100+ tools). Ideal for users who engage in advanced collaboration and Postman's Enterprise features.
+- **Learn** — Searches [Postman Docs](https://learning.postman.com/) for guides, tutorials, and reference content. Ideal for agents who need to discover Postman features, look up API concepts, or find learning resources.
 
 ---
 
