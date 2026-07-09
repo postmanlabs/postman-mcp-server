@@ -46,6 +46,8 @@ jobs:
           mv manifest-full.tmp.json manifest-full.json
           jq --arg v "$pkg_version" '.version = $v' manifest-code.json > manifest-code.tmp.json
           mv manifest-code.tmp.json manifest-code.json
+          jq --arg v "$pkg_version" '.version = $v' manifest-learn.json > manifest-learn.tmp.json
+          mv manifest-learn.tmp.json manifest-learn.json
 
       - name: Build project
         run: pnpm run build
@@ -77,10 +79,16 @@ jobs:
           mcpb pack
           mv "${current_dir}.mcpb" "${current_dir}-code.mcpb"
 
+          # Package learn version
+          cp manifest-learn.json manifest.json
+          mcpb pack
+          mv "${current_dir}.mcpb" "${current_dir}-learn.mcpb"
+
           # Set environment variables
           echo "MCPB_MINIMAL_FILENAME=${current_dir}-minimal.mcpb" >> $GITHUB_ENV
           echo "MCPB_FULL_FILENAME=${current_dir}-full.mcpb" >> $GITHUB_ENV
           echo "MCPB_CODE_FILENAME=${current_dir}-code.mcpb" >> $GITHUB_ENV
+          echo "MCPB_LEARN_FILENAME=${current_dir}-learn.mcpb" >> $GITHUB_ENV
 
       - name: Upload minimal release asset
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
@@ -106,6 +114,15 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.MCPB_CODE_FILENAME }}
           asset_name: ${{ env.MCPB_CODE_FILENAME }}
+          tag: ${{ steps.release-tag.outputs.tag }}
+          overwrite: true
+
+      - name: Upload learn release asset
+        uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.MCPB_LEARN_FILENAME }}
+          asset_name: ${{ env.MCPB_LEARN_FILENAME }}
           tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
