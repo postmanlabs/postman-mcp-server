@@ -1,7 +1,7 @@
 {
     "name": "@postman/postman-mcp-server",
-    "version": "2.11.0",
-    "description": "MCP server for Postman — connect AI agents to your workspaces, collections, and APIs",
+    "version": "2.11.1",
+    "description": "Postman MCP Server — connect AI agents (Claude Code, Cursor, VS Code Copilot, Gemini CLI) to your Postman collections, specifications, and environments via Model Context Protocol (MCP)",
     "mcpName": "com.postman/postman-mcp-server",
     "main": "dist/src/index.js",
     "type": "module",
@@ -53,10 +53,22 @@
     "keywords": [
         "mcp",
         "model-context-protocol",
+        "mcp-server",
         "postman",
+        "api",
+        "api-testing",
         "ai",
         "llm",
-        "tools"
+        "tools",
+        "claude",
+        "cursor",
+        "vscode",
+        "copilot",
+        "gemini",
+        "agent",
+        "openai",
+        "collections",
+        "rest-api"
     ],
     "author": {
         "name": "Postman, Inc.",
