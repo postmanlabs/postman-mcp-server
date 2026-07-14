@@ -166,6 +166,10 @@ export const ToolCallEventSchema = BaseTelemetryEventSchema.extend({
 
   /** Raw `_meta` object as the client sent it, JSON-stringified. Empty string when no `_meta` was provided. */
   meta_raw: z.string(),
+
+  /** Per-tool-call correlation id (`v=1;t=<hex>`) sent as the outbound
+   *  `x-srv-trace` request header. */
+  srv_trace_id: z.string(),
 });
 
 export type ToolCallEvent = z.infer<typeof ToolCallEventSchema>;

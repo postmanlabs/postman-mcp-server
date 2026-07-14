@@ -10,11 +10,13 @@ export class PostmanAPIClient {
     baseUrl;
     apiKey;
     serverContext;
+    srvTraceId;
     static instance = null;
-    constructor(apiKey, baseUrl = env.POSTMAN_API_BASE_URL, serverContext) {
+    constructor(apiKey, baseUrl = env.POSTMAN_API_BASE_URL, serverContext, srvTraceId) {
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
         this.serverContext = serverContext;
+        this.srvTraceId = srvTraceId;
     }
     static getInstance(apiKey, baseUrl) {
         if (!PostmanAPIClient.instance) {
@@ -59,6 +61,7 @@ export class PostmanAPIClient {
             'host',
             'accept-encoding',
             'keep-alive',
+            'x-srv-trace',
         ]);
         const extra = Object.fromEntries(Object.entries(options.headers ?? {}).filter(([k]) => !disallowed.has(k.toLowerCase())));
         const hasBody = options.body !== undefined && options.body !== null;
@@ -67,6 +70,7 @@ export class PostmanAPIClient {
             ...extra,
             'x-api-key': currentApiKey,
             'user-agent': userAgentHeader,
+            ...(this.srvTraceId ? { 'x-srv-trace': this.srvTraceId } : {}),
         };
         const { headers: _ignored, ...optionsWithoutHeaders } = options;
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
