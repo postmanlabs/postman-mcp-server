@@ -757,6 +757,31 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect((verifyUpdateResult.content as any)[0].text).toContain(updatedName);
     });
 
+    it('should create a collection with nested folder items', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Nested Folder Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionData = CollectionDataFactory.createNestedFolderCollection();
+      const collectionId = await createCollection(collectionData, workspaceId);
+      createdCollectionIds.push(collectionId);
+
+      const getResult = await client.callTool(
+        {
+          name: 'getCollection',
+          arguments: { collectionId, model: 'full' },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(getResult)).toBe(true);
+      const responseText = (getResult.content as any)[0].text;
+      expect(responseText).toContain('API');
+      expect(responseText).toContain('Echo GET');
+    });
+
     it('should create and delete a minimal collection', async () => {
       const workspace = WorkspaceDataFactory.createWorkspace({
         name: '[Integration Test] Minimal Collection Workspace',

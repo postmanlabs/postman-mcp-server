@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { sanitizeCollectionPayload } from './utils/collectionItems.js';
 export const method = 'createCollection';
 export const description = 'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nIf you do not include the \\`workspace\\` query parameter, the system creates the collection in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
@@ -946,8 +947,9 @@ export async function handler(args, extra) {
             query.set('workspace', String(args.workspace));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (args.collection !== undefined)
-            bodyPayload.collection = args.collection;
+        if (args.collection !== undefined) {
+            bodyPayload.collection = sanitizeCollectionPayload(args.collection);
+        }
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,

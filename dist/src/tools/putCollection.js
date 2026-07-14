@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { sanitizeCollectionPayload } from './utils/collectionItems.js';
 export const method = 'putCollection';
 export const description = "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\n- To perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n- For a complete list of properties and information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n\n**Note:**\n\n- The maximum collection size this endpoint accepts cannot exceed 100 MB.\n- Use the GET \\`/collection-updates-tasks/{taskId}\\` endpoint to get the collection's update status when performing an asynchronous update.\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n";
 export const parameters = z.object({
@@ -43,7 +44,10 @@ export const parameters = z.object({
             .describe('Information about the collection.'),
         item: z.array(z
             .object({
-            id: z.string().describe("The collection item's ID."),
+            id: z
+                .string()
+                .describe("The collection item's ID. Required for existing items when replacing a collection; omit for new folder/request items.")
+                .optional(),
             name: z.string().describe("The item's name.").optional(),
             description: z.string().nullable().describe("The item's description.").optional(),
             variable: z
@@ -767,6 +771,7 @@ export const parameters = z.object({
             .object({
             type: z
                 .enum([
+                'noauth',
                 'basic',
                 'bearer',
                 'apikey',
@@ -782,6 +787,7 @@ export const parameters = z.object({
                 'noauth',
             ])
                 .describe('The authorization type.'),
+            noauth: z.unknown().optional(),
             apikey: z
                 .array(z
                 .object({
@@ -1058,8 +1064,9 @@ export async function handler(args, extra) {
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
-        if (args.collection !== undefined)
-            bodyPayload.collection = args.collection;
+        if (args.collection !== undefined) {
+            bodyPayload.collection = sanitizeCollectionPayload(args.collection);
+        }
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
