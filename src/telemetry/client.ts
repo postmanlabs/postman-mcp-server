@@ -1,5 +1,9 @@
 import { TelemetrySession } from './session.js';
-import type { TelemetryEvent, SessionInitEvent, ToolCallEvent } from './types.js';
+import type {
+  TelemetryEvent,
+  SessionInitEvent,
+  ToolCallEvent,
+} from './types.js';
 
 /**
  * Options for constructing a TelemetryClient.
@@ -69,6 +73,8 @@ export interface ToolCallParams {
   };
   /** JSON-stringified raw `_meta` object as received from the client. */
   metaRaw?: string;
+  /** Per-tool-call correlation id (`v=1;t=<hex>`) also sent as `x-srv-trace`. */
+  srvTraceId?: string;
 }
 
 /** Maximum events in the buffer before auto-flush. */
@@ -124,7 +130,7 @@ export class TelemetryClient {
     params: {
       clientCapabilities: string[];
       serverCapabilities: string[];
-    }
+    },
   ): void {
     const event: SessionInitEvent = {
       ...this.buildBaseEvent(session, 'session_init'),
@@ -166,6 +172,7 @@ export class TelemetryClient {
       task_type: params.meta?.task_type ?? '',
       model_name: params.meta?.model_name ?? '',
       meta_raw: params.metaRaw ?? '',
+      srv_trace_id: params.srvTraceId ?? '',
     };
     this.enqueue(session, event);
   }
@@ -209,7 +216,7 @@ export class TelemetryClient {
   private buildBaseEvent<T extends 'session_init' | 'tool_call'>(
     session: TelemetrySession,
     eventType: T,
-    conversationId?: string
+    conversationId?: string,
   ): {
     event_type: T;
     timestamp: string;
@@ -263,7 +270,10 @@ export class TelemetryClient {
     this.resetIdleTimer();
 
     // Auto-flush if thresholds exceeded
-    if (this.buffer.length >= MAX_BUFFER_COUNT || this.bufferSizeBytes >= MAX_BUFFER_BYTES) {
+    if (
+      this.buffer.length >= MAX_BUFFER_COUNT ||
+      this.bufferSizeBytes >= MAX_BUFFER_BYTES
+    ) {
       // Fire-and-forget flush
       void this.flush();
     }
@@ -277,9 +287,13 @@ export class TelemetryClient {
    * a single flush batch are assumed to share a region (true in practice —
    * a single pod targets a single region).
    */
-  private async send(events: TelemetryEvent[], attempt: number): Promise<void> {
+  private async send(
+    events: TelemetryEvent[],
+    attempt: number,
+  ): Promise<void> {
     const region = events[0]?.region ?? 'us';
-    const baseUrl = process.env[GATEWAY_BASE_URL_OVERRIDE_ENV] ?? GATEWAY_BASE_URL[region];
+    const baseUrl =
+      process.env[GATEWAY_BASE_URL_OVERRIDE_ENV] ?? GATEWAY_BASE_URL[region];
     const ingestUrl = `${baseUrl}${TELEMETRY_INGEST_PATH}`;
 
     try {
