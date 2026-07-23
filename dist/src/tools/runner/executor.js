@@ -67,7 +67,7 @@ export function buildNewmanOptions(params, collection, environment) {
         collection: collection,
         environment: environment,
         iterationCount: params.iterationCount || 1,
-        timeout: params.requestTimeout || 60000,
+        timeout: 0,
         timeoutRequest: params.requestTimeout || 60000,
         timeoutScript: params.scriptTimeout || 5000,
         delayRequest: 1000,
@@ -130,6 +130,10 @@ function runNewman(options, tracker, output, progress) {
                 }
                 void progress?.heartbeat(`ran request: ${String(args.item.name ?? 'unnamed')}`);
             }
+        })
+            .on('error', (err) => {
+            output.add('\n❌ Run error: ' + (err?.message ?? String(err)));
+            reject(err);
         })
             .on('done', (err, summary) => {
             if (err) {

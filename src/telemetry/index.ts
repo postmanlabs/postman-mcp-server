@@ -12,7 +12,7 @@ export type { ToolCallParams } from './client.js';
 export interface ITelemetryClient {
   sessionInit(
     session: TelemetrySession,
-    params: { clientCapabilities: string[]; serverCapabilities: string[] }
+    params: { clientCapabilities: string[]; serverCapabilities: string[] },
   ): void;
   toolCall(session: TelemetrySession, params: ToolCallParams): void;
   flush(): Promise<void>;

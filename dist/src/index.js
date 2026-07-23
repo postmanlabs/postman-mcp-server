@@ -8,10 +8,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { enabledResources } from './enabledResources.js';
 import { PostmanAPIClient } from './clients/postman.js';
 import { SERVER_NAME, APP_VERSION } from './constants.js';
+import { createProgressReporter } from './tools/utils/progress.js';
 import { env } from './env.js';
 import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
 import { createErrorTemplateRenderer } from './tools/utils/errorTemplateRenderer.js';
-import { createTelemetryClient, detectPaginationUsed, parseTelemetryFlag, TelemetrySession, } from './telemetry/index.js';
+import { createTelemetryClient, detectPaginationUsed, parseTelemetryFlag, TelemetrySession } from './telemetry/index.js';
 import { generateSrvTrace } from './telemetry/srvTrace.js';
 const SUPPORTED_REGIONS = {
     us: 'https://api.postman.com',
@@ -135,7 +136,7 @@ async function run() {
     const tools = allGeneratedTools
         .filter((t) => enabledMethods.includes(t.method))
         .sort(toolSorter);
-    const region = regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1])
+    const region = (regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1]))
         ? args[regionIndex + 1]
         : 'us';
     const telemetryEnabled = parseTelemetryFlag(process.env.POSTMAN_MCP_TELEMETRY) ?? false;
@@ -203,6 +204,11 @@ async function run() {
             const paginationUsed = detectPaginationUsed(args);
             const metaRaw = extra?._meta ? JSON.stringify(extra._meta) : '';
             const srvTraceId = generateSrvTrace();
+            const progress = createProgressReporter({
+                sendNotification: extra.sendNotification,
+                meta: extra._meta,
+                signal: extra.signal,
+            });
             const client = new PostmanAPIClient(apiKey, undefined, serverContext, srvTraceId);
             try {
                 const result = await tool.handler(args, {
@@ -212,6 +218,8 @@ async function run() {
                         'user-agent': clientInfo?.name,
                     },
                     serverContext,
+                    progress,
+                    signal: extra.signal,
                 });
                 const durationMs = Date.now() - start;
                 log('info', `Tool invocation completed: ${toolName} (${durationMs}ms)`, {
@@ -227,14 +235,12 @@ async function run() {
                     authMethod: 'api_key',
                     paginationUsed,
                     srvTraceId,
-                    meta: extra?._meta
-                        ? {
-                            trigger: extra._meta.trigger ?? '',
-                            conversation_id: extra._meta.conversation_id ?? '',
-                            task_type: extra._meta.task_type ?? '',
-                            model_name: extra._meta.model_name ?? '',
-                        }
-                        : undefined,
+                    meta: extra?._meta ? {
+                        trigger: extra._meta.trigger ?? '',
+                        conversation_id: extra._meta.conversation_id ?? '',
+                        task_type: extra._meta.task_type ?? '',
+                        model_name: extra._meta.model_name ?? '',
+                    } : undefined,
                     metaRaw,
                 });
                 if (result.content?.[0]?.type === 'text') {
@@ -249,14 +255,12 @@ async function run() {
                 const errMsg = String(error?.message || error);
                 logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
                 const errDurationMs = Date.now() - start;
-                const errorMeta = extra?._meta
-                    ? {
-                        trigger: extra._meta.trigger ?? '',
-                        conversation_id: extra._meta.conversation_id ?? '',
-                        task_type: extra._meta.task_type ?? '',
-                        model_name: extra._meta.model_name ?? '',
-                    }
-                    : undefined;
+                const errorMeta = extra?._meta ? {
+                    trigger: extra._meta.trigger ?? '',
+                    conversation_id: extra._meta.conversation_id ?? '',
+                    task_type: extra._meta.task_type ?? '',
+                    model_name: extra._meta.model_name ?? '',
+                } : undefined;
                 if (error instanceof McpError) {
                     const httpStatus = error.data?.httpStatus;
                     if (typeof httpStatus === 'number') {
@@ -276,8 +280,7 @@ async function run() {
                                     ? 'RATE_LIMITED'
                                     : 'UPSTREAM_ERROR',
                             errorStage: typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
-                                ? 'auth'
-                                : 'upstream',
+                                ? 'auth' : 'upstream',
                             errorUpstream: 'postman-api',
                             rateLimited: typeof httpStatus === 'number' && httpStatus === 429,
                             meta: errorMeta,
@@ -342,6 +345,9 @@ async function run() {
                     metaRaw,
                 });
                 throw new McpError(ErrorCode.InternalError, `API error: ${error.message}`);
+            }
+            finally {
+                progress.stop();
             }
         });
     }

@@ -150,15 +150,15 @@ describe('buildNewmanOptions', () => {
     expect(opts.iterationCount).toBe(5);
   });
 
-  it('defaults timeout to 60000', () => {
+  it('defaults timeout to 0', () => {
     const opts = buildNewmanOptions(baseParams, collection);
-    expect(opts.timeout).toBe(60000);
+    expect(opts.timeout).toBe(0);
     expect(opts.timeoutRequest).toBe(60000);
   });
 
   it('uses requestTimeout from params', () => {
     const opts = buildNewmanOptions({ ...baseParams, requestTimeout: 30000 }, collection);
-    expect(opts.timeout).toBe(30000);
+    expect(opts.timeout).toBe(0);
     expect(opts.timeoutRequest).toBe(30000);
   });
 
