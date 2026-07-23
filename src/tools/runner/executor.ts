@@ -94,7 +94,10 @@ export function buildNewmanOptions(
     collection: collection,
     environment: environment,
     iterationCount: params.iterationCount || 1,
-    timeout: params.requestTimeout || 60000,
+    // Global (whole-run) timeout. 0 disables it so long collections aren't
+    // aborted mid-run with "callback timed out"; per-request/script timeouts
+    // below still bound individual operations.
+    timeout: 0,
     timeoutRequest: params.requestTimeout || 60000,
     timeoutScript: params.scriptTimeout || 5000,
     delayRequest: 1000,
@@ -177,6 +180,10 @@ function runNewman(
           }
           void progress?.heartbeat(`ran request: ${String(args.item.name ?? 'unnamed')}`);
         }
+      })
+      .on('error', (err: any) => {
+        output.add('\n❌ Run error: ' + (err?.message ?? String(err)));
+        reject(err);
       })
       .on('done', (err: any, summary: any) => {
         if (err) {
