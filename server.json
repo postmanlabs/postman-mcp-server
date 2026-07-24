@@ -6,12 +6,12 @@
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
   },
-  "version": "2.11.1",
+  "version": "2.11.2",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "@postman/postman-mcp-server",
-      "version": "2.11.1",
+      "version": "2.11.2",
       "transport": {
         "type": "stdio"
       },
@@ -26,8 +26,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.1/postman-mcp-server-minimal.mcpb",
-      "fileSha256": "d2723f91dbc5c36b0c415bd59f5e7acfbb8cbc74beffcae07a5451a9083e7b1e",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-minimal.mcpb",
+      "fileSha256": "e8aa64e13b894c8933932c1c975c54095718e002bf866932759d040b4268499d",
       "transport": {
         "type": "stdio"
       },
@@ -42,8 +42,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.1/postman-mcp-server-full.mcpb",
-      "fileSha256": "9f2328b187d3867eb088a682f66ea7bdace98df51a59a3bb7958940795d412e6",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-full.mcpb",
+      "fileSha256": "e7838e78524b68dc9e44b2d6f116f144e98f141e892ce2c63205764a002794ee",
       "transport": {
         "type": "stdio"
       },
@@ -58,8 +58,8 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.1/postman-mcp-server-code.mcpb",
-      "fileSha256": "78ba9aec73dcba60f60b25fddfb58817f369cd8a4277194758611e35e51f2faa",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-code.mcpb",
+      "fileSha256": "2498add02598c5f05fbea1d395649257ddfefdb55a9d0d6b466afbba2b662b70",
       "transport": {
         "type": "stdio"
       },
