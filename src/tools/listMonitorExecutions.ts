@@ -5,10 +5,14 @@ import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'listMonitorExecutions';
 export const description =
-  'Lists executions for a monitor. Cursor-based pagination, 25 results per page. Returns execution metadata including state, trigger, results summary, and timestamps.';
+  'Lists executions for a monitor. Cursor-based pagination, 25 results per page. Returns execution metadata including state, trigger, results summary, and timestamps.\n\nThis is Step 1 of the monitor-run workflow: listMonitorExecutions → listRunsForExecution → getMonitorRunResults. Each execution has an `id` (executionId). To get run results, you must first pass this executionId to listRunsForExecution to obtain run IDs — do NOT use executionId as a runId.';
 
 export const parameters = z.object({
-  monitorId: z.string().describe("The monitor's ID."),
+  monitorId: z
+    .string()
+    .describe(
+      "The monitor's ID. Must be a plain UUID (e.g. `1f00bf12-7ee5-4500-a1a7-3c721a03d42c`), not a uid with numeric prefix."
+    ),
   cursor: z
     .string()
     .optional()
