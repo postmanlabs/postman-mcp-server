@@ -1,6 +1,6 @@
 # Postman MCP Server
 
-The **Postman MCP Server** implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to connect AI agents and coding assistants — including Claude Code, Cursor, VS Code Copilot, GitHub Copilot CLI, and Gemini CLI — directly to your Postman workspaces, collections, specifications, and environments.
+The **Postman MCP Server** implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io) to connect AI agents and coding assistants — including Claude Code, Cursor, VS Code, GitHub Copilot CLI, Kiro, Codex CLI, Antigravity CLI, and Claude Desktop — directly to your Postman workspaces, collections, specifications, and environments.
 
 Postman also offers the server as an [npm package](https://www.npmjs.com/package/@postman/postman-mcp-server).
 
@@ -55,25 +55,31 @@ npx @postman/postman-mcp-server
 
 Add `--code` or `--full` for Code or Full mode. Set `POSTMAN_API_KEY` as an environment variable.
 
-For IDE-specific setup instructions, see the following table. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
+For per-agent setup — including one-click installs — see the [install guide](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install) or the table below. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
 
 ---
 
 ## Supported agents and IDEs
 
+Every agent below connects through one of the two entry points in [Quick start](#quick-start) above — the remote URL or the `npx` command. What differs per agent is where the config lives and whether a one-click install exists.
 
-| Agent / IDE | Remote | Local |
-| --- | --- | --- |
-| Claude Code        | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#claude-code)        | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#claude-code)        |
-| Claude Desktop     | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#claude) | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#claude)             |
-| Cursor             | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#cursor)             | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#cursor)             |
-| VS Code            | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#visual-studio-code) | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#visual-studio-code) |
-| Codex              | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#codex)              | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#codex)              |
-| Antigravity CLI       | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#antigravity-cli)        | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#antigravity-cli)        |
-| GitHub Copilot CLI | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#github-copilot-cli) | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#github-copilot-cli) |
-| Kiro               | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#kiro)               | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#kiro)               |
-| Docker             | —                                                                                                                               | [Docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server#docker)             |
+The [**Postman MCP Server install guide**](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install) has the per-agent detail, and adds what a README cannot: one-click install buttons, and toggles for toolset, region and quiet mode that rewrite the command for you as you change them.
 
+| Agent / IDE | Per-agent setup | One-click install | Postman plugin |
+| --- | --- | --- | --- |
+| Claude Code | [Claude Code setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-claude-code) | — | Plugin |
+| Cursor | [Cursor setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-cursor) | Yes | Plugin |
+| VS Code | [VS Code setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-vscode) | Yes | Extension |
+| Copilot CLI | [Copilot CLI setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-copilot) | — | — |
+| Kiro | [Kiro setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-kiro) | Yes | Power |
+| Codex CLI | [Codex CLI setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-codex) | — | — |
+| Antigravity CLI | [Antigravity CLI setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-antigravity) | — | Extension |
+| Claude Desktop | [Claude Desktop setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-claude-desktop) | Yes | — |
+| Docker | [Docker setup →](https://www.postman.com/product/mcp-server/?utm_source=github&utm_medium=readme&utm_campaign=mcp-server-install#install-docker) | — | — |
+
+Using a client that is not listed? Any MCP-compatible host works — point it at `https://mcp.postman.com/minimal`. The install guide has a generic `mcpServers` config for custom integrations.
+
+Reference documentation: [remote server](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server) · [local server](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-local-server)
 
 ---
 
