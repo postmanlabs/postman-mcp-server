@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getWorkspaces';
+export const title = 'Get workspaces (filtered and user-scoped)';
 export const description = "Gets all workspaces you have access to.\n- For “my …” requests, first call GET \\`/me\\` and pass \\`createdBy={me.user.id}\\`.\n- This endpoint's response contains the visibility field. Visibility determines who can access the workspace:\n  - \\`personal\\` — Only you can access the workspace.\n  - \\`team\\` — All team members can access the workspace.\n  - \\`private\\` — Only invited team members can access the workspace (Professional and Enterprise).\n  - \\`public\\` — Everyone can access the workspace.\n  - \\`partner\\` — Invited team members and partners (Professional and Enterprise).\n- For tools that require the workspace ID, and no workspace ID is provided, ask the user to provide the workspace ID. If the user does not provide the workspace ID, call this first with the createdBy parameter to use the first workspace.\n- Results are paginated. Use the \\`cursor\\` parameter to retrieve additional pages.\n- Examples:\n  - “List my workspaces” → GET \\`/me\\`, then GET \\`/workspaces?createdBy={me.user.id}&limit=100\\`\n  - “List my personal workspaces” → GET \\`/me\\`, then GET \\`/workspaces?type=personal&createdBy={me.user.id}&limit=100\\`\n  - “List all public workspaces” → GET \\`/workspaces?type=public&limit=100\\`\n";
 export const parameters = z.object({
     type: z
@@ -37,8 +38,9 @@ export const parameters = z.object({
         .default(100),
 });
 export const annotations = {
-    title: 'Gets all workspaces you have access to.',
+    title: 'Get workspaces (filtered and user-scoped)',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

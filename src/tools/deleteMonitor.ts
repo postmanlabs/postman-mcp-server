@@ -4,11 +4,13 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'deleteMonitor';
+export const title = 'Delete a monitor';
 export const description = 'Deletes a monitor.';
 export const parameters = z.object({ monitorId: z.string().describe("The monitor's ID.") });
 export const annotations = {
-  title: 'Deletes a monitor.',
+  title: 'Delete a monitor',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: true,
   idempotentHint: true,
 };

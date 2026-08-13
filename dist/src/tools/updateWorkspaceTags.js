@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateWorkspaceTags';
+export const title = "Update a workspace's tags";
 export const description = "Updates a workspace's associated tags. This endpoint replaces all existing tags with those you pass in the request body.";
 export const parameters = z.object({
     workspaceId: z.string().describe("The workspace's ID."),
@@ -21,8 +22,9 @@ export const parameters = z.object({
         .describe('A list of the associated tags as slugs.'),
 });
 export const annotations = {
-    title: "Updates a workspace's associated tags. This endpoint replaces all existing tags with those you pass in the request body.",
+    title: "Update a workspace's tags",
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

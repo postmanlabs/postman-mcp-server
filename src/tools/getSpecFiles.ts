@@ -4,11 +4,13 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getSpecFiles';
+export const title = "Get a spec's files";
 export const description = 'Gets all the files in an API specification.';
 export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
 export const annotations = {
-  title: 'Gets all the files in an API specification.',
+  title: "Get a spec's files",
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

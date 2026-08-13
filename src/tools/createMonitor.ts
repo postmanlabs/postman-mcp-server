@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createMonitor';
+export const title = 'Create a monitor';
 export const description =
   'Creates a monitor.\n\n**Note:**\n\n- You cannot create monitors for collections added to an API definition.\n- If you do not pass the \\`workspace\\` query parameter, the system creates the monitor in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
@@ -129,9 +130,10 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Creates a monitor.',
+  title: 'Create a monitor',
   readOnlyHint: false,
-  destructiveHint: false,
+  openWorldHint: true,
+  destructiveHint: true,
   idempotentHint: false,
 };
 

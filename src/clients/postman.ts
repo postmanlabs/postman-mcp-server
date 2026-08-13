@@ -6,6 +6,7 @@ import { env } from '../env.js';
 export enum ContentType {
   Json = 'application/json',
   JsonPatch = 'application/json-patch+json',
+  JsonMergePatch = 'application/merge-patch+json',
 }
 
 export interface PostmanAPIRequestOptions extends Omit<RequestInit, 'headers'> {

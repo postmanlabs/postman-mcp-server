@@ -5,6 +5,7 @@ export var ContentType;
 (function (ContentType) {
     ContentType["Json"] = "application/json";
     ContentType["JsonPatch"] = "application/json-patch+json";
+    ContentType["JsonMergePatch"] = "application/merge-patch+json";
 })(ContentType || (ContentType = {}));
 export class PostmanAPIClient {
     baseUrl;

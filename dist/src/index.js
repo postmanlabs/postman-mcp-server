@@ -12,7 +12,7 @@ import { createProgressReporter } from './tools/utils/progress.js';
 import { env } from './env.js';
 import { createTemplateRenderer } from './tools/utils/templateRenderer.js';
 import { createErrorTemplateRenderer } from './tools/utils/errorTemplateRenderer.js';
-import { createTelemetryClient, detectPaginationUsed, parseTelemetryFlag, TelemetrySession, } from './telemetry/index.js';
+import { createTelemetryClient, detectPaginationUsed, parseTelemetryFlag, TelemetrySession } from './telemetry/index.js';
 import { generateSrvTrace } from './telemetry/srvTrace.js';
 const SUPPORTED_REGIONS = {
     us: 'https://api.postman.com',
@@ -136,7 +136,7 @@ async function run() {
     const tools = allGeneratedTools
         .filter((t) => enabledMethods.includes(t.method))
         .sort(toolSorter);
-    const region = regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1])
+    const region = (regionIndex !== -1 && regionIndex + 1 < args.length && isValidRegion(args[regionIndex + 1]))
         ? args[regionIndex + 1]
         : 'us';
     const telemetryEnabled = parseTelemetryFlag(process.env.POSTMAN_MCP_TELEMETRY) ?? false;
@@ -168,7 +168,13 @@ async function run() {
             error: String(error?.message || error),
         });
     }
-    const server = new McpServer({ name: SERVER_NAME, version: APP_VERSION }, instructionsContent
+    const server = new McpServer({
+        name: SERVER_NAME,
+        title: 'Postman',
+        version: APP_VERSION,
+        websiteUrl: 'https://www.postman.com',
+        description: 'Find and manage Postman workspaces, collections, environments, mocks, monitors, and API specifications, run collections, and publish API documentation.',
+    }, instructionsContent
         ? {
             instructions: 'Before answering any API-related questions, fetch the MCP resource at URI `postman://instructions` using FetchMcpResource from this MCP server, and follow the usage instructions contained within.',
         }
@@ -194,6 +200,7 @@ async function run() {
     log('info', 'Registering tools with McpServer');
     for (const tool of tools) {
         server.registerTool(tool.method, {
+            title: tool.title,
             description: tool.description,
             inputSchema: tool.parameters.shape,
             annotations: tool.annotations || {},
@@ -235,14 +242,12 @@ async function run() {
                     authMethod: 'api_key',
                     paginationUsed,
                     srvTraceId,
-                    meta: extra?._meta
-                        ? {
-                            trigger: extra._meta.trigger ?? '',
-                            conversation_id: extra._meta.conversation_id ?? '',
-                            task_type: extra._meta.task_type ?? '',
-                            model_name: extra._meta.model_name ?? '',
-                        }
-                        : undefined,
+                    meta: extra?._meta ? {
+                        trigger: extra._meta.trigger ?? '',
+                        conversation_id: extra._meta.conversation_id ?? '',
+                        task_type: extra._meta.task_type ?? '',
+                        model_name: extra._meta.model_name ?? '',
+                    } : undefined,
                     metaRaw,
                 });
                 if (result.content?.[0]?.type === 'text') {
@@ -257,14 +262,12 @@ async function run() {
                 const errMsg = String(error?.message || error);
                 logBoth(server, 'error', `Tool invocation failed: ${toolName}: ${errMsg}`, { toolName });
                 const errDurationMs = Date.now() - start;
-                const errorMeta = extra?._meta
-                    ? {
-                        trigger: extra._meta.trigger ?? '',
-                        conversation_id: extra._meta.conversation_id ?? '',
-                        task_type: extra._meta.task_type ?? '',
-                        model_name: extra._meta.model_name ?? '',
-                    }
-                    : undefined;
+                const errorMeta = extra?._meta ? {
+                    trigger: extra._meta.trigger ?? '',
+                    conversation_id: extra._meta.conversation_id ?? '',
+                    task_type: extra._meta.task_type ?? '',
+                    model_name: extra._meta.model_name ?? '',
+                } : undefined;
                 if (error instanceof McpError) {
                     const httpStatus = error.data?.httpStatus;
                     if (typeof httpStatus === 'number') {
@@ -284,8 +287,7 @@ async function run() {
                                     ? 'RATE_LIMITED'
                                     : 'UPSTREAM_ERROR',
                             errorStage: typeof httpStatus === 'number' && (httpStatus === 401 || httpStatus === 403)
-                                ? 'auth'
-                                : 'upstream',
+                                ? 'auth' : 'upstream',
                             errorUpstream: 'postman-api',
                             rateLimited: typeof httpStatus === 'number' && httpStatus === 429,
                             meta: errorMeta,

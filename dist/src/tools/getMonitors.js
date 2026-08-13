@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getMonitors';
+export const title = 'Get all monitors';
 export const description = 'Gets all monitors.';
 export const parameters = z.object({
     workspace: z.string().describe('Return only results found in the given workspace ID.').optional(),
@@ -27,8 +28,9 @@ export const parameters = z.object({
         .default(25),
 });
 export const annotations = {
-    title: 'Gets all monitors.',
+    title: 'Get all monitors',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

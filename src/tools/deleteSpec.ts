@@ -4,13 +4,14 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'deleteSpec';
+export const title = 'Delete a spec';
 export const description =
   'Deletes an API specification. On success, this returns an HTTP \\`204 No Content\\` response.';
 export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
 export const annotations = {
-  title:
-    'Deletes an API specification. On success, this returns an HTTP \\`204 No Content\\` response.',
+  title: 'Delete a spec',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: true,
   idempotentHint: true,
 };

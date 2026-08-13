@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'transferCollectionRequests';
+export const title = 'Transfer requests';
 export const description = 'Copies or moves requests into a collection or folder.';
 export const parameters = z.object({
     ids: z
@@ -36,8 +37,9 @@ export const parameters = z.object({
         .describe("The transferred items' placement in the target destination:\n- For `start` or `end` — Do not include the `model` and `id` values.\n- For `before` or `after` — Include the `model` and `id` properties.\n"),
 });
 export const annotations = {
-    title: 'Copies or moves requests into a collection or folder.',
+    title: 'Transfer requests',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

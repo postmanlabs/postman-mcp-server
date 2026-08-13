@@ -1,14 +1,16 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteCollectionFolder';
+export const title = 'Delete a folder';
 export const description = 'Deletes a folder in a collection.';
 export const parameters = z.object({
     folderId: z.string().describe("The folder's ID."),
     collectionId: z.string().describe("The collection's ID."),
 });
 export const annotations = {
-    title: 'Deletes a folder in a collection.',
+    title: 'Delete a folder',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

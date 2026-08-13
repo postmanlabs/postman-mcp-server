@@ -1,11 +1,22 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getAnalyticsData';
-export const description = 'Gets analytics data based on the specified resource, metrics, and given filters for team, internal, and public workspaces, as well as Partner Workspaces.\n\n**Note:**\n\nThis endpoint only accepts the following resource:metric query parameter combinations:\n- \\`user\\` — \\`workspace_active_users\\`, \\`active_users\\`\n- \\`workspace\\` — \\`elements_in_workspace\\`, \\`active_workspaces\\`, \\`api_calls\\`, \\`active_collections\\`, \\`response_status\\`, \\`pending_invites\\`, \\`needs_attention\\`, \\`success_rate\\`, \\`user_requests\\`, \\`collection_error_aggregate\\`\n- \\`team\\` — \\`user_api_journey\\`, \\`workspace_distribution\\`, \\`internal_workspace_distribution\\`, \\`license_consumption\\`, \\`members\\`, \\`last_autoflex_cycle\\`, \\`partner_engagement_funnel\\`\n- \\`ai\\` — \\`top_agent_models_by_usage\\`, \\`activity_distribution\\`, \\`peak_activity\\`, \\`usage_leaderboard\\`, \\`credit_usage_by_model\\`, \\`messages_sent\\`, \\`credit_usage\\`, \\`agent_mode_sessions\\`, \\`new_vs_returning_users\\`, \\`agent_mode_users\\`\n\nThe \\`view\\` query parameter only accepts the following values when called with the following resource:metric pairs:\n- \\`detailed\\` or \\`summary\\` — \\`user:active_users\\`, \\`workspace:active_workspaces\\`, \\`workspace:pending_invites\\`, \\`workspace:needs_attention\\`, \\`workspace:success_rate\\`, \\`team:partner_engagement_funnel\\`\n\\`summary\\` only — \\`workspace:elements_in_workspace\\`, \\`workspace:workspace_active_users\\`, \\`workspace:api_calls\\`, \\`workspace:response_status\\`, \\`team:user_api_journey\\`, \\`team:workspace_distribution\\`, \\`team:internal_workspace_distribution\\`, \\`team:license_consumption\\`\n- \\`detailed\\` only — \\`workspace:active_collections\\`, \\`workspace:user_requests\\`\n';
+export const title = 'Get analytics data';
+export const description = 'Gets analytics data based on the specified resource, metrics, and given filters for team, internal, and public workspaces, as well as Partner Workspaces.\n\n**Note:**\n\nThis endpoint only accepts the following resource:metric query parameter combinations:\n- \\`user\\` — \\`workspace_active_users\\`, \\`active_users\\`\n- \\`workspace\\` — \\`elements_in_workspace\\`, \\`active_workspaces\\`, \\`api_calls\\`, \\`active_collections\\`, \\`response_status\\`, \\`pending_invites\\`, \\`needs_attention\\`, \\`success_rate\\`, \\`user_requests\\`, \\`collection_error_aggregate\\`\n- \\`team\\` — \\`user_api_journey\\`, \\`workspace_distribution\\`, \\`internal_workspace_distribution\\`, \\`license_consumption\\`, \\`members\\`, \\`last_autoflex_cycle\\`, \\`partner_engagement_funnel\\` \\`members_overtime\\` , \\`member_invites\\`, \\`invites_sent\\` , \\`invites_accepted\\`\n- \\`ai\\` — \\`top_agent_models_by_usage\\`, \\`activity_distribution\\`, \\`peak_activity\\`, \\`usage_leaderboard\\`, \\`credit_usage_by_model\\`, \\`messages_sent\\`, \\`credit_usage\\`, \\`agent_mode_sessions\\`, \\`new_vs_returning_users\\`, \\`agent_mode_users\\`\n- \\`api_development\\` — \\`active_workspaces\\`, \\`entity_activity\\`, \\`top_entities\\`\n- \\`api_testing\\` — \\`runs\\`, \\`functional_test_runs\\`, \\`performance_test_runs\\`\n- \\`api_production\\` — \\`monitor_runs\\`, \\`flow_executions\\`\n- \\`api_distribution\\` — \\`active_workspaces\\`, \\`pvt_network\\`, \\`partner\\`, \\`public\\`\n- \\`api_management\\` — \\`workspace_activity\\`\n\nThe \\`view\\` query parameter only accepts the following values when called with the following resource:metric pairs:\n\\`detailed\\` or \\`summary\\` — \\`user:active_users\\`, \\`workspace:active_workspaces\\`, \\`workspace:pending_invites\\`, \\`workspace:needs_attention\\`, \\`workspace:success_rate\\`, \\`team:partner_engagement_funnel\\`, \\`api_distribution:pvt_network\\`, \\`api_distribution:partner\\`, \\`api_distribution:public\\`\n- \\`detailed\\`, \\`summary\\`, or \\`trends\\` — \\`api_development:entity_activity\\`, \\`api_testing:functional_test_runs\\` , \\`api_testing:performance_test_runs\\`, \\`api_production:monitor_runs\\`, \\`api_production:flow_executions\\`\n- \\`summary\\` or \\`trend\\` — \\`api_development:active_workspaces\\`, \\`api_testing:runs\\`, \\`api_distribution:active_workspaces\\`, \\`api_management:workspace_activity\\`\n- \\`summary\\` only — \\`workspace:elements_in_workspace\\`, \\`workspace:workspace_active_users\\`, \\`workspace:api_calls\\`, \\`workspace:response_status\\`, \\`team:user_api_journey\\`, \\`team:workspace_distribution\\`, \\`team:internal_workspace_distribution\\`, \\`team:license_consumption\\`\n- \\`detailed\\` only — \\`workspace:active_collections\\`, \\`workspace:user_requests\\`, \\`api_development:top_entities\\`, \\`api_management:popular_workspaces\\` , \\`team:invites_sent\\` , \\`team:invites_accepted\\`\n- \\`trend\\` only — \\`team:members_overtime\\`, \\`team:member_invites\\`\n';
 export const parameters = z.object({
     resource: z
-        .enum(['user', 'team', 'workspace', 'ai'])
-        .describe('Returns metrics and insights for API usage, success, and workspace/team trends in Postman:\n\n- `user` — Data related to individual user activities and engagement within Postman workspaces.\n- `team` — Team-level analytics, license consumption, and organizational trends.\n- `workspace` — Workspace-level activities, elements, and collaboration patterns.\n- `ai` — Analytics related to Agent Mode usage across workspaces, covering user activity, model usage, and credit consumption patterns.\n'),
+        .enum([
+        'user',
+        'team',
+        'workspace',
+        'ai',
+        'api_development',
+        'api_testing',
+        'api_production',
+        'api_distribution',
+        'api_management',
+    ])
+        .describe('Returns metrics and insights for API usage, success, and workspace/team trends in Postman:\n\n- `user` — Data related to individual user activities and engagement within Postman workspaces.\n- `team` — Team-level analytics, license consumption, and organizational trends.\n- `workspace` — Workspace-level activities, elements, and collaboration patterns.\n- `ai` — Analytics related to Agent Mode usage across workspaces, covering user activity, model usage, and credit consumption patterns.\n- `api_development` — API development activity metrics that include workspace counts, entity activity by type (collection, flow, mock, specification, sdk), and top entities.\n- `api_testing` — API testing metrics such as total test runs, functional test runs (Collection Runner), and performance test runs.\n- `api_production` — API production metrics, including monitor run activity and production flow execution activity.\n- `api_distribution` — API distribution metrics, such as active workspace counts across distribution channels.\n- `api_management` — API management metrics, such as workspace activity, active counts, trends, and top workspaces.\n'),
     metrics: z
         .enum([
         'active_users',
@@ -37,6 +48,21 @@ export const parameters = z.object({
         'peak_activity',
         'activity_distribution',
         'top_agent_models_by_usage',
+        'entity_activity',
+        'top_entities',
+        'runs',
+        'functional_test_runs',
+        'performance_test_runs',
+        'monitor_runs',
+        'flow_executions',
+        'pvt_network',
+        'partner',
+        'public',
+        'workspace_activity',
+        'members_overtime',
+        'member_invites',
+        'invites_sent',
+        'invites_accepted',
     ])
         .describe('Filters the response by only the given metrics. The metric must match the given `resource` value.\n\nFor a list of metrics and their related `resource` value, call the GET `/analytics-metadata` endpoint.\n'),
     view: z
@@ -82,6 +108,10 @@ export const parameters = z.object({
         .enum(['new', 'returning'])
         .describe('Filters results by a specific user type for supported views.')
         .optional(),
+    entityType: z
+        .enum(['collection', 'specification', 'mock', 'flow', 'sdk-collection', 'sdk-specification'])
+        .describe('The type of Postman entity to filter results by.')
+        .optional(),
     limit: z
         .number()
         .int()
@@ -98,8 +128,9 @@ export const parameters = z.object({
         .default(0),
 });
 export const annotations = {
-    title: 'Gets analytics data based on the specified resource, metrics, and given filters for team, internal, and public workspaces, as well as Partner Workspaces.',
+    title: 'Get analytics data',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };
@@ -129,6 +160,8 @@ export async function handler(args, extra) {
             query.set('period', String(args.period));
         if (args.userType !== undefined)
             query.set('userType', String(args.userType));
+        if (args.entityType !== undefined)
+            query.set('entityType', String(args.entityType));
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));
         if (args.offset !== undefined)

@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'syncCollectionWithSpec';
+export const title = 'Sync collection with spec';
 export const description =
   'Syncs a collection generated from an API specification. This is an asynchronous endpoint that returns an HTTP \\`202 Accepted\\` response.\n\n**Note:**\n\n- This endpoint only supports the OpenAPI 2.0, 3.0, and 3.1 specification types.\n- You can only sync collections generated from the given spec ID.\n';
 export const parameters = z.object({
@@ -11,9 +12,9 @@ export const parameters = z.object({
   specId: z.string().describe("The spec's ID."),
 });
 export const annotations = {
-  title:
-    'Syncs a collection generated from an API specification. This is an asynchronous endpoint that returns an HTTP \\`202 Accepted\\` response.',
+  title: 'Sync collection with spec',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };

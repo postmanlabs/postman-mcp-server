@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'createCollection';
+export const title = 'Create a collection';
 export const description = 'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nIf you do not include the \\`workspace\\` query parameter, the system creates the collection in the oldest personal Internal workspace you own.\n';
 export const parameters = z.object({
     workspace: z.string().describe("The workspace's ID."),
@@ -12,8 +13,11 @@ export const parameters = z.object({
             name: z.string().min(1).describe("The collection's name. Must not be empty."),
             description: z.string().describe("The collection's description.").optional(),
             schema: z
-                .literal('https://schema.getpostman.com/json/collection/v2.1.0/collection.json')
-                .describe('The "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" Postman Collection Format v2.1.0 schema.'),
+                .enum([
+                'https://schema.postman.com/json/collection/v2.1.0/collection.json',
+                'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+            ])
+                .describe('The "https://schema.postman.com/json/collection/v2.1.0/collection.json" Postman Collection Format v2.1.0 schema.'),
         })
             .describe('Information about the collection.'),
         item: z.array(z
@@ -933,8 +937,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).',
+    title: 'Create a collection',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

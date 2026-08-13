@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'deleteSpecFile';
+export const title = 'Delete a spec file';
 export const description =
   'Deletes a file in an API specification. On success, this returns an HTTP \\`204 No Content\\` response.';
 export const parameters = z.object({
@@ -11,9 +12,9 @@ export const parameters = z.object({
   filePath: z.string().describe('The path to the file.'),
 });
 export const annotations = {
-  title:
-    'Deletes a file in an API specification. On success, this returns an HTTP \\`204 No Content\\` response.',
+  title: 'Delete a spec file',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: true,
   idempotentHint: true,
 };

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getCollectionsForkedByUser';
+export const title = 'Get all forked collections';
 export const description = "Gets a list of all the authenticated user's forked collections.";
 export const parameters = z.object({
     cursor: z
@@ -18,8 +19,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Gets a list of all the authenticated user's forked collections.",
+    title: 'Get all forked collections',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

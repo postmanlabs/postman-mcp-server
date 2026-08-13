@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'unpublishMock';
+export const title = 'Unpublish a mock server';
 export const description = 'Unpublishes a mock server. Unpublishing a mock server sets its **Access Control** configuration setting to private.';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });
 export const annotations = {
-    title: 'Unpublishes a mock server. Unpublishing a mock server sets its **Access Control** configuration setting to private.',
+    title: 'Unpublish a mock server',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

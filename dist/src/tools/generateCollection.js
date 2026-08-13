@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'generateCollection';
+export const title = 'Generate a collection from spec';
 export const description = 'Creates a collection from the given API specification.\nThe specification must already exist or be created before it can be used to generate a collection.\nThe response contains a polling link to the task status.\n';
 export const parameters = z.object({
     specId: z.string().describe("The spec's ID."),
@@ -53,8 +54,9 @@ export const parameters = z.object({
         .describe("The advanced creation options and their values. For more details, see Postman's [OpenAPI to Postman Collection Converter OPTIONS documentation](https://github.com/postmanlabs/openapi-to-postman/blob/develop/OPTIONS.md). These properties are case-sensitive."),
 });
 export const annotations = {
-    title: 'Creates a collection from the given API specification.',
+    title: 'Generate a collection from spec',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

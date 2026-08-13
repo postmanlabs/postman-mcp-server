@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createMockServerResponse';
+export const title = 'Create a server response for a mock';
 export const description =
   'Creates a server response on a mock server. Server responses simulate 5xx server-level failures (e.g. 500, 503) that are agnostic to any specific route — when active, every request to the mock returns this response.\n\n- \\`statusCode\\` must be a 5xx value (500–599).\n- \\`body\\` is a raw string — pass the response body exactly as the mock should return it (e.g. a JSON string like \\`"{\\"message\\":\\"error\\"}"\\` or plain text).\n- \\`language\\` controls syntax highlighting in the Postman UI (\\`json\\`, \\`xml\\`, \\`html\\`, \\`javascript\\`, \\`text\\`). It does not affect the actual response Content-Type — set that via \\`headers\\` instead.\n- \\`headers\\` is an array of \\`{key, value}\\` pairs for response headers (e.g. \\`[{"key": "Content-Type", "value": "application/json"}]\\`).\n- You can create multiple server responses per mock, but only one can be active at a time. Creating a response does NOT automatically activate it — call \\`updateMock\\` with \\`config.serverResponseId\\` set to the new response\'s \\`id\\` to activate it.\n';
 export const parameters = z.object({
@@ -41,9 +42,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'Creates a server response on a mock server. Server responses simulate 5xx server-level failures (e.g. 500, 503) that are agnostic to any specific route — when active, every request to the mock returns this response.',
+  title: 'Create a server response for a mock',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: false,
 };

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateApiCollectionComment';
+export const title = "Update a collection's comment";
 export const description = "Updates a comment on an API's collection.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n";
 export const parameters = z.object({
     apiId: z.string().describe("The API's ID."),
@@ -22,8 +23,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Updates a comment on an API's collection.",
+    title: "Update a collection's comment",
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

@@ -4,15 +4,16 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'unpublishDocumentation';
+export const title = 'Unpublish documentation';
 export const description =
   "Unpublishes a collection's documentation. On success, this returns an HTTP \\`204 No Content\\` response.";
 export const parameters = z.object({
   collectionId: z.string().describe("The collection's unique ID."),
 });
 export const annotations = {
-  title:
-    "Unpublishes a collection's documentation. On success, this returns an HTTP \\`204 No Content\\` response.",
+  title: 'Unpublish documentation',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: true,
   idempotentHint: true,
 };

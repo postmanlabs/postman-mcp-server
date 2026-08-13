@@ -4,13 +4,15 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getCollectionComments';
+export const title = "Get a collection's comments";
 export const description = 'Gets all comments left by users in a collection.';
 export const parameters = z.object({
   collectionId: z.string().describe("The collection's unique ID."),
 });
 export const annotations = {
-  title: 'Gets all comments left by users in a collection.',
+  title: "Get a collection's comments",
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

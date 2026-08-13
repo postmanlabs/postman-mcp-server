@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'putCollection';
+export const title = "Replace a collection's data";
 export const description = "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.\n\n- To perform an update asynchronously, use the \\`Prefer\\` header with the \\`respond-async\\` value. When performing an async update, this endpoint returns a HTTP \\`202 Accepted\\` response.\n- For a complete list of properties and information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n- For protocol profile behavior, refer to Postman's [Protocol Profile Behavior documentation](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md).\n\n**Note:**\n\n- The maximum collection size this endpoint accepts cannot exceed 100 MB.\n- Use the GET \\`/collection-updates-tasks/{taskId}\\` endpoint to get the collection's update status when performing an asynchronous update.\n- If you don't include the collection items' ID values from the request body, the endpoint **removes** the existing items and recreates the items with new ID values.\n- To copy another collection's contents to the given collection, remove all ID values before you pass it in this endpoint. If you do not, this endpoint returns an error. These values include the \\`id\\`, \\`uid\\`, and \\`postman_id\\` values.\n";
 export const parameters = z.object({
     collectionId: z
@@ -22,8 +23,11 @@ export const parameters = z.object({
                 .optional(),
             description: z.string().describe("The collection's description.").optional(),
             schema: z
-                .literal('https://schema.getpostman.com/json/collection/v2.1.0/collection.json')
-                .describe('The "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" Postman Collection Format v2.1.0 schema.'),
+                .enum([
+                'https://schema.postman.com/json/collection/v2.1.0/collection.json',
+                'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+            ])
+                .describe('The "https://schema.postman.com/json/collection/v2.1.0/collection.json" Postman Collection Format v2.1.0 schema.'),
             updatedAt: z
                 .string()
                 .datetime({ offset: true })
@@ -47,28 +51,79 @@ export const parameters = z.object({
             name: z.string().describe("The item's name.").optional(),
             description: z.string().nullable().describe("The item's description.").optional(),
             variable: z
-                .array(z
-                .object({
-                id: z
-                    .string()
-                    .describe("The variable's ID. Doesn't apply to collection-level variables.")
-                    .optional(),
-                key: z.string().describe("The variable's key (name).").optional(),
-                description: z
-                    .string()
-                    .max(512)
-                    .describe("The variable's description.")
-                    .optional(),
-                value: z
-                    .union([z.string(), z.boolean(), z.number().int()])
-                    .describe("The key's value.")
-                    .optional(),
-                disabled: z
-                    .boolean()
-                    .describe("If true, the variable is not enabled. Doesn't apply to path parameter variables.")
-                    .default(false),
-            })
-                .describe('Information about the variable.'))
+                .array(z.union([
+                z
+                    .object({
+                    id: z
+                        .string()
+                        .describe("The variable's ID. Doesn't apply to collection-level variables.")
+                        .optional(),
+                    key: z.string().describe("The variable's key (name).").optional(),
+                    description: z
+                        .string()
+                        .max(512)
+                        .describe("The variable's description.")
+                        .optional(),
+                    value: z
+                        .union([z.string(), z.boolean(), z.number().int()])
+                        .describe("The key's value.")
+                        .optional(),
+                    enabled: z
+                        .boolean()
+                        .describe('If true, the variable is enabled.')
+                        .default(true),
+                    disabled: z
+                        .boolean()
+                        .describe("If true, the variable is not enabled. Doesn't apply to path parameter variables.")
+                        .default(false),
+                })
+                    .describe('Information about the variable.'),
+                z
+                    .object({
+                    enabled: z
+                        .boolean()
+                        .describe('If true, the variable is enabled.')
+                        .default(true),
+                    key: z.string().describe("The variable's key (name).").optional(),
+                    secret: z
+                        .boolean()
+                        .describe('If true, the variable is marked as secret and its value is retrieved from the mentioned provider in the source field.')
+                        .optional(),
+                    source: z
+                        .object({
+                        postman: z
+                            .object({
+                            secretId: z.string().describe("The variable's secret ID.").optional(),
+                            type: z
+                                .literal('cloud')
+                                .describe("The variable's type:\n- `cloud` — The variable value is synced and stored in the Postman Cloud.\n")
+                                .optional(),
+                            vaultId: z
+                                .string()
+                                .describe("The variable's ID in the Postman Vault.")
+                                .optional(),
+                        })
+                            .describe("Information about the Postman-specific source of the variable's value.")
+                            .optional(),
+                        provider: z
+                            .literal('postman')
+                            .describe("The secret's provider.")
+                            .optional(),
+                    })
+                        .describe("Information about the source of the variable's value.")
+                        .optional(),
+                    id: z
+                        .string()
+                        .describe("The variable's ID. Doesn't apply to collection-level variables.")
+                        .optional(),
+                    description: z
+                        .string()
+                        .max(512)
+                        .describe("The variable's description.")
+                        .optional(),
+                })
+                    .describe('Information about the secret variable.'),
+            ]))
                 .describe("A list of the collection's [variables](https://learning.postman.com/docs/sending-requests/variables/variables/). Make certain not to include sensitive information in variables.")
                 .optional(),
             event: z
@@ -743,24 +798,52 @@ export const parameters = z.object({
             .describe('A list of scripts configured to run when specific events occur. These scripts can be referenced in the collection by their ID.')
             .optional(),
         variable: z
-            .array(z
-            .object({
-            id: z
-                .string()
-                .describe("The variable's ID. Doesn't apply to collection-level variables.")
-                .optional(),
-            key: z.string().describe("The variable's key (name).").optional(),
-            description: z.string().max(512).describe("The variable's description.").optional(),
-            value: z
-                .union([z.string(), z.boolean(), z.number().int()])
-                .describe("The key's value.")
-                .optional(),
-            disabled: z
-                .boolean()
-                .describe("If true, the variable is not enabled. Doesn't apply to path parameter variables.")
-                .default(false),
-        })
-            .describe('Information about the variable.'))
+            .array(z.union([
+            z
+                .object({
+                key: z.string().describe("The variable's key (name).").optional(),
+                value: z
+                    .union([z.string(), z.boolean(), z.number().int()])
+                    .describe("The key's value.")
+                    .optional(),
+                disabled: z
+                    .boolean()
+                    .describe('If true, the variable is not enabled.')
+                    .default(false),
+            })
+                .describe("Information about a collection-level variable. Collection variables don't support `id`, `description`, or `enabled` fields. Use `disabled` to control whether a variable is active."),
+            z
+                .object({
+                enabled: z.boolean().describe('If true, the variable is enabled.').default(true),
+                key: z.string().describe("The variable's key (name).").optional(),
+                secret: z
+                    .boolean()
+                    .describe('If true, the variable is marked as secret and its value is retrieved from the mentioned provider in the source field.')
+                    .optional(),
+                source: z
+                    .object({
+                    postman: z
+                        .object({
+                        secretId: z.string().describe("The variable's secret ID.").optional(),
+                        type: z
+                            .literal('cloud')
+                            .describe("The variable's type:\n- `cloud` — The variable value is synced and stored in the Postman Cloud.\n")
+                            .optional(),
+                        vaultId: z
+                            .string()
+                            .describe("The variable's ID in the Postman Vault.")
+                            .optional(),
+                    })
+                        .describe("Information about the Postman-specific source of the variable's value.")
+                        .optional(),
+                    provider: z.literal('postman').describe("The secret's provider.").optional(),
+                })
+                    .describe("Information about the source of the variable's value.")
+                    .optional(),
+                description: z.string().max(512).describe("The variable's description.").optional(),
+            })
+                .describe("Information about a collection-level secret variable. Collection variables don't have an `id` field."),
+        ]))
             .describe("A list of the collection's [variables](https://learning.postman.com/docs/sending-requests/variables/variables/). Make certain not to include sensitive information in variables.")
             .optional(),
         auth: z
@@ -1047,8 +1130,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Replaces the contents of a collection using the [Postman Collection v2.1.0 schema format](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html). Include the collection's ID values in the request body. If you do not, the endpoint removes the existing items and creates new items.",
+    title: "Replace a collection's data",
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

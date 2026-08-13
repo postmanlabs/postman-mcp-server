@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getCollectionResponse';
+export const title = 'Get a response';
 export const description = 'Gets information about a response in a collection.';
 export const parameters = z.object({
   responseId: z.string().describe("The response's ID."),
@@ -19,8 +20,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Gets information about a response in a collection.',
+  title: 'Get a response',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

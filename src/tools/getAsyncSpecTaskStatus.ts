@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getAsyncSpecTaskStatus';
+export const title = 'Get status of an async spec task';
 export const description = 'Gets the status of an asynchronous API specification creation task.';
 export const parameters = z.object({
   elementType: z.enum(['collections', 'specs']).describe('The element to filter results by.'),
@@ -11,8 +12,9 @@ export const parameters = z.object({
   taskId: z.string().describe("The task's ID."),
 });
 export const annotations = {
-  title: 'Gets the status of an asynchronous API specification creation task.',
+  title: 'Get status of an async spec task',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

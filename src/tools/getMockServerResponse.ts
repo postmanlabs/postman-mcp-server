@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getMockServerResponse';
+export const title = 'Get a single server response';
 export const description =
   'Gets the full details of a specific server response, including its \\`body\\`, \\`headers\\`, and \\`language\\`.\n\n- Use \\`getMockServerResponses\\` first to list available server response IDs.\n- To check which response is active, call \\`getMock\\` and read \\`config.serverResponseId\\`.\n';
 export const parameters = z.object({
@@ -11,9 +12,9 @@ export const parameters = z.object({
   serverResponseId: z.string().describe("The server response's ID."),
 });
 export const annotations = {
-  title:
-    'Gets the full details of a specific server response, including its \\`body\\`, \\`headers\\`, and \\`language\\`.',
+  title: 'Get a single server response',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

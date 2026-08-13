@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getMocks';
+export const title = 'Get mock servers (filter by workspace or team)';
 export const description =
   'Gets all active mock servers. By default, returns only mock servers you created across all workspaces.\n\n- Always pass either the \\`workspace\\` or \\`teamId\\` query to scope results. Prefer \\`workspace\\` when known.\n- If you need team-scoped results, set \\`teamId\\` from the current user: call GET \\`/me\\` and use \\`me.teamId\\`.\n- If both \\`teamId\\` and \\`workspace\\` are passed, only \\`workspace\\` is used.\n';
 export const parameters = z.object({
@@ -21,9 +22,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'Gets all active mock servers. By default, returns only mock servers you created across all workspaces.',
+  title: 'Get mock servers (filter by workspace or team)',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

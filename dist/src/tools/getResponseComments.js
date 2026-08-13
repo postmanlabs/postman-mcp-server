@@ -1,14 +1,16 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getResponseComments';
+export const title = "Get a response's comments";
 export const description = 'Gets all comments left by users in a response.';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
     responseId: z.string().describe("The response's unique ID."),
 });
 export const annotations = {
-    title: 'Gets all comments left by users in a response.',
+    title: "Get a response's comments",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };
