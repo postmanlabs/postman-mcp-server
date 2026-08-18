@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'deleteCollectionComment';
+export const title = "Delete a collection's comment";
 export const description =
   'Deletes a comment from a collection. On success, this returns an HTTP \\`204 No Content\\` response.\n\n**Note:**\n\nDeleting the first comment of a thread deletes all the comments in the thread.\n';
 export const parameters = z.object({
@@ -11,9 +12,9 @@ export const parameters = z.object({
   commentId: z.number().int().describe("The comment's ID."),
 });
 export const annotations = {
-  title:
-    'Deletes a comment from a collection. On success, this returns an HTTP \\`204 No Content\\` response.',
+  title: "Delete a collection's comment",
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: true,
   idempotentHint: true,
 };

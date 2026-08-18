@@ -24,6 +24,13 @@ const full = [
   'createCollectionFork',
   'mergeCollectionFork',
 
+  // Collection Pull Requests
+  'getCollectionPullRequests',
+  'createCollectionPullRequest',
+  'getPullRequest',
+  'updatePullRequest',
+  'reviewPullRequest',
+
   // Collection Folders
   'createCollectionFolder',
   'deleteCollectionFolder',
@@ -102,6 +109,13 @@ const full = [
   'listMonitorExecutions',
   'listRunsForExecution',
   'getMonitorRunResults',
+
+  // Packages
+  'createPackage',
+  'deletePackage',
+  'getPackage',
+  'getPackages',
+  'updatePackage',
 
   // Specs
   'createSpec',

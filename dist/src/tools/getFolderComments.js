@@ -1,14 +1,16 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getFolderComments';
+export const title = "Get a folder's comments";
 export const description = 'Gets all comments left by users in a folder.';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
     folderId: z.string().describe("The folder's unique ID."),
 });
 export const annotations = {
-    title: 'Gets all comments left by users in a folder.',
+    title: "Get a folder's comments",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

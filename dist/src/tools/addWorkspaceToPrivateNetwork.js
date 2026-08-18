@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'addWorkspaceToPrivateNetwork';
+export const title = 'Add a workspace';
 export const description = "Publishes a workspace to your team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({
     workspace: z.object({
@@ -10,8 +11,9 @@ export const parameters = z.object({
     }),
 });
 export const annotations = {
-    title: "Publishes a workspace to your team's Private API Network.",
+    title: 'Add a workspace',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

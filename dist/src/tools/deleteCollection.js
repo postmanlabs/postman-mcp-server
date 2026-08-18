@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteCollection';
+export const title = 'Delete a collection';
 export const description = 'Deletes a collection.';
 export const parameters = z.object({
     collectionId: z
@@ -8,8 +9,9 @@ export const parameters = z.object({
         .describe('The collection ID must be in the form <OWNER_ID>-<UUID> (e.g. 12345-33823532ab9e41c9b6fd12d0fd459b8b).'),
 });
 export const annotations = {
-    title: 'Deletes a collection.',
+    title: 'Delete a collection',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

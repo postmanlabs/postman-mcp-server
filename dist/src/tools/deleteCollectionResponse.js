@@ -1,14 +1,16 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteCollectionResponse';
+export const title = 'Delete a response';
 export const description = 'Deletes a response in a collection.';
 export const parameters = z.object({
     responseId: z.string().describe("The response's ID."),
     collectionId: z.string().describe("The collection's ID."),
 });
 export const annotations = {
-    title: 'Deletes a response in a collection.',
+    title: 'Delete a response',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

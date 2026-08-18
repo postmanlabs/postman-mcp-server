@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'createWorkspace';
+export const title = 'Create a workspace';
 export const description = 'Creates a new [workspace](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/).\n\n**Note:**\n\n- This endpoint returns a 403 \\`Forbidden\\` response if the user does not have permission to create workspaces. [Admins and Super Admins](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#team-roles) can configure workspace permissions to restrict users and/or user groups from creating workspaces or require approvals for the creation of team workspaces.\n- Private and [Partner Workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/partner-workspaces/) are available on Postman [**Team** and **Enterprise** plans](https://www.postman.com/pricing).\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n- The \\`teamId\\` property must be passed in the request body if [Postman Organizations](https://learning.postman.com/docs/administration/onboarding-checklist) is enabled.\n';
 export const parameters = z.object({
     workspace: z
@@ -21,8 +22,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Creates a new [workspace](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/).',
+    title: 'Create a workspace',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

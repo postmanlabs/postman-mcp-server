@@ -1,13 +1,15 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getEnvironments';
+export const title = 'Get all environments';
 export const description = 'Gets information about all of your [environments](https://learning.postman.com/docs/sending-requests/managing-environments/).';
 export const parameters = z.object({
     workspace: z.string().describe("The workspace's ID.").optional(),
 });
 export const annotations = {
-    title: 'Gets information about all of your [environments](https://learning.postman.com/docs/sending-requests/managing-environments/).',
+    title: 'Get all environments',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

@@ -131,7 +131,10 @@ export class TelemetrySession {
   }
 
   /** Stores client metadata received during the MCP initialize handshake. */
-  setClientInfo(clientInfo: { name: string; version: string }, protocolVersion: string): void {
+  setClientInfo(
+    clientInfo: { name: string; version: string },
+    protocolVersion: string,
+  ): void {
     this.clientName = clientInfo.name;
     this.clientVersion = clientInfo.version;
     this.protocolVersion = protocolVersion;
@@ -155,7 +158,9 @@ export class TelemetrySession {
   setToolNames(toolNames: string[]): void {
     this.toolListCount = toolNames.length;
     const sorted = [...toolNames].sort();
-    const hash = createHash('sha256').update(sorted.join(',')).digest('hex');
+    const hash = createHash('sha256')
+      .update(sorted.join(','))
+      .digest('hex');
     this.toolsetSnapshotId = hash.substring(0, 12);
   }
 

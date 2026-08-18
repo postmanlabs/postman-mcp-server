@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateCollectionFolder';
+export const title = 'Update a folder';
 export const description = 'Updates a folder in a collection. For a complete list of properties, refer to the **Folder** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nThis endpoint acts like a PATCH method. It only updates the values that you pass in the request body (for example, the \\`name\\` property). The endpoint does not update the entire resource.\n';
 export const parameters = z.object({
     folderId: z.string().describe("The folder's ID."),
@@ -10,8 +11,9 @@ export const parameters = z.object({
     description: z.string().describe("The folder's description.").optional(),
 });
 export const annotations = {
-    title: 'Updates a folder in a collection. For a complete list of properties, refer to the **Folder** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).',
+    title: 'Update a folder',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

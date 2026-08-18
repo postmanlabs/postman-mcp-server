@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getCollections';
+export const title = 'Get all collections';
 export const description =
   'The workspace ID query is required for this endpoint. If not provided, the LLM should ask the user to provide it.';
 export const parameters = z.object({
@@ -28,9 +29,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'The workspace ID query is required for this endpoint. If not provided, the LLM should ask the user to provide it.',
+  title: 'Get all collections',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

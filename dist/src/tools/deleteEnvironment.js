@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteEnvironment';
+export const title = 'Delete an environment';
 export const description = 'Deletes an environment.';
 export const parameters = z.object({ environmentId: z.string().describe("The environment's ID.") });
 export const annotations = {
-    title: 'Deletes an environment.',
+    title: 'Delete an environment',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

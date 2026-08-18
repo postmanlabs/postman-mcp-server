@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'mergeCollectionFork';
+export const title = 'Merge a fork';
 export const description = '**This endpoint is deprecated.**\n\nMerges a forked collection back into its parent collection. You must have the [Editor role](https://learning.postman.com/docs/collaborating-in-postman/roles-and-permissions/#collection-roles) for the collection to merge a fork.\n';
 export const parameters = z.object({
     destination: z.string().describe("The destination (parent) collection's unique ID."),
@@ -12,8 +13,9 @@ export const parameters = z.object({
         .default('updateSourceWithDestination'),
 });
 export const annotations = {
-    title: '**This endpoint is deprecated.**',
+    title: 'Merge a fork',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'generateCollection';
+export const title = 'Generate a collection from spec';
 export const description =
   'Creates a collection from the given API specification.\nThe specification must already exist or be created before it can be used to generate a collection.\nThe response contains a polling link to the task status.\n';
 export const parameters = z.object({
@@ -72,8 +73,9 @@ export const parameters = z.object({
     ),
 });
 export const annotations = {
-  title: 'Creates a collection from the given API specification.',
+  title: 'Generate a collection from spec',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: false,
 };

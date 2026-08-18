@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getSpec';
+export const title = 'Get a spec';
 export const description = 'Gets information about an API specification.';
 export const parameters = z.object({ specId: z.string().describe("The spec's ID.") });
 export const annotations = {
-    title: 'Gets information about an API specification.',
+    title: 'Get a spec',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

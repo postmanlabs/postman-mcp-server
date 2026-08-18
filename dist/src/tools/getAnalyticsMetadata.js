@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getAnalyticsMetadata';
+export const title = 'Get analytics metadata';
 export const description = 'Returns a catalog of analytics resources and their corresponding metrics for use with the GET /analytics endpoint. These metrics provide insights on API usage, success, workspace, and team trends in Postman.';
 export const parameters = z.object({
     include: z
@@ -42,13 +43,29 @@ export const parameters = z.object({
         'peak_activity',
         'activity_distribution',
         'top_agent_models_by_usage',
+        'entity_activity',
+        'top_entities',
+        'runs',
+        'functional_test_runs',
+        'performance_test_runs',
+        'monitor_runs',
+        'flow_executions',
+        'pvt_network',
+        'partner',
+        'public',
+        'workspace_activity',
+        'members_overtime',
+        'member_invites',
+        'invites_sent',
+        'invites_accepted',
     ])
         .describe("A comma-separated list of metrics values to use to filter the response.\n\nIf you don't pass this query parameter, then the response returns all metadata for all available metrics.\n")
         .optional(),
 });
 export const annotations = {
-    title: 'Returns a catalog of analytics resources and their corresponding metrics for use with the GET /analytics endpoint. These metrics provide insights on API usage, success, workspace, and team trends in Postman.',
+    title: 'Get analytics metadata',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

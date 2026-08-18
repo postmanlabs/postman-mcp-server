@@ -4,11 +4,13 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getEnvironment';
+export const title = 'Get an environment';
 export const description = 'Gets information about an environment.';
 export const parameters = z.object({ environmentId: z.string().describe("The environment's ID.") });
 export const annotations = {
-  title: 'Gets information about an environment.',
+  title: 'Get an environment',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

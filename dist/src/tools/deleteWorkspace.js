@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteWorkspace';
+export const title = 'Delete a workspace';
 export const description = 'Deletes an existing workspace.';
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
 export const annotations = {
-    title: 'Deletes an existing workspace.',
+    title: 'Delete a workspace',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

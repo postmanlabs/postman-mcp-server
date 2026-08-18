@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'listPrivateNetworkAddRequests';
+export const title = 'Get all add requests';
 export const description = "Gets all requests to add workspaces to your team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({
     since: z
@@ -40,8 +41,9 @@ export const parameters = z.object({
         .default(1000),
 });
 export const annotations = {
-    title: "Gets all requests to add workspaces to your team's Private API Network.",
+    title: 'Get all add requests',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

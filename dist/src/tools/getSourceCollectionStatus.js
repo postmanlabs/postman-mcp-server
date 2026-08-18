@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getSourceCollectionStatus';
+export const title = "Get source collection's status";
 export const description = 'Checks whether there is a change between the forked collection and its parent (source) collection.\n\nIf the value of the \\`isSourceAhead\\` property is \\`true\\` in the response, then there is a difference between the forked collection and its source collection.\n\n**Note:**\n\nThis endpoint may take a few minutes to return an updated \\`isSourceAhead\\` status.\n';
 export const parameters = z.object({ collectionId: z.string().describe("The collection's ID.") });
 export const annotations = {
-    title: 'Checks whether there is a change between the forked collection and its parent (source) collection.',
+    title: "Get source collection's status",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

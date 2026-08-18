@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateMonitor';
+export const title = 'Update a monitor';
 export const description = "Updates a monitor's [configurations](https://learning.postman.com/docs/monitoring-your-api/setting-up-monitor/#configure-a-monitor).";
 export const parameters = z.object({
     monitorId: z.string().describe("The monitor's ID."),
@@ -108,9 +109,10 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Updates a monitor's [configurations](https://learning.postman.com/docs/monitoring-your-api/setting-up-monitor/#configure-a-monitor).",
+    title: 'Update a monitor',
     readOnlyHint: false,
-    destructiveHint: false,
+    openWorldHint: true,
+    destructiveHint: true,
     idempotentHint: true,
 };
 export async function handler(args, extra) {

@@ -4,11 +4,13 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getMonitor';
+export const title = 'Get a monitor';
 export const description = 'Gets information about a monitor.';
 export const parameters = z.object({ monitorId: z.string().describe("The monitor's ID.") });
 export const annotations = {
-  title: 'Gets information about a monitor.',
+  title: 'Get a monitor',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

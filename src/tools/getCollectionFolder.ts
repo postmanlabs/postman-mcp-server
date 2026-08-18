@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getCollectionFolder';
+export const title = 'Get a folder';
 export const description = 'Gets information about a folder in a collection.';
 export const parameters = z.object({
   folderId: z.string().describe("The folder's ID."),
@@ -19,8 +20,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Gets information about a folder in a collection.',
+  title: 'Get a folder',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };

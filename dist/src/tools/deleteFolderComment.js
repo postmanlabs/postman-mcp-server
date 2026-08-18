@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteFolderComment';
+export const title = "Delete a folder's comment";
 export const description = 'Deletes a comment from a folder. On success, this returns an HTTP \\`204 No Content\\` response.\n\n**Note:**\n\nDeleting the first comment of a thread deletes all the comments in the thread.\n';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
@@ -8,8 +9,9 @@ export const parameters = z.object({
     commentId: z.number().int().describe("The comment's ID."),
 });
 export const annotations = {
-    title: 'Deletes a comment from a folder. On success, this returns an HTTP \\`204 No Content\\` response.',
+    title: "Delete a folder's comment",
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'duplicateCollection';
+export const title = 'Duplicate a collection';
 export const description =
   "Creates a duplicate of the given collection in another workspace.\n\nUse the GET \\`/collection-duplicate-tasks/{taskId}\\` endpoint to get the duplication task's current status.\n";
 export const parameters = z.object({
@@ -15,8 +16,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Creates a duplicate of the given collection in another workspace.',
+  title: 'Duplicate a collection',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: false,
 };

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateMockServerResponse';
+export const title = 'Update a server response';
 export const description = "Updates a server response's name, statusCode, body, headers, or language.\n\n- \\`statusCode\\` must remain a 5xx value (500–599).\n- \\`body\\` is the raw response body string. Pass the full desired body — this is a full replacement, not a partial update.\n- Updating a server response does not change which response is active. To activate it, call \\`updateMock\\` with \\`config.serverResponseId\\`.\n";
 export const parameters = z.object({
     mockId: z.string().describe("The mock's ID."),
@@ -41,8 +42,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Updates a server response's name, statusCode, body, headers, or language.",
+    title: 'Update a server response',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

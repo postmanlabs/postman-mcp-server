@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateWorkspaceGlobalVariables';
+export const title = 'Update global variables';
 export const description = "Updates and replaces a workspace's global [variables](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes). This endpoint replaces all existing global variables with the variables you pass in the request body.";
 export const parameters = z.object({
     workspaceId: z.string().describe("The workspace's ID."),
@@ -22,8 +23,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Updates and replaces a workspace's global [variables](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes). This endpoint replaces all existing global variables with the variables you pass in the request body.",
+    title: 'Update global variables',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

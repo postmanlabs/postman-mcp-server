@@ -1,13 +1,15 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getCollectionTags';
+export const title = "Get a collection's tags";
 export const description = 'Gets all the tags associated with a collection.';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
 });
 export const annotations = {
-    title: 'Gets all the tags associated with a collection.',
+    title: "Get a collection's tags",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

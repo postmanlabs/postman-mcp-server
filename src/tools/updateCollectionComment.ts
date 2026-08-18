@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updateCollectionComment';
+export const title = "Update a collection's comment";
 export const description =
   'Updates a comment on a collection.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n';
 export const parameters = z.object({
@@ -26,8 +27,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Updates a comment on a collection.',
+  title: "Update a collection's comment",
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };

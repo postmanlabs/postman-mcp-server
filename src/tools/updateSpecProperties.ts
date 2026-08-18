@@ -4,14 +4,16 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updateSpecProperties';
+export const title = "Update a spec's properties";
 export const description = "Updates an API specification's properties, such as its name.";
 export const parameters = z.object({
   specId: z.string().describe("The spec's ID."),
   name: z.string().describe("The spec's name."),
 });
 export const annotations = {
-  title: "Updates an API specification's properties, such as its name.",
+  title: "Update a spec's properties",
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: true,
 };

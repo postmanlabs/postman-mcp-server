@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getCollectionUpdatesTasks';
+export const title = 'Get async collection update status';
 export const description = 'Gets the status of an asynchronous collection update task.';
 export const parameters = z.object({ taskId: z.string().describe("The task's ID.") });
 export const annotations = {
-    title: 'Gets the status of an asynchronous collection update task.',
+    title: 'Get async collection update status',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

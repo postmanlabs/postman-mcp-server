@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'publishMock';
+export const title = 'Publish a mock server';
 export const description = 'Publishes a mock server. Publishing a mock server sets its **Access Control** configuration setting to public.';
 export const parameters = z.object({ mockId: z.string().describe("The mock's ID.") });
 export const annotations = {
-    title: 'Publishes a mock server. Publishing a mock server sets its **Access Control** configuration setting to public.',
+    title: 'Publish a mock server',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

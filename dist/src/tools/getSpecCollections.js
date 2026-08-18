@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getSpecCollections';
+export const title = "Get a spec's generated collections";
 export const description = "Gets all of an API specification's generated collections.";
 export const parameters = z.object({
     specId: z.string().describe("The spec's ID."),
@@ -16,8 +17,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Gets all of an API specification's generated collections.",
+    title: "Get a spec's generated collections",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

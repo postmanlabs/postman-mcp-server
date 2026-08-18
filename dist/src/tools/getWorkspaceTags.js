@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceTags';
+export const title = "Get a workspace's tags";
 export const description = 'Gets all the tags associated with a workspace.';
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
 export const annotations = {
-    title: 'Gets all the tags associated with a workspace.',
+    title: "Get a workspace's tags",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

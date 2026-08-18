@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getRequestComments';
+export const title = "Get a request's comments";
 export const description = 'Gets all comments left by users in a request.';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
@@ -9,8 +10,9 @@ export const parameters = z.object({
         .describe("The request ID must contain the team ID as a prefix, in `teamId-requestId` format.\n\nFor example, if you're creating a comment on collection ID `24585957-7b2c98f7-30db-4b67-8685-0079f48a0947` (note on the prefix), and\nthe collection request's ID is `2c450b59-9bbf-729b-6ac0-f92535a7c336`, then the `{requestId}` must be `24585957-2c450b59-9bbf-729b-6ac0-f92535a7c336`.\n"),
 });
 export const annotations = {
-    title: 'Gets all comments left by users in a request.',
+    title: "Get a request's comments",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

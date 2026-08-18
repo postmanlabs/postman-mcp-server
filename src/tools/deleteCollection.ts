@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'deleteCollection';
+export const title = 'Delete a collection';
 export const description = 'Deletes a collection.';
 export const parameters = z.object({
   collectionId: z
@@ -13,8 +14,9 @@ export const parameters = z.object({
     ),
 });
 export const annotations = {
-  title: 'Deletes a collection.',
+  title: 'Delete a collection',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: true,
   idempotentHint: true,
 };

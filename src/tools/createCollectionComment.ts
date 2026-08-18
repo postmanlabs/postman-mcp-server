@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createCollectionComment';
+export const title = 'Create a collection comment';
 export const description =
   'Creates a comment on a collection. To create a reply on an existing comment, include the \\`threadId\\` property in the request body.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n';
 export const parameters = z.object({
@@ -32,9 +33,9 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title:
-    'Creates a comment on a collection. To create a reply on an existing comment, include the \\`threadId\\` property in the request body.',
+  title: 'Create a collection comment',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: false,
 };

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateCollectionTags';
+export const title = "Update a collection's tags";
 export const description = "Updates a collection's associated tags. This endpoint replaces all existing tags with those you pass in the request body.";
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
@@ -21,8 +22,9 @@ export const parameters = z.object({
         .describe('A list of the associated tags as slugs.'),
 });
 export const annotations = {
-    title: "Updates a collection's associated tags. This endpoint replaces all existing tags with those you pass in the request body.",
+    title: "Update a collection's tags",
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

@@ -412,10 +412,16 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdWorkspaceIds[0]).toBe(workspaceId);
 
       // Paginate through workspaces to find the created workspace.
-      // Retry to handle eventual consistency (workspace may not appear immediately after create).
+      // A just-created workspace isn't always visible to the list endpoint
+      // straight away, so retry with a linear backoff. Three attempts 2s apart
+      // (~4s of waiting) turned out to be too tight and was a recurring source
+      // of failures; the 1s..5s backoff below allows ~15s. Nothing is waited on
+      // the happy path — a workspace found on the first attempt sleeps zero —
+      // so this only costs time on runs that would otherwise have failed.
+      const listAttempts = 6;
       let found = false;
-      for (let attempt = 0; attempt < 3 && !found; attempt++) {
-        if (attempt > 0) await new Promise((r) => setTimeout(r, 2000));
+      for (let attempt = 0; attempt < listAttempts && !found; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, attempt * 1000));
         let cursor: string | undefined;
         do {
           const listResult = await client.callTool(
@@ -432,10 +438,16 @@ describe('Postman MCP - Direct Integration Tests', () => {
             found = true;
             break;
           }
-          // Extract nextCursor from the rendered markdown or raw JSON response
-          const mdMatch = text.match(/\*\*nextCursor\*\*:\s*(\S+)/);
+          // Extract nextCursor from the rendered markdown or raw JSON response.
+          // The markdown separator must stay on the `**nextCursor**:` line: `\s*`
+          // also matches newlines, so on the last page — where the value renders
+          // empty — it ran past the blank line and captured the `|` of the table
+          // header, treating the final page as if another page followed.
+          const mdMatch = text.match(/\*\*nextCursor\*\*:[ \t]*(\S+)/);
           const jsonMatch = text.match(/"nextCursor"\s*:\s*"([^"]+)"/);
-          cursor = mdMatch?.[1] || jsonMatch?.[1] || undefined;
+          const nextCursor = mdMatch?.[1] || jsonMatch?.[1] || undefined;
+          // A cursor that doesn't advance would loop until the test times out.
+          cursor = nextCursor === cursor ? undefined : nextCursor;
         } while (cursor);
       }
       expect(found).toBe(true);
@@ -495,10 +507,14 @@ describe('Postman MCP - Direct Integration Tests', () => {
       expect(createdEnvironmentIds).toHaveLength(1);
       expect(createdEnvironmentIds[0]).toBe(environmentId);
 
+      // Scope the list to the workspace this environment was just created in.
+      // An unfiltered call returns every environment on the account, so the
+      // assertion below depended on the new environment landing in that
+      // response — which stops holding once the account has enough of them.
       const listResult = await client.callTool(
         {
           name: 'getEnvironments',
-          arguments: {},
+          arguments: { workspace: workspaceId },
         },
         undefined,
         { timeout: 100000 }

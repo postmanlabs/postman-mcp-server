@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createCollectionFork';
+export const title = 'Create a fork';
 export const description =
   'Creates a [fork](https://learning.postman.com/docs/collaborating-in-postman/version-control/#creating-a-fork) from an existing collection into a workspace.';
 export const parameters = z.object({
@@ -12,9 +13,9 @@ export const parameters = z.object({
   label: z.string().describe("The fork's label."),
 });
 export const annotations = {
-  title:
-    'Creates a [fork](https://learning.postman.com/docs/collaborating-in-postman/version-control/#creating-a-fork) from an existing collection into a workspace.',
+  title: 'Create a fork',
   readOnlyHint: false,
+  openWorldHint: true,
   destructiveHint: false,
   idempotentHint: false,
 };

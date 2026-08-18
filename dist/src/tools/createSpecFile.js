@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'createSpecFile';
+export const title = 'Create a spec file';
 export const description = 'Creates a file for an OpenAPI or a protobuf 2 or 3 specification.\n\n**Note:**\n\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Creating a spec file assigns it the \\`DEFAULT\\` file type.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n';
 export const parameters = z.object({
     specId: z.string().describe("The spec's ID."),
@@ -9,8 +10,9 @@ export const parameters = z.object({
     content: z.string().describe("The file's stringified contents."),
 });
 export const annotations = {
-    title: 'Creates a file for an OpenAPI or a protobuf 2 or 3 specification.',
+    title: 'Create a spec file',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: false,
 };

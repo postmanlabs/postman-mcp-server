@@ -1,14 +1,16 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'deleteMockServerResponse';
+export const title = 'Delete a server response';
 export const description = 'Deletes a server response from a mock server.\n\n- If this server response is currently active (\\`config.serverResponseId\\` on the mock), deleting it will not automatically deactivate it. Call \\`updateMock\\` with \\`config.serverResponseId: null\\` first to deactivate.\n- This action is destructive and cannot be undone.\n';
 export const parameters = z.object({
     mockId: z.string().describe("The mock's ID."),
     serverResponseId: z.string().describe("The server response's ID."),
 });
 export const annotations = {
-    title: 'Deletes a server response from a mock server.',
+    title: 'Delete a server response',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: true,
     idempotentHint: true,
 };

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateFolderComment';
+export const title = "Update a folder's comment";
 export const description = 'Updates a comment on a folder.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's unique ID."),
@@ -22,8 +23,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Updates a comment on a folder.',
+    title: "Update a folder's comment",
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

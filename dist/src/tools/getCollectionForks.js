@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getCollectionForks';
+export const title = "Get a collection's forks";
 export const description = "Gets a collection's forked collections. The response returns data for each fork, such as the fork's ID, the user who forked it, and the fork's creation date.";
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's ID."),
@@ -19,8 +20,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Gets a collection's forked collections. The response returns data for each fork, such as the fork's ID, the user who forked it, and the fork's creation date.",
+    title: "Get a collection's forks",
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateCollectionRequest';
+export const title = 'Update a request';
 export const description = 'Updates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- You must pass a collection ID (\\`12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), not a collection(\\`12345678-12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), in this endpoint.\n- This endpoint does not support changing the folder of a request.\n- This endpoint acts like a PATCH method. It only updates the values that you pass in the request body.';
 export const parameters = z.object({
     requestId: z.string().describe("The request's ID."),
@@ -330,13 +331,13 @@ export const parameters = z.object({
             .describe('Information about the Javascript code that can be used to to perform setup or teardown operations in a response.')
             .optional(),
     }))
-        .nullish()
         .describe('A list of scripts configured to run when specific events occur.')
         .optional(),
 });
 export const annotations = {
-    title: 'Updates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).',
+    title: 'Update a request',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

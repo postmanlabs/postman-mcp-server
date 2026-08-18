@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'updateWorkspace';
+export const title = 'Update a workspace';
 export const description = "Updates a workspace's property, such as its name or visibility.\n\n**Note:**\n\n- This endpoint does not support the following visibility changes:\n  - \\`private\\` to \\`public\\`, \\`public\\` to \\`private\\`, and \\`private\\` to \\`personal\\` for **Free** and **Solo** [plans](https://www.postman.com/pricing/).\n  - \\`public\\` to \\`personal\\` for team users only.\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n";
 export const parameters = z.object({
     workspaceId: z.string().describe("The workspace's ID."),
@@ -18,8 +19,9 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Updates a workspace's property, such as its name or visibility.",
+    title: 'Update a workspace',
     readOnlyHint: false,
+    openWorldHint: true,
     destructiveHint: false,
     idempotentHint: true,
 };

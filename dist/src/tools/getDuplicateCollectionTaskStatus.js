@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getDuplicateCollectionTaskStatus';
+export const title = 'Get duplication task status';
 export const description = 'Gets the status of a collection duplication task.';
 export const parameters = z.object({ taskId: z.string().describe("The task's unique ID.") });
 export const annotations = {
-    title: 'Gets the status of a collection duplication task.',
+    title: 'Get duplication task status',
     readOnlyHint: true,
+    openWorldHint: false,
     destructiveHint: false,
     idempotentHint: true,
 };

@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getAllSpecs';
+export const title = 'Get all specs';
 export const description = 'Gets all API specifications in a workspace.';
 export const parameters = z.object({
   workspaceId: z.string().describe("The workspace's ID."),
@@ -20,8 +21,9 @@ export const parameters = z.object({
     .default(10),
 });
 export const annotations = {
-  title: 'Gets all API specifications in a workspace.',
+  title: 'Get all specs',
   readOnlyHint: true,
+  openWorldHint: false,
   destructiveHint: false,
   idempotentHint: true,
 };
