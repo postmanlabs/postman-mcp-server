@@ -1,7 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.postman/postman-mcp-server",
-  "description": "A basic MCP server to operate on the Postman API.",
+  "description": "Manage Postman collections, specs, environments and workspaces, and generate API client code.",
+  "title": "Postman",
+  "websiteUrl": "https://www.postman.com/product/mcp-server/",
   "repository": {
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
@@ -76,11 +78,59 @@
   "remotes": [
     {
       "type": "streamable-http",
+      "url": "https://mcp.postman.com/minimal",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "A Bearer token with a valid Postman API key. Optional on US endpoints, which also support OAuth.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.postman.com/code",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "A Bearer token with a valid Postman API key. Optional on US endpoints, which also support OAuth.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "type": "streamable-http",
       "url": "https://mcp.postman.com/mcp",
       "headers": [
         {
           "name": "Authorization",
-          "description": "A Bearer token and a valid Postman API key for authentication.",
+          "description": "A Bearer token with a valid Postman API key. Optional on US endpoints, which also support OAuth.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.postman.com/learn",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "A Bearer token with a valid Postman API key. Optional on US endpoints, which also support OAuth.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.eu.postman.com/minimal",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "A Bearer token with a valid Postman API key. Required \u2014 the EU endpoints do not support OAuth.",
           "isRequired": true,
           "isSecret": true
         }
@@ -88,11 +138,11 @@
     },
     {
       "type": "streamable-http",
-      "url": "https://mcp.postman.com/minimal",
+      "url": "https://mcp.eu.postman.com/code",
       "headers": [
         {
           "name": "Authorization",
-          "description": "A Bearer token and a valid Postman API key for authentication.",
+          "description": "A Bearer token with a valid Postman API key. Required \u2014 the EU endpoints do not support OAuth.",
           "isRequired": true,
           "isSecret": true
         }
@@ -104,7 +154,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "A Bearer token and a valid Postman API key for authentication.",
+          "description": "A Bearer token with a valid Postman API key. Required \u2014 the EU endpoints do not support OAuth.",
           "isRequired": true,
           "isSecret": true
         }
@@ -112,11 +162,11 @@
     },
     {
       "type": "streamable-http",
-      "url": "https://mcp.eu.postman.com/minimal",
+      "url": "https://mcp.eu.postman.com/learn",
       "headers": [
         {
           "name": "Authorization",
-          "description": "A Bearer token and a valid Postman API key for authentication.",
+          "description": "A Bearer token with a valid Postman API key. Required \u2014 the EU endpoints do not support OAuth.",
           "isRequired": true,
           "isSecret": true
         }
