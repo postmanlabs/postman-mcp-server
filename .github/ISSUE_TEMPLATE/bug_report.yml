@@ -1,0 +1,151 @@
+name: Bug report — tool or server behavior
+description: A tool returns the wrong result, a schema or description is wrong, or the server misbehaves.
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Bug reports with a clean reproduction are the single
+        most useful contribution to this project — they're how tool fixes actually get
+        made.
+
+        There's an optional **Proposed solution** field at the bottom. If you already
+        know what the fix should be, please use it.
+
+        ⚠️ **Never paste a Postman API key, token, or private collection contents into a
+        public issue.** Redact anything sensitive, and rotate keys that may have been
+        exposed.
+
+  - type: dropdown
+    id: server
+    attributes:
+      label: Which server are you using?
+      options:
+        - Local (npx / STDIO)
+        - Local (Docker)
+        - Local (.mcpb bundle)
+        - Remote (mcp.postman.com)
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: For the local server, the version you installed. For the remote server, enter "remote".
+      placeholder: 2.11.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: toolset
+    attributes:
+      label: Toolset
+      description: Which toolset flag did you start the server with?
+      options:
+        - minimal (default)
+        - code
+        - full
+        - learn
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: client
+    attributes:
+      label: MCP client or host
+      placeholder: Claude Code 2.x, Claude Desktop, Cursor, VS Code Copilot, Windsurf, Gemini CLI…
+    validations:
+      required: true
+
+  - type: input
+    id: tool
+    attributes:
+      label: Tool name
+      description: If the problem is with one specific tool.
+      placeholder: createCollection
+    validations:
+      required: false
+
+  - type: dropdown
+    id: region
+    attributes:
+      label: Region
+      options:
+        - us (default)
+        - eu
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: |
+        Include the prompt you gave your agent as well as the tool arguments, if you have
+        them — MCP behavior often depends on how the tool was invoked.
+      placeholder: |
+        1. Started the server with `--full`
+        2. Asked the agent: "..."
+        3. It called `createCollection` with { ... }
+        4. Got ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Request, response, or error output
+      description: Redact keys, tokens, IDs, and anything private.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: |
+        Already know what the fix should be? Describe it here — a schema change, a
+        corrected description, a code snippet, whatever you have. The server
+        implementation is synced from Postman's internal source of truth, so an issue is
+        the place where a proposed fix can actually be acted on. We credit contributions
+        that ship.
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: OS and Node version
+      placeholder: macOS 15.1, Node 20.11.0
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I searched the existing issues and this isn't a duplicate.
+          required: true
+        - label: This is not a security vulnerability (those go through [SECURITY.md](https://github.com/postmanlabs/postman-mcp-server/blob/main/SECURITY.md)).
+          required: true
+        - label: I haven't included any API keys, tokens, or private data.
+          required: true

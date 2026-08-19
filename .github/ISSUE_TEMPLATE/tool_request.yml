@@ -1,0 +1,89 @@
+name: Feature or tool request
+description: Request a new tool, or a change to an existing tool's schema, parameters, or description.
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tool definitions are synced from Postman's internal source of truth, so this issue
+        is exactly the right place for this — it's how new and changed tools get proposed.
+
+        The more precise your proposal, the more likely it lands close to verbatim. We
+        credit contributions that ship.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of change?
+      options:
+        - New tool
+        - Change to an existing tool's schema or parameters
+        - Change to a tool's description
+        - Toolset composition (minimal / code / full / learn)
+        - Server behavior or CLI flag
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: tools
+    attributes:
+      label: Tool(s) affected
+      placeholder: getCollection, createCollection
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do with your agent, and what's in the way?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: |
+        Be specific: exact parameter names, enum values, which fields are required or
+        optional, and the description text you'd want. Precise proposals often land
+        as written.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed solution
+      description: |
+        If you've already worked out the implementation — a schema shape, a code snippet,
+        a description rewrite — put it here. An issue is where a proposed change can
+        actually be acted on.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives or workarounds you've tried
+    validations:
+      required: false
+
+  - type: input
+    id: client
+    attributes:
+      label: MCP client or host
+      placeholder: Claude Code, Cursor, VS Code Copilot…
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: I searched the existing issues and this isn't a duplicate.
+          required: true
+        - label: This is not a security vulnerability (those go through [SECURITY.md](https://github.com/postmanlabs/postman-mcp-server/blob/main/SECURITY.md)).
+          required: true

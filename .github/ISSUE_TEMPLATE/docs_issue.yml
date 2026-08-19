@@ -1,0 +1,59 @@
+name: Documentation issue
+description: Something in the docs is wrong, unclear, or missing.
+labels: ["documentation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Documentation in this repository **accepts pull requests directly** — if you
+        already know the fix, feel free to skip this form and
+        [open a PR](https://github.com/postmanlabs/postman-mcp-server/compare) instead.
+
+        Otherwise, tell us what's wrong and we'll sort it out.
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where is the problem?
+      options:
+        - README.md
+        - CONTRIBUTING.md
+        - DOCKER.md
+        - SECURITY.md / SUPPORT.md / CODE_OF_CONDUCT.md
+        - Issue or PR templates
+        - Tool descriptions (shown to the agent)
+        - learning.postman.com
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Page, file, or URL
+      placeholder: README.md — "Quick start" section
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong or missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested wording
+      description: Optional, but it's the fastest route to a fix.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: offer
+    attributes:
+      label: Would you like to fix it?
+      options:
+        - label: I'd like to open a pull request for this.
+          required: false

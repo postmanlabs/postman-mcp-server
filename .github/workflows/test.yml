@@ -6,8 +6,13 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
-  test:
+  # Runs everywhere, including on pull requests from forks: no secrets required.
+  # This is the check a documentation or tooling contributor needs to pass.
+  unit:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -25,8 +30,32 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
-    - run: pnpm install
+    - run: pnpm install --frozen-lockfile
+    - run: pnpm lint
+    - run: pnpm typecheck
+    - run: pnpm test:unit
+
+  # The integration tests run against the live Postman API and need
+  # POSTMAN_API_KEY. Pull requests from forks can't read repository secrets, so
+  # this job is skipped there rather than failing with an empty key.
+  integration:
+    if: >-
+      github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Enable corepack
+      run: corepack enable
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'pnpm'
+    - run: pnpm install --frozen-lockfile
+      # direct.test.ts spawns dist/src/index.js, so the compiled output must exist.
     - run: pnpm run build
-    - run: pnpm test
+    - run: pnpm vitest run src/tests/integration
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}

@@ -104,11 +104,31 @@ For Docker setup and installation, see [DOCKER.md](https://github.com/postmanlab
 
 ---
 
+## Contributing
+
+Bug reports, tool requests, and documentation fixes are all welcome — see
+[CONTRIBUTING.md](./CONTRIBUTING.md).
+
+- [Report a bug](https://github.com/postmanlabs/postman-mcp-server/issues/new?template=bug_report.yml)
+- [Request a tool, or a change to one](https://github.com/postmanlabs/postman-mcp-server/issues/new?template=tool_request.yml)
+- [Report a documentation issue](https://github.com/postmanlabs/postman-mcp-server/issues/new?template=docs_issue.yml)
+
+The MCP tool definitions and the server implementation here are synced from Postman's
+internal source of truth, so changes to files under `src/` can't be merged in this
+repository — but issues are how those changes get made, and we credit contributions
+that ship. Documentation and repository tooling accept pull requests directly.
+
+Found a security issue? See [SECURITY.md](./SECURITY.md) — please don't open a public
+issue.
+
+---
+
 ## Questions and support
 
 - See [Add your MCP requests to your collections](https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/) to learn how to use Postman to perform MCP requests.
 - Visit the [Postman Community](https://community.postman.com/) to share what you've built, ask questions, and get help.
 - You can connect to both the remote and local servers and test them using the [Postman MCP Server collection](https://www.postman.com/postman/postman-public-workspace/collection/681dc649440b35935978b8b7).
+- Report bugs and request tools in [GitHub Issues](https://github.com/postmanlabs/postman-mcp-server/issues). See [SUPPORT.md](./SUPPORT.md) for which channel fits your question.
 
 ---
 
