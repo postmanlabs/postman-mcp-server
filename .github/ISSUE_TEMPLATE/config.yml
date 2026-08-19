@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question about using the Postman MCP Server
+    url: https://community.postman.com/
+    about: Ask the Postman Community — the fastest way to get help with setup, MCP clients, and workflows.
+  - name: Postman MCP Server documentation
+    url: https://learning.postman.com/docs/postman-ai-agent-builder/mcp-requests/overview/
+    about: Installation guides, client configuration, and tool reference.
+  - name: Postman account, billing, or platform support
+    url: https://support.postman.com/
+    about: For your Postman account or the Postman API itself, rather than this server.
+  - name: Report a security vulnerability
+    url: https://github.com/postmanlabs/postman-mcp-server/security/advisories/new
+    about: Please don't open a public issue for security reports. See SECURITY.md.

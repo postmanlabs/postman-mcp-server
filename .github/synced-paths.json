@@ -1,0 +1,10 @@
+{
+  "$comment": "Authoritative list of paths synced from Postman's internal source of truth. Changes to these paths can't be merged in this repository. Referenced by CONTRIBUTING.md and .github/workflows/synced-paths-guard.yml. Entries ending in '/' match a whole directory tree; other entries match an exact path.",
+  "synced": [
+    "src/",
+    "dist/",
+    "vitest.config.ts"
+  ],
+  "exceptions": [],
+  "policyUrl": "https://github.com/postmanlabs/postman-mcp-server/blob/main/CONTRIBUTING.md#how-this-repo-works"
+}

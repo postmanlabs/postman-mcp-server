@@ -1,0 +1,185 @@
+name: Synced paths guard
+
+# Tells an outside contributor, on their pull request, that they've changed files
+# which are synced from Postman's internal source of truth and therefore can't be
+# merged here — and points them at the issue templates instead.
+#
+# `pull_request_target` rather than `pull_request`, for two reasons:
+#   1. A `pull_request` run triggered from a fork gets a read-only token, so it
+#      cannot post a comment or apply a label.
+#   2. `pull_request` runs from first-time contributors wait for manual maintainer
+#      approval, so the guidance would arrive late — exactly when it's least useful.
+#
+# Safety invariant: this workflow never checks out or executes any code from the
+# pull request head. There is no `actions/checkout` step. It reads pull request
+# metadata through the API, and reads its own config from the base commit only.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [ main ]
+
+permissions: {}
+
+jobs:
+  guard:
+    # Only guide outside contributors. Maintainers and repository automation land
+    # these paths deliberately, and their pull requests come from this repository
+    # rather than a fork. No account names are hardcoded.
+    if: >-
+      github.event.pull_request.user.type != 'Bot' &&
+      github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check changed paths and advise
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const MARKER = '<!-- postman-mcp-server:synced-paths-guard -->';
+            const LABEL = 'synced-path';
+            const MAX_LISTED = 15;
+            const pr = context.payload.pull_request;
+            const { owner, repo } = context.repo;
+
+            // Read the config from the BASE commit, never the pull request head:
+            // this job holds a write-scoped token, so fork content must not be
+            // able to influence what it does.
+            const configFile = await github.rest.repos.getContent({
+              owner,
+              repo,
+              path: '.github/synced-paths.json',
+              ref: pr.base.sha,
+            });
+            const config = JSON.parse(
+              Buffer.from(configFile.data.content, 'base64').toString('utf8')
+            );
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner,
+              repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+            // listFiles is capped at 3000 entries; say so rather than implying
+            // the list below is complete.
+            const truncated = files.length >= 3000;
+
+            // Entries ending in '/' are directory prefixes; everything else is an
+            // exact path. No glob engine needed.
+            const matches = (path, patterns) =>
+              patterns.some((p) => (p.endsWith('/') ? path.startsWith(p) : path === p));
+
+            const hits = files
+              .map((f) => f.filename)
+              .filter(
+                (path) =>
+                  !matches(path, config.exceptions || []) &&
+                  matches(path, config.synced || [])
+              );
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: pr.number,
+              per_page: 100,
+            });
+            const existing = comments.find((c) => (c.body || '').includes(MARKER));
+            const hasLabel = (pr.labels || []).some((l) => l.name === LABEL);
+
+            if (hits.length === 0) {
+              // The contributor may have split the pull request on a later push.
+              // Retract cleanly rather than leaving a stale warning behind.
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                  body:
+                    `${MARKER}\n` +
+                    'This pull request no longer changes any synced paths. ' +
+                    'Thanks for the update!',
+                });
+              }
+              if (hasLabel) {
+                await github.rest.issues
+                  .removeLabel({ owner, repo, issue_number: pr.number, name: LABEL })
+                  .catch(() => {});
+              }
+              core.info('No synced paths touched.');
+              return;
+            }
+
+            const listed = hits.slice(0, MAX_LISTED).map((p) => `- \`${p}\``).join('\n');
+            const more =
+              hits.length > MAX_LISTED
+                ? `\n- …and ${hits.length - MAX_LISTED} more`
+                : '';
+            const newIssue = `https://github.com/${owner}/${repo}/issues/new`;
+
+            const body = [
+              MARKER,
+              '### Thanks for this — but it needs to go through an issue',
+              '',
+              "Your change may well be exactly right, and we'd like to get it in. It just",
+              "can't land through this repository.",
+              '',
+              "The MCP tool definitions and the server implementation here are synced from",
+              "Postman's internal source of truth, so changes to these files can't be merged —",
+              'they would be overwritten on the next sync:',
+              '',
+              listed + more,
+              truncated ? '\n_(File list truncated by the GitHub API.)_' : '',
+              '',
+              '**What to do instead**',
+              '',
+              "Open an issue with your change and we'll carry it forward and credit you when",
+              'it ships:',
+              '',
+              `- Something is broken → [Bug report](${newIssue}?template=bug_report.yml)`,
+              `- A tool needs adding or changing → [Tool request](${newIssue}?template=tool_request.yml)`,
+              '',
+              'Both forms have a **Proposed solution** field — if you already know what the',
+              'fix should be, that is the single most useful thing you can give us.',
+              '',
+              `The full policy, and the list of paths we *can* merge, is in [CONTRIBUTING.md](${config.policyUrl}).`,
+              '',
+              'If this pull request also changes documentation or repository tooling, split',
+              "those files into a separate pull request and we'll merge that one right away.",
+              '',
+              '_This is an automated comment. A maintainer will follow up._',
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr.number,
+                body,
+              });
+            }
+
+            if (!hasLabel) {
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: pr.number,
+                labels: [LABEL],
+              });
+            }
+
+            // Advisory only — the check stays green. CODEOWNERS review is already a
+            // merge gate, and a red X on a good-faith first contribution helps nobody.
+            // To make this blocking, swap core.notice for core.setFailed (and don't
+            // add it as a required check, or sync pull requests will need a bypass).
+            core.notice(
+              `This pull request changes ${hits.length} synced path(s); see the pull request comment.`
+            );

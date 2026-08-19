@@ -1,2 +1,13 @@
 node_modules/
 *-benchmark-results.json
+
+# Editor and local agent config
+.idea/
+.vscode/
+.cursor/
+.claude/
+.codex/
+.kiro_v0/
+
+# Local-only artifacts
+chatgpt-app-submission.json
