@@ -3,21 +3,28 @@ import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'getMonitors';
-export const title = 'Get all monitors';
-export const description = 'Gets all monitors.';
+export const method = 'getSdkGitConnections';
+export const title = 'Get all SDK Git connections';
+export const description =
+  'Lists the Git repository connections in a workspace. Each connection ties one collection\nor specification, in one SDK language, to one target repository, so a source with\nseveral languages has several connections. \\`workspaceId\\` is required. Filter with\n\\`sourceId\\`, \\`language\\`, \\`status\\`, and \\`repositoryUrl\\`.\nRequires a Postman Team or Enterprise plan.\n';
 export const parameters = z.object({
-  workspace: z.string().describe('Return only results found in the given workspace ID.').optional(),
-  active: z.boolean().describe('If true, return only active monitors.').optional(),
-  owner: z
-    .number()
-    .int()
-    .describe('Return only results that belong to the given user ID.')
-    .optional(),
-  collectionUid: z.string().describe("Filter the results by a collection's unique ID.").optional(),
-  environmentUid: z
+  workspaceId: z.string().describe('The ID of the workspace that owns the source entities.'),
+  sourceId: z
     .string()
-    .describe("Filter the results by an environment's unique ID.")
+    .describe('Filter results by the originating Postman Collection or specification ID.')
+    .optional(),
+  language: z
+    .enum(['typescript', 'python', 'go', 'java', 'csharp', 'ruby', 'php', 'kotlin', 'rust', 'cli'])
+    .describe('Filter results by SDK language.')
+    .optional(),
+  status: z
+    .enum(['active', 'disconnected', 'inaccessible'])
+    .describe('Filter results by connection status.')
+    .optional(),
+  repositoryUrl: z
+    .string()
+    .url()
+    .describe('Filter results by the canonical URL of the target Git repository.')
     .optional(),
   cursor: z
     .string()
@@ -35,7 +42,7 @@ export const parameters = z.object({
     .default(25),
 });
 export const annotations = {
-  title: 'Get all monitors',
+  title: 'Get all SDK Git connections',
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,
@@ -47,13 +54,13 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/monitors`;
+    const endpoint = `/sdk-git-connections`;
     const query = new URLSearchParams();
-    if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
-    if (args.active !== undefined) query.set('active', String(args.active));
-    if (args.owner !== undefined) query.set('owner', String(args.owner));
-    if (args.collectionUid !== undefined) query.set('collectionUid', String(args.collectionUid));
-    if (args.environmentUid !== undefined) query.set('environmentUid', String(args.environmentUid));
+    if (args.workspaceId !== undefined) query.set('workspaceId', String(args.workspaceId));
+    if (args.sourceId !== undefined) query.set('sourceId', String(args.sourceId));
+    if (args.language !== undefined) query.set('language', String(args.language));
+    if (args.status !== undefined) query.set('status', String(args.status));
+    if (args.repositoryUrl !== undefined) query.set('repositoryUrl', String(args.repositoryUrl));
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

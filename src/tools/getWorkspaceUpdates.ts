@@ -3,39 +3,27 @@ import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'getMonitors';
-export const title = 'Get all monitors';
-export const description = 'Gets all monitors.';
+export const method = 'getWorkspaceUpdates';
+export const title = 'Get all workspace updates';
+export const description =
+  "Lists a workspace's updates — the announcement posts that keep workspace watchers\ninformed about new features, bug fixes, breaking changes, and other news. Filter by\n\\`category\\` and page with \\`cursor\\`.\nThese are authored announcements, not a record of what changed in the workspace. For\nthat use getWorkspaceActivityFeed, and for the workspace's own settings use\ngetWorkspace.\n";
 export const parameters = z.object({
-  workspace: z.string().describe('Return only results found in the given workspace ID.').optional(),
-  active: z.boolean().describe('If true, return only active monitors.').optional(),
-  owner: z
-    .number()
-    .int()
-    .describe('Return only results that belong to the given user ID.')
-    .optional(),
-  collectionUid: z.string().describe("Filter the results by a collection's unique ID.").optional(),
-  environmentUid: z
-    .string()
-    .describe("Filter the results by an environment's unique ID.")
-    .optional(),
+  workspaceId: z.string().describe("The workspace's ID."),
   cursor: z
     .string()
     .describe(
       'The pointer to the first record of the set of paginated results. To view the next response, use the `nextCursor` value for this parameter.'
     )
     .optional(),
-  limit: z
-    .number()
-    .int()
-    .lte(25)
+  category: z
+    .string()
     .describe(
-      'The maximum number of rows to return in the response, up to a maximum value of 25. Any value greater than 25 returns a 400 Bad Request response.'
+      'A comma-separated list of categories to filter the results by. Accepts `improvement`, `bug_fix`, `new_feature`, `breaking_change`, `announcement`.'
     )
-    .default(25),
+    .optional(),
 });
 export const annotations = {
-  title: 'Get all monitors',
+  title: 'Get all workspace updates',
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,
@@ -47,15 +35,10 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/monitors`;
+    const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/updates`;
     const query = new URLSearchParams();
-    if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
-    if (args.active !== undefined) query.set('active', String(args.active));
-    if (args.owner !== undefined) query.set('owner', String(args.owner));
-    if (args.collectionUid !== undefined) query.set('collectionUid', String(args.collectionUid));
-    if (args.environmentUid !== undefined) query.set('environmentUid', String(args.environmentUid));
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
-    if (args.limit !== undefined) query.set('limit', String(args.limit));
+    if (args.category !== undefined) query.set('category', String(args.category));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,
