@@ -9,10 +9,10 @@ export const description =
   'Creates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nIt is recommended that you pass the \\`name\\` property in the request body. If you do not, the system uses a null value. As a result, this creates a request with a blank name.\n';
 export const parameters = z.object({
   collectionId: z.string().describe("The collection's ID."),
-  folderId: z
+  folder: z
     .string()
     .describe(
-      'The folder ID in which to create the request. By default, the system will create the request at the collection level.'
+      'The folder ID in which to create the request. By default, the system creates the request at the collection level.'
     )
     .optional(),
   name: z
@@ -83,7 +83,7 @@ export const parameters = z.object({
       })
     )
     .nullable()
-    .describe("The request body's form data.")
+    .describe("The request body's form or urlencoded data.")
     .optional(),
   rawModeData: z.string().nullable().describe("The request body's raw mode data.").optional(),
   graphqlModeData: z
@@ -118,9 +118,7 @@ export const parameters = z.object({
         .optional(),
     })
     .nullable()
-    .describe(
-      "Additional configurations and options set for the request body's various data modes."
-    )
+    .describe('Additional options for the request body data.')
     .optional(),
   auth: z
     .object({
@@ -383,7 +381,7 @@ export const parameters = z.object({
         .optional(),
     })
     .nullable()
-    .describe("The request's authentication information.")
+    .describe("The request's authorization settings.")
     .optional(),
   events: z
     .array(
@@ -409,7 +407,7 @@ export const parameters = z.object({
           .optional(),
       })
     )
-    .describe('A list of scripts configured to run when specific events occur.')
+    .describe("The request's pre-request and test scripts.")
     .optional(),
 });
 export const annotations = {
@@ -427,7 +425,7 @@ export async function handler(
   try {
     const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/requests`;
     const query = new URLSearchParams();
-    if (args.folderId !== undefined) query.set('folderId', String(args.folderId));
+    if (args.folder !== undefined) query.set('folder', String(args.folder));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
     if (args.name !== undefined) bodyPayload.name = args.name;

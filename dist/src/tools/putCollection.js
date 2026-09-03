@@ -33,7 +33,7 @@ export const parameters = z.object({
                 .datetime({ offset: true })
                 .describe('The date and time when the collection was last updated.')
                 .optional(),
-            createdat: z
+            createdAt: z
                 .string()
                 .datetime({ offset: true })
                 .describe('The date and time when the collection was created.')
@@ -1127,6 +1127,7 @@ export const parameters = z.object({
             .describe('The [settings](https://learning.postman.com/docs/sending-requests/create-requests/request-settings/) used to alter the [Protocol Profile Behavior](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md) of sending a request.')
             .optional(),
     })
+        .describe('The new collection contents that replace the existing collection.')
         .optional(),
 });
 export const annotations = {

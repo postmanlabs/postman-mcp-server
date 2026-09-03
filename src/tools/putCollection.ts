@@ -42,7 +42,7 @@ export const parameters = z.object({
             .datetime({ offset: true })
             .describe('The date and time when the collection was last updated.')
             .optional(),
-          createdat: z
+          createdAt: z
             .string()
             .datetime({ offset: true })
             .describe('The date and time when the collection was created.')
@@ -1415,6 +1415,7 @@ export const parameters = z.object({
         )
         .optional(),
     })
+    .describe('The new collection contents that replace the existing collection.')
     .optional(),
 });
 export const annotations = {

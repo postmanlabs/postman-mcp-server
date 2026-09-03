@@ -12,23 +12,11 @@ import {
   CollectionDataFactory,
   TestCollection,
 } from './factories/dataFactory.js';
+import { PostmanAPIClient } from '../../clients/postman.js';
 import type { ServerContext } from '../../tools/utils/toolHelpers.js';
 import packageJson from '../../../package.json' assert { type: 'json' };
 
-// Loaded lazily in beforeAll: clients/postman.js imports src/env.ts, which calls
-// process.exit(1) when POSTMAN_API_KEY is unset. A static import would kill the run
-// at collection time, before describe.skipIf below could skip anything.
-let PostmanAPIClient: typeof import('../../clients/postman.js').PostmanAPIClient;
-
-/**
- * These tests spawn the real server and call the live Postman API, so they need
- * POSTMAN_API_KEY. Without it, src/env.ts exits the child process, so skip the
- * suite rather than failing — this keeps `pnpm test` usable for contributors who
- * don't have a key. Same idiom as learnToolset.test.ts.
- */
-const API_KEY = process.env.POSTMAN_API_KEY;
-
-describe.skipIf(!API_KEY)('Postman MCP - Direct Integration Tests', () => {
+describe('Postman MCP - Direct Integration Tests', () => {
   let client: Client;
   let serverProcess: ChildProcess;
   let createdWorkspaceIds: string[] = [];
@@ -38,8 +26,6 @@ describe.skipIf(!API_KEY)('Postman MCP - Direct Integration Tests', () => {
 
   beforeAll(async () => {
     console.log('🚀 Starting Postman MCP server for integration tests...');
-
-    ({ PostmanAPIClient } = await import('../../clients/postman.js'));
 
     const cleanEnv = Object.fromEntries(
       Object.entries(process.env).filter(([_, value]) => value !== undefined)

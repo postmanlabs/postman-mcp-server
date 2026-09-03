@@ -8,10 +8,12 @@ export const title = 'Add a workspace';
 export const description =
   "Publishes a workspace to your team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({
-  workspace: z.object({
-    id: z.string().describe("The workspace's ID."),
-    parentFolderId: z.number().int().describe('The `0` value.').default(0),
-  }),
+  workspace: z
+    .object({
+      id: z.string().describe("The workspace's ID."),
+      parentFolderId: z.number().int().describe('The `0` value.').default(0),
+    })
+    .describe('Information about the workspace to add to the Private API Network.'),
 });
 export const annotations = {
   title: 'Add a workspace',

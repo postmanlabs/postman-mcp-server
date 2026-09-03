@@ -18,15 +18,10 @@ export const parameters = z.object({
             .describe('The HTTP status code the mock returns. Must be a 5xx value (500–599).')
             .optional(),
         headers: z
-            .array(z
-            .object({
+            .array(z.object({
             key: z.string().describe("The request header's key value.").optional(),
-            value: z
-                .string()
-                .describe("The request header's value. This value defines the corresponding value for the header key.")
-                .optional(),
-        })
-            .describe('Information about the key-value pair.'))
+            value: z.string().describe("The request header's value.").optional(),
+        }))
             .describe("The server response's request headers, such as Content-Type, Accept, encoding, and other information.")
             .optional(),
         language: z
@@ -39,6 +34,7 @@ export const parameters = z.object({
             .describe("The server response's body that returns when you call the mock server.")
             .optional(),
     })
+        .describe('The server response fields to update.')
         .optional(),
 });
 export const annotations = {

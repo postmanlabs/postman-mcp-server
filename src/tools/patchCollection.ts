@@ -323,9 +323,7 @@ export const parameters = z.object({
             )
             .optional(),
         })
-        .describe(
-          'The [authorization type supported by Postman](https://learning.postman.com/docs/sending-requests/authorization/authorization-types/).'
-        )
+        .describe("The collection's updated authorization settings.")
         .optional(),
       events: z
         .array(
@@ -361,9 +359,7 @@ export const parameters = z.object({
               "Information about a collection-level event. Collection events don't accept a top-level `id`; the event is identified by its `script.id` value, which the client must supply."
             )
         )
-        .describe(
-          "A list of scripts configured to run when specific events occur on the collection. Each event's `script.id` value must be supplied by the client."
-        )
+        .describe("The collection's updated pre-request and test scripts.")
         .optional(),
     })
     .strict()

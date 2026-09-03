@@ -19,6 +19,7 @@ export const parameters = z.object({
             .describe('If true, the mock server is set private. By default, mock servers are public and can receive requests from anyone and anywhere.')
             .default(false),
     })
+        .describe('Information about the mock server to create.')
         .optional(),
 });
 export const annotations = {

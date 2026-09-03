@@ -32,6 +32,7 @@ export const parameters = z.object({
             .describe("The server response's body that returns when calling the mock server.")
             .optional(),
     })
+        .describe('Information about the server response to create.')
         .optional(),
 });
 export const annotations = {

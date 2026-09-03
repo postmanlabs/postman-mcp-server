@@ -1182,6 +1182,7 @@ export const parameters = z.object({
         )
         .optional(),
     })
+    .describe('Information about the collection.')
     .optional(),
 });
 export const annotations = {

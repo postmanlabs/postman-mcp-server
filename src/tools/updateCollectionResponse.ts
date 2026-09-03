@@ -34,7 +34,7 @@ export const parameters = z.object({
         'VIEW',
       ])
     )
-    .describe("The request's HTTP method.")
+    .describe("The associated request's HTTP method.")
     .optional(),
   headers: z
     .array(
@@ -48,7 +48,7 @@ export const parameters = z.object({
         })
         .describe('Information about the header.')
     )
-    .describe('A list of headers.')
+    .describe("The response's headers.")
     .optional(),
   dataMode: z
     .enum(['raw', 'urlencoded', 'formdata', 'binary', 'graphql'])
@@ -83,9 +83,7 @@ export const parameters = z.object({
         .optional(),
     })
     .nullable()
-    .describe(
-      "Additional configurations and options set for the request body's various data modes."
-    )
+    .describe('Additional options for the associated request body data.')
     .optional(),
   responseCode: z
     .object({

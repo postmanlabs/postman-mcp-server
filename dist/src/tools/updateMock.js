@@ -30,6 +30,7 @@ export const parameters = z.object({
             .describe("The mock server's configuration settings.")
             .optional(),
     })
+        .describe('The mock server fields to update.')
         .optional(),
 });
 export const annotations = {
