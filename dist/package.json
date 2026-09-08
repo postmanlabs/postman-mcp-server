@@ -1,6 +1,6 @@
 {
     "name": "@postman/postman-mcp-server",
-    "version": "2.12.0",
+    "version": "2.12.1",
     "description": "Postman MCP Server — connect AI agents (Claude Code, Cursor, VS Code Copilot, Gemini CLI) to your Postman collections, specifications, and environments via Model Context Protocol (MCP)",
     "mcpName": "com.postman/postman-mcp-server",
     "main": "dist/src/index.js",
@@ -12,6 +12,9 @@
         "build": "eslint --fix ./src && prettier --write \"src/**/*.ts\" && tsc",
         "prepack": "pnpm run build",
         "test": "vitest",
+        "test:ci": "vitest run",
+        "test:unit": "vitest run src/tests/unit",
+        "typecheck": "tsc --noEmit",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
         "preversion": "pnpm run build",
