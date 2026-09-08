@@ -14,6 +14,8 @@ env:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -89,13 +91,6 @@ jobs:
           # clients MUST reject a download whose fileSha256 does not match.
           node scripts/update-server-json.js "${{ steps.release-tag.outputs.version }}" .
 
-      - name: Upload server.json for the publish job
-        uses: actions/upload-artifact@v4
-        with:
-          name: server-json
-          path: server.json
-          if-no-files-found: error
-
       - name: Upload minimal release asset
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
@@ -132,24 +127,15 @@ jobs:
           tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
-  publish-mcp:
-    if: github.event_name != 'workflow_dispatch'
-    needs: build-and-release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Download server.json built from the release artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: server-json
-
+      # Publishing runs in this job, not a separate one: the repo's Actions
+      # allowlist rejects actions/upload-artifact and actions/download-artifact,
+      # so server.json cannot be handed between jobs. Keeping it here also means
+      # we publish the exact file whose hashes were just computed.
       - name: Verify server.json before publishing
+        if: github.event_name != 'workflow_dispatch'
         run: |
-          version="${GITHUB_REF_NAME#v}"
+          version="${{ steps.release-tag.outputs.version }}"
+          tag="${{ steps.release-tag.outputs.tag }}"
           fail=0
 
           top=$(jq -r .version server.json)
@@ -159,44 +145,49 @@ jobs:
           [[ "$npm_v" == "$version" ]] || { echo "::error::npm package version '$npm_v' != '$version'"; fail=1; }
 
           for m in minimal full code learn; do
-            f="postman-mcp-server-$m.mcpb"
+            f="${MCPB_BASENAME}-$m.mcpb"
             entry=$(jq -r --arg f "$f" '.packages[] | select(.identifier|endswith("/"+$f))' server.json)
             if [[ -z "$entry" ]]; then
               echo "::error::server.json is missing an mcpb entry for $f"; fail=1; continue
             fi
             sha=$(jq -r .fileSha256 <<<"$entry")
-            if ! [[ "$sha" =~ ^[0-9a-f]{64}$ ]] || [[ "$sha" == "$(printf '0%.0s' {1..64})" ]]; then
-              echo "::error::$f has an invalid or placeholder fileSha256: $sha"; fail=1
+            actual=$(sha256sum "$f" | cut -d' ' -f1)
+            if [[ "$sha" != "$actual" ]]; then
+              echo "::error::$f fileSha256 $sha does not match the uploaded artifact ($actual)"; fail=1
             fi
             id=$(jq -r .identifier <<<"$entry")
-            [[ "$id" == *"/download/$GITHUB_REF_NAME/$f" ]] || { echo "::error::$f identifier does not point at $GITHUB_REF_NAME: $id"; fail=1; }
+            [[ "$id" == *"/download/$tag/$f" ]] || { echo "::error::$f identifier does not point at $tag: $id"; fail=1; }
           done
 
           [[ $fail -eq 0 ]] || exit 1
-          echo "server.json verified for $GITHUB_REF_NAME"
+          echo "server.json verified against the uploaded artifacts for $tag"
 
       - name: Install MCP Publisher
+        if: github.event_name != 'workflow_dispatch'
         run: |
           curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz
           chmod +x mcp-publisher
 
       - name: Login to MCP Registry
+        if: github.event_name != 'workflow_dispatch'
         run: |
           echo "${{ secrets.MCP_PRIVATE_KEY }}" > key.pem
           ./mcp-publisher login dns --domain postman.com --private-key $(openssl pkey -in key.pem -noout -text | grep -A3 "priv:" | tail -n +2 | tr -d ' :\n')
 
       - name: Publish to MCP Registry
+        if: github.event_name != 'workflow_dispatch'
         run: ./mcp-publisher publish
 
       - name: Commit resolved server.json back to the default branch
         # Marketplaces and humans read server.json straight from the repo, so the
         # committed copy must carry the same hashes we just published. Best-effort:
         # a protected branch should surface a warning, not fail a shipped release.
+        if: github.event_name != 'workflow_dispatch'
         continue-on-error: true
         run: |
           rm -f key.pem mcp-publisher
-          # Preserve the artifact copy before moving off the detached tag checkout.
           cp server.json /tmp/server.json
+          git checkout -- .
           default_branch="${{ github.event.repository.default_branch }}"
           git fetch origin "$default_branch"
           git checkout -B "$default_branch" "origin/$default_branch"
@@ -208,5 +199,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add server.json
-          git commit -m "chore: sync server.json hashes for ${GITHUB_REF_NAME}"
+          git commit -m "chore: sync server.json hashes for ${{ steps.release-tag.outputs.tag }}"
           git push origin "$default_branch"
