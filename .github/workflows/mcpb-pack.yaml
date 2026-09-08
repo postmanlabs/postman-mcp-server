@@ -174,9 +174,39 @@ jobs:
           echo "${{ secrets.MCP_PRIVATE_KEY }}" > key.pem
           ./mcp-publisher login dns --domain postman.com --private-key $(openssl pkey -in key.pem -noout -text | grep -A3 "priv:" | tail -n +2 | tr -d ' :\n')
 
+      - name: Wait for the npm release to be visible
+        if: github.event_name != 'workflow_dispatch'
+        run: |
+          # npm publishing happens in a separate workflow (pkg-release.yml) that
+          # runs in parallel with this one, and npm itself warns the package "may
+          # take a few minutes to become available". The MCP registry refuses a
+          # server.json whose npm version it cannot resolve, so wait for the
+          # version to be live instead of racing it.
+          version="${{ steps.release-tag.outputs.version }}"
+          pkg=$(jq -r .name package.json)
+          for i in $(seq 1 60); do
+            if npm view "$pkg@$version" version >/dev/null 2>&1; then
+              echo "$pkg@$version is live on npm"
+              exit 0
+            fi
+            echo "waiting for $pkg@$version to appear on npm ($i/60)"
+            sleep 10
+          done
+          echo "::error::$pkg@$version did not become visible on npm within 10 minutes"
+          exit 1
+
       - name: Publish to MCP Registry
         if: github.event_name != 'workflow_dispatch'
-        run: ./mcp-publisher publish
+        run: |
+          for attempt in 1 2 3; do
+            if ./mcp-publisher publish; then
+              exit 0
+            fi
+            echo "publish attempt $attempt failed; retrying in 30s"
+            sleep 30
+          done
+          echo "::error::mcp-publisher publish failed after 3 attempts"
+          exit 1
 
       - name: Commit resolved server.json back to the default branch
         # Marketplaces and humans read server.json straight from the repo, so the
