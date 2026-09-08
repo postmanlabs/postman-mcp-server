@@ -1,12 +1,23 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.postman/postman-mcp-server",
+  "title": "Postman MCP Server",
   "description": "Give your AI agents trusted access to the full Postman platform.",
+  "websiteUrl": "https://www.postman.com/product/mcp-server/",
   "repository": {
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
   },
   "version": "2.11.2",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/postmanlabs/postman-mcp-server/main/icon.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "834x834"
+      ]
+    }
+  ],
   "packages": [
     {
       "registryType": "npm",
@@ -27,7 +38,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-minimal.mcpb",
-      "fileSha256": "e8aa64e13b894c8933932c1c975c54095718e002bf866932759d040b4268499d",
+      "fileSha256": "559006d66d2c83e6844b6dcd05d62e4eb24c01913665efffcea465aa7a417fca",
       "transport": {
         "type": "stdio"
       },
@@ -43,7 +54,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-full.mcpb",
-      "fileSha256": "e7838e78524b68dc9e44b2d6f116f144e98f141e892ce2c63205764a002794ee",
+      "fileSha256": "f8f972dd82fdee6271aa27ee69974edf3c0694d6cf166d4b8d4569f20e4b6b22",
       "transport": {
         "type": "stdio"
       },
@@ -59,7 +70,23 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-code.mcpb",
-      "fileSha256": "2498add02598c5f05fbea1d395649257ddfefdb55a9d0d6b466afbba2b662b70",
+      "fileSha256": "b7100a5ef5f5242875c84d851b7e71f4eb9deab570890c2cac533bccf340e992",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "A valid Postman API key.",
+          "isRequired": true,
+          "isSecret": true,
+          "name": "POSTMAN_API_KEY"
+        }
+      ]
+    },
+    {
+      "registryType": "mcpb",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.11.2/postman-mcp-server-learn.mcpb",
+      "fileSha256": "3b39564d14fbbb2dce37507be75226c1f52d5d16e682c7adbe8628d60fcaaf18",
       "transport": {
         "type": "stdio"
       },

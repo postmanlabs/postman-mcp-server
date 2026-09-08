@@ -6,6 +6,11 @@ on:
       - '*'
   workflow_dispatch:
 
+env:
+  # The mcpb artifacts are named from this, and server.json's package
+  # identifiers must match them exactly.
+  MCPB_BASENAME: postman-mcp-server
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
@@ -29,25 +34,31 @@ jobs:
         id: release-tag
         run: |
           if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            tag="${{ github.ref_name }}"
           else
             tag=$(gh release view --json tagName -q .tagName)
-            echo "tag=$tag" >> "$GITHUB_OUTPUT"
           fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify package.json matches the release tag
+        run: |
+          pkg_version=$(jq -r .version package.json)
+          tag_version="${{ steps.release-tag.outputs.version }}"
+          if [[ "$pkg_version" != "$tag_version" ]]; then
+            echo "::error::package.json version '$pkg_version' does not match release tag '$tag_version'. The mcpb download URLs in server.json are built from the tag, so these must agree."
+            exit 1
+          fi
 
       - name: Sync manifest versions with package.json
         run: |
           pkg_version=$(jq -r .version package.json)
-          jq --arg v "$pkg_version" '.version = $v' manifest-minimal.json > manifest-minimal.tmp.json
-          mv manifest-minimal.tmp.json manifest-minimal.json
-          jq --arg v "$pkg_version" '.version = $v' manifest-full.json > manifest-full.tmp.json
-          mv manifest-full.tmp.json manifest-full.json
-          jq --arg v "$pkg_version" '.version = $v' manifest-code.json > manifest-code.tmp.json
-          mv manifest-code.tmp.json manifest-code.json
-          jq --arg v "$pkg_version" '.version = $v' manifest-learn.json > manifest-learn.tmp.json
-          mv manifest-learn.tmp.json manifest-learn.json
+          for m in minimal full code learn; do
+            jq --arg v "$pkg_version" '.version = $v' "manifest-$m.json" > "manifest-$m.tmp.json"
+            mv "manifest-$m.tmp.json" "manifest-$m.json"
+          done
 
       - name: Build project
         run: pnpm run build
@@ -62,40 +73,35 @@ jobs:
 
       - name: Package extensions
         run: |
-          current_dir=$(basename "$PWD")
+          packed_name=$(basename "$PWD")
+          for m in minimal full code learn; do
+            cp "manifest-$m.json" manifest.json
+            mcpb pack
+            mv "${packed_name}.mcpb" "${MCPB_BASENAME}-${m}.mcpb"
+          done
+          rm -f manifest.json
 
-          # Package minimal version
-          cp manifest-minimal.json manifest.json
-          mcpb pack
-          mv "${current_dir}.mcpb" "${current_dir}-minimal.mcpb"
+      - name: Update server.json with release hashes
+        run: |
+          # Hashes are computed here, from the exact files uploaded below.
+          # 'mcpb pack' is not byte-reproducible, so hashes generated on a
+          # developer machine would never match these artifacts, and MCP
+          # clients MUST reject a download whose fileSha256 does not match.
+          node scripts/update-server-json.js "${{ steps.release-tag.outputs.version }}" .
 
-          # Package full version
-          cp manifest-full.json manifest.json
-          mcpb pack
-          mv "${current_dir}.mcpb" "${current_dir}-full.mcpb"
-
-          # Package code version
-          cp manifest-code.json manifest.json
-          mcpb pack
-          mv "${current_dir}.mcpb" "${current_dir}-code.mcpb"
-
-          # Package learn version
-          cp manifest-learn.json manifest.json
-          mcpb pack
-          mv "${current_dir}.mcpb" "${current_dir}-learn.mcpb"
-
-          # Set environment variables
-          echo "MCPB_MINIMAL_FILENAME=${current_dir}-minimal.mcpb" >> $GITHUB_ENV
-          echo "MCPB_FULL_FILENAME=${current_dir}-full.mcpb" >> $GITHUB_ENV
-          echo "MCPB_CODE_FILENAME=${current_dir}-code.mcpb" >> $GITHUB_ENV
-          echo "MCPB_LEARN_FILENAME=${current_dir}-learn.mcpb" >> $GITHUB_ENV
+      - name: Upload server.json for the publish job
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-json
+          path: server.json
+          if-no-files-found: error
 
       - name: Upload minimal release asset
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.MCPB_MINIMAL_FILENAME }}
-          asset_name: ${{ env.MCPB_MINIMAL_FILENAME }}
+          file: ${{ env.MCPB_BASENAME }}-minimal.mcpb
+          asset_name: ${{ env.MCPB_BASENAME }}-minimal.mcpb
           tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
@@ -103,8 +109,8 @@ jobs:
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.MCPB_FULL_FILENAME }}
-          asset_name: ${{ env.MCPB_FULL_FILENAME }}
+          file: ${{ env.MCPB_BASENAME }}-full.mcpb
+          asset_name: ${{ env.MCPB_BASENAME }}-full.mcpb
           tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
@@ -112,8 +118,8 @@ jobs:
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.MCPB_CODE_FILENAME }}
-          asset_name: ${{ env.MCPB_CODE_FILENAME }}
+          file: ${{ env.MCPB_BASENAME }}-code.mcpb
+          asset_name: ${{ env.MCPB_BASENAME }}-code.mcpb
           tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
@@ -121,8 +127,8 @@ jobs:
         uses: svenstaro/upload-release-action@7027b7670c56b9473901daad1fb8a09ab534688e
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.MCPB_LEARN_FILENAME }}
-          asset_name: ${{ env.MCPB_LEARN_FILENAME }}
+          file: ${{ env.MCPB_BASENAME }}-learn.mcpb
+          asset_name: ${{ env.MCPB_BASENAME }}-learn.mcpb
           tag: ${{ steps.release-tag.outputs.tag }}
           overwrite: true
 
@@ -130,9 +136,44 @@ jobs:
     if: github.event_name != 'workflow_dispatch'
     needs: build-and-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+
+      - name: Download server.json built from the release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: server-json
+
+      - name: Verify server.json before publishing
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          fail=0
+
+          top=$(jq -r .version server.json)
+          [[ "$top" == "$version" ]] || { echo "::error::server.json version '$top' != '$version'"; fail=1; }
+
+          npm_v=$(jq -r '.packages[] | select(.registryType=="npm") | .version' server.json)
+          [[ "$npm_v" == "$version" ]] || { echo "::error::npm package version '$npm_v' != '$version'"; fail=1; }
+
+          for m in minimal full code learn; do
+            f="postman-mcp-server-$m.mcpb"
+            entry=$(jq -r --arg f "$f" '.packages[] | select(.identifier|endswith("/"+$f))' server.json)
+            if [[ -z "$entry" ]]; then
+              echo "::error::server.json is missing an mcpb entry for $f"; fail=1; continue
+            fi
+            sha=$(jq -r .fileSha256 <<<"$entry")
+            if ! [[ "$sha" =~ ^[0-9a-f]{64}$ ]] || [[ "$sha" == "$(printf '0%.0s' {1..64})" ]]; then
+              echo "::error::$f has an invalid or placeholder fileSha256: $sha"; fail=1
+            fi
+            id=$(jq -r .identifier <<<"$entry")
+            [[ "$id" == *"/download/$GITHUB_REF_NAME/$f" ]] || { echo "::error::$f identifier does not point at $GITHUB_REF_NAME: $id"; fail=1; }
+          done
+
+          [[ $fail -eq 0 ]] || exit 1
+          echo "server.json verified for $GITHUB_REF_NAME"
 
       - name: Install MCP Publisher
         run: |
@@ -146,3 +187,26 @@ jobs:
 
       - name: Publish to MCP Registry
         run: ./mcp-publisher publish
+
+      - name: Commit resolved server.json back to the default branch
+        # Marketplaces and humans read server.json straight from the repo, so the
+        # committed copy must carry the same hashes we just published. Best-effort:
+        # a protected branch should surface a warning, not fail a shipped release.
+        continue-on-error: true
+        run: |
+          rm -f key.pem mcp-publisher
+          # Preserve the artifact copy before moving off the detached tag checkout.
+          cp server.json /tmp/server.json
+          default_branch="${{ github.event.repository.default_branch }}"
+          git fetch origin "$default_branch"
+          git checkout -B "$default_branch" "origin/$default_branch"
+          cp /tmp/server.json server.json
+          if git diff --quiet -- server.json; then
+            echo "server.json on $default_branch already matches what was published"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server.json
+          git commit -m "chore: sync server.json hashes for ${GITHUB_REF_NAME}"
+          git push origin "$default_branch"
