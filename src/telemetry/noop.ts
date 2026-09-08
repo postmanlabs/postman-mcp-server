@@ -8,7 +8,7 @@ import type { TelemetrySession } from './session.js';
 export class NoopTelemetryClient {
   sessionInit(
     _session: TelemetrySession,
-    _params: { clientCapabilities: string[]; serverCapabilities: string[] },
+    _params: { clientCapabilities: string[]; serverCapabilities: string[] }
   ): void {}
   toolCall(_session: TelemetrySession, _params: ToolCallParams): void {}
   async flush(): Promise<void> {}
