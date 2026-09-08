@@ -99,8 +99,11 @@ try {
         execSync(`node scripts/update-server-json.js ${newVersion}`, { stdio: 'inherit' });
     }
 
-    // Commit and tag
-    execSync('git add .', { stdio: 'inherit' });
+    // Commit and tag. Stage only the paths a release actually touches -- a bare
+    // 'git add .' sweeps any stray untracked file in the tree into the release
+    // commit.
+    const releasePaths = ['package.json', 'pnpm-lock.yaml', 'dist', 'server.json', ...MANIFESTS];
+    execSync(`git add -- ${releasePaths.join(' ')}`, { stdio: 'inherit' });
     execSync(`git commit -m "chore: v${newVersion}"`, { stdio: 'inherit' });
 
     if (isPrerelease) {
