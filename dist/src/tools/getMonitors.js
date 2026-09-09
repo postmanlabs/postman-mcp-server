@@ -5,7 +5,7 @@ export const title = 'Get all monitors';
 export const description = 'Gets all monitors.';
 export const parameters = z.object({
     workspace: z.string().describe('Return only results found in the given workspace ID.').optional(),
-    active: z.boolean().describe('If true, return only active monitors.').default(false),
+    active: z.boolean().describe('If true, return only active monitors.').optional(),
     owner: z
         .number()
         .int()

@@ -139,6 +139,22 @@ const full = [
   'updateWorkspaceGlobalVariables',
   'getWorkspaceTags',
   'updateWorkspaceTags',
+  'getWorkspaceActivityFeed',
+  'transferWorkspaceElement',
+  'transferWorkspaceToTeam',
+  'managePartnerWorkspaceInvites',
+
+  // Workspace Roles
+  'getAllWorkspaceRoles',
+  'getWorkspaceRoles',
+  'updateWorkspaceRoles',
+
+  // Workspace Updates
+  'getWorkspaceUpdates',
+  'createWorkspaceUpdate',
+  'getWorkspaceUpdate',
+  'patchWorkspaceUpdate',
+  'deleteWorkspaceUpdate',
 
   // PAN (Private API Network)
   'listPrivateNetworkWorkspaces',
@@ -154,6 +170,20 @@ const full = [
   // Tasks and Status
   'getAsyncSpecTaskStatus',
   'getStatusOfAnAsyncApiTask',
+
+  // SDKs
+  'getSdks',
+  'createSdk',
+  'getSdk',
+  'deleteSdk',
+  'getSdkDownloadUrl',
+
+  // SDK Git Connections
+  'getSdkGitConnections',
+  'createSdkGitConnection',
+  'getSdkGitConnection',
+  'updateSdkGitConnection',
+  'getSdkGitConnectionPullRequests',
 
   // User and Tags
   'getAuthenticatedUser',

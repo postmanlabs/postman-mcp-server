@@ -21,6 +21,7 @@ export const parameters = z.object({
       description: z.string().describe('The new workspace description.').optional(),
       about: z.string().describe('A brief summary about the workspace.').optional(),
     })
+    .describe('The workspace fields to update.')
     .optional(),
 });
 export const annotations = {

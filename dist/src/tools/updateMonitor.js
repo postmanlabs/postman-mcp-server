@@ -91,6 +91,7 @@ export const parameters = z.object({
                     .describe('The email address of the user to notify on monitor error.')
                     .optional(),
             }))
+                .describe('A list of recipients to notify when the monitor errors.')
                 .optional(),
             onFailure: z
                 .array(z.object({
@@ -100,6 +101,7 @@ export const parameters = z.object({
                     .describe('The email address of the user to notify on monitor failure.')
                     .optional(),
             }))
+                .describe('A list of recipients to notify when the monitor fails.')
                 .optional(),
         })
             .describe("Information about the monitor's notification settings.")

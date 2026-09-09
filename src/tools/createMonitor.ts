@@ -110,6 +110,7 @@ export const parameters = z.object({
                   .optional(),
               })
             )
+            .describe('A list of recipients to notify when the monitor errors.')
             .optional(),
           onFailure: z
             .array(
@@ -121,6 +122,7 @@ export const parameters = z.object({
                   .optional(),
               })
             )
+            .describe('A list of recipients to notify when the monitor fails.')
             .optional(),
         })
         .describe("Information about the monitor's notification settings.")

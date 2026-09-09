@@ -73,7 +73,7 @@ export const parameters = z.object({
       })
     )
     .nullable()
-    .describe("The request body's form data.")
+    .describe("The request body's form or urlencoded data.")
     .optional(),
   rawModeData: z.string().nullable().describe("The request body's raw mode data.").optional(),
   graphqlModeData: z
@@ -108,9 +108,7 @@ export const parameters = z.object({
         .optional(),
     })
     .nullable()
-    .describe(
-      "Additional configurations and options set for the request body's various data modes."
-    )
+    .describe('Additional options for the request body data.')
     .optional(),
   auth: z
     .object({
@@ -373,7 +371,7 @@ export const parameters = z.object({
         .optional(),
     })
     .nullable()
-    .describe("The request's authentication information.")
+    .describe("The request's authorization settings.")
     .optional(),
   events: z
     .array(
@@ -399,7 +397,7 @@ export const parameters = z.object({
           .optional(),
       })
     )
-    .describe('A list of scripts configured to run when specific events occur.')
+    .describe("The request's pre-request and test scripts.")
     .optional(),
 });
 export const annotations = {

@@ -12,7 +12,8 @@ export const parameters = z.object({
             path: z
                 .string()
                 .describe('The [JSON Pointer syntax](https://datatracker.ietf.org/doc/html/rfc6901) that indicates the entry to update, in `/values/#` format, where `#` is the entry ID. The first record begins at the `0` value.'),
-            value: z.union([
+            value: z
+                .union([
                 z
                     .object({
                     enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
@@ -61,7 +62,8 @@ export const parameters = z.object({
                     description: z.string().max(512).describe("The variable's description.").optional(),
                 })
                     .describe('Information about the variable stored in the Postman Vault. This property only returns when a variable is defined as secret.'),
-            ]),
+            ])
+                .describe('The environment variable to add.'),
         })),
         z.array(z
             .object({

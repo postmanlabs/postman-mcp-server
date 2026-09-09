@@ -24,6 +24,7 @@ export const parameters = z.object({
         )
         .default(false),
     })
+    .describe('Information about the mock server to create.')
     .optional(),
 });
 export const annotations = {

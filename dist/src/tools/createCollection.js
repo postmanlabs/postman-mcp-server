@@ -934,6 +934,7 @@ export const parameters = z.object({
             .describe('The [settings](https://learning.postman.com/docs/sending-requests/create-requests/request-settings/) used to alter the [Protocol Profile Behavior](https://github.com/postmanlabs/postman-runtime/blob/develop/docs/protocol-profile-behavior.md) of sending a request.')
             .optional(),
     })
+        .describe('Information about the collection.')
         .optional(),
 });
 export const annotations = {

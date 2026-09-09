@@ -18,68 +18,70 @@ export const parameters = z.object({
           .describe(
             'The [JSON Pointer syntax](https://datatracker.ietf.org/doc/html/rfc6901) that indicates the entry to update, in `/values/#` format, where `#` is the entry ID. The first record begins at the `0` value.'
           ),
-        value: z.union([
-          z
-            .object({
-              enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
-              key: z.string().describe("The variable's name.").optional(),
-              value: z.string().describe("The variable's value.").optional(),
-              type: z
-                .enum(['secret', 'default'])
-                .describe(
-                  "The variable's type:\n- `secret` — The variable value is masked.\n- `default` — The variable value is visible in plain text.\n"
-                )
-                .optional(),
-              description: z.string().max(512).describe("The variable's description.").optional(),
-            })
-            .describe('Information about the variable.'),
-          z
-            .object({
-              enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
-              key: z.string().describe("The variable's name.").optional(),
-              value: z.string().describe("The variable's value.").optional(),
-              type: z
-                .enum(['secret', 'default'])
-                .describe(
-                  "The variable's type:\n- `secret` — The variable value is masked.\n- `default` — The variable value is visible in plain text.\n"
-                )
-                .optional(),
-              secret: z
-                .boolean()
-                .describe(
-                  'If true, the variable is marked as secret and its value is retrieved from the mentioned provider in the source field.'
-                )
-                .optional(),
-              source: z
-                .object({
-                  postman: z
-                    .object({
-                      secretId: z.string().describe("The variable's secret ID.").optional(),
-                      type: z
-                        .literal('cloud')
-                        .describe(
-                          "The variable's type:\n- `cloud` — The variable value is synced and stored in the Postman Cloud.\n"
-                        )
-                        .optional(),
-                      vaultId: z
-                        .string()
-                        .describe("The variable's ID in the Postman Vault.")
-                        .optional(),
-                    })
-                    .describe(
-                      "Information about the Postman-specific source of the variable's value."
-                    )
-                    .optional(),
-                  provider: z.literal('postman').describe("The secret's provider.").optional(),
-                })
-                .describe("Information about the source of the variable's value.")
-                .optional(),
-              description: z.string().max(512).describe("The variable's description.").optional(),
-            })
-            .describe(
-              'Information about the variable stored in the Postman Vault. This property only returns when a variable is defined as secret.'
-            ),
-        ]),
+        value: z
+          .union([
+            z
+              .object({
+                enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
+                key: z.string().describe("The variable's name.").optional(),
+                value: z.string().describe("The variable's value.").optional(),
+                type: z
+                  .enum(['secret', 'default'])
+                  .describe(
+                    "The variable's type:\n- `secret` — The variable value is masked.\n- `default` — The variable value is visible in plain text.\n"
+                  )
+                  .optional(),
+                description: z.string().max(512).describe("The variable's description.").optional(),
+              })
+              .describe('Information about the variable.'),
+            z
+              .object({
+                enabled: z.boolean().describe('If true, the variable is enabled.').optional(),
+                key: z.string().describe("The variable's name.").optional(),
+                value: z.string().describe("The variable's value.").optional(),
+                type: z
+                  .enum(['secret', 'default'])
+                  .describe(
+                    "The variable's type:\n- `secret` — The variable value is masked.\n- `default` — The variable value is visible in plain text.\n"
+                  )
+                  .optional(),
+                secret: z
+                  .boolean()
+                  .describe(
+                    'If true, the variable is marked as secret and its value is retrieved from the mentioned provider in the source field.'
+                  )
+                  .optional(),
+                source: z
+                  .object({
+                    postman: z
+                      .object({
+                        secretId: z.string().describe("The variable's secret ID.").optional(),
+                        type: z
+                          .literal('cloud')
+                          .describe(
+                            "The variable's type:\n- `cloud` — The variable value is synced and stored in the Postman Cloud.\n"
+                          )
+                          .optional(),
+                        vaultId: z
+                          .string()
+                          .describe("The variable's ID in the Postman Vault.")
+                          .optional(),
+                      })
+                      .describe(
+                        "Information about the Postman-specific source of the variable's value."
+                      )
+                      .optional(),
+                    provider: z.literal('postman').describe("The secret's provider.").optional(),
+                  })
+                  .describe("Information about the source of the variable's value.")
+                  .optional(),
+                description: z.string().max(512).describe("The variable's description.").optional(),
+              })
+              .describe(
+                'Information about the variable stored in the Postman Vault. This property only returns when a variable is defined as secret.'
+              ),
+          ])
+          .describe('The environment variable to add.'),
       })
     ),
     z.array(

@@ -242,7 +242,7 @@ export const parameters = z.object({
                 .describe('The attributes for ASAP (Atlassian S2S Authentication Protocol). Includes the `kid`, `aud`, `iss`, `alg`, `privateKey`, and `claims` properties.')
                 .optional(),
         })
-            .describe('The [authorization type supported by Postman](https://learning.postman.com/docs/sending-requests/authorization/authorization-types/).')
+            .describe("The collection's updated authorization settings.")
             .optional(),
         events: z
             .array(z
@@ -268,7 +268,7 @@ export const parameters = z.object({
                 .optional(),
         })
             .describe("Information about a collection-level event. Collection events don't accept a top-level `id`; the event is identified by its `script.id` value, which the client must supply."))
-            .describe("A list of scripts configured to run when specific events occur on the collection. Each event's `script.id` value must be supplied by the client.")
+            .describe("The collection's updated pre-request and test scripts.")
             .optional(),
     })
         .strict()

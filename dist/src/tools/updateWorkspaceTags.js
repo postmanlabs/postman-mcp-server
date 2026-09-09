@@ -8,15 +8,11 @@ export const parameters = z.object({
     workspaceId: z.string().describe("The workspace's ID."),
     tags: z
         .array(z
-        .object({
-        slug: z
-            .string()
-            .regex(new RegExp('^[a-z][a-z0-9-]*[a-z0-9]+$'))
-            .min(2)
-            .max(64)
-            .describe("The tag's ID within a team or individual (non-team) user scope."),
-    })
-        .describe('Information about the tag.'))
+        .string()
+        .regex(new RegExp('^[a-z][a-z0-9-]*[a-z0-9]+$'))
+        .min(2)
+        .max(64)
+        .describe("The tag's ID within a team or individual (non-team) user scope."))
         .min(0)
         .max(5)
         .describe('A list of the associated tags as slugs.'),
