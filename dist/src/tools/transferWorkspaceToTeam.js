@@ -13,7 +13,7 @@ export const annotations = {
     title: 'Transfer workspace to a team',
     readOnlyHint: false,
     openWorldHint: true,
-    destructiveHint: false,
+    destructiveHint: true,
     idempotentHint: true,
 };
 export async function handler(args, extra) {

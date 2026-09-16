@@ -8,7 +8,7 @@ export const annotations = {
     title: 'Manage Partner Workspace invites',
     readOnlyHint: false,
     openWorldHint: true,
-    destructiveHint: false,
+    destructiveHint: true,
     idempotentHint: false,
 };
 export async function handler(args, extra) {

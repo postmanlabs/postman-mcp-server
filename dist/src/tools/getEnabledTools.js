@@ -1,15 +1,16 @@
 import { z } from 'zod';
 import { enabledResources } from '../enabledResources.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getEnabledTools';
 export const description = 'IMPORTANT: Run this tool first when a requested tool is unavailable. Returns information about which tools are enabled in the full and minimal tool sets, helping you identify available alternatives.';
 export const parameters = z.object({});
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Get Enabled Tools',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 export async function handler(_args, extra) {
     try {
         return {

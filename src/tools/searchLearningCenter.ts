@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 import { env } from '../env.js';
 
 export const method = 'searchLearningCenter';
@@ -22,12 +27,13 @@ export const parameters = z.object({
     ),
 });
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Search the Postman Learning Center',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 /** Name of the search tool exposed by the remote Learning Center MCP server. */
 const REMOTE_TOOL_NAME = 'searchDocs';

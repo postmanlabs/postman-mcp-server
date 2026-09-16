@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { McpError, asMcpError } from '../utils/toolHelpers.js';
+import { McpError, asMcpError, defineToolAnnotations, } from '../utils/toolHelpers.js';
 import { handler as getCollectionApiHandler, parameters as getCollectionApiParameters, } from './getCollection.js';
 import { handler as getCollectionMapHandler } from './getCollectionMap.js';
 export const method = 'getCollection';
@@ -17,12 +17,13 @@ export const parameters = baseParameters.extend({
         .describe('Optional response shape override. Omit to receive the lightweight collection map. Set to `minimal` for the Postman minimal model or `full` for the complete collection payload.')
         .optional(),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Get Collection (map by default)',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 function omitModel(args) {
     const { model: _ignored, ...rest } = args;
     return rest;

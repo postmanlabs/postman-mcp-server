@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'searchPostmanElements';
 export const description = `Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, and documents).
 
@@ -158,12 +158,13 @@ export const parameters = z.object({
         .default(10)
         .optional(),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, documents).',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 export async function handler(args, extra) {
     try {
         const query = new URLSearchParams();

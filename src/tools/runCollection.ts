@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 import type { ProgressReporter } from './utils/progress.js';
 import { runCollection } from './runner/index.js';
 
@@ -39,12 +44,16 @@ export const parameters = z.object({
 
 export type RunCollectionParameters = z.infer<typeof parameters>;
 
-export const annotations = {
+// Executes the requests the collection defines, which may write to or delete data
+// in whatever systems those requests point at. The effect is bounded by the
+// collection's contents, not by this tool, so it is treated as destructive.
+export const annotations = defineToolAnnotations({
   title: 'Run Postman Collection',
   readOnlyHint: false,
-  destructiveHint: false,
+  destructiveHint: true,
   idempotentHint: true,
-};
+  openWorldHint: true,
+});
 
 export async function handler(
   params: z.infer<typeof parameters>,

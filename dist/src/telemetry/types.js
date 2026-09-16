@@ -26,7 +26,7 @@ export const BaseTelemetryEventSchema = z.object({
     client_version: z.string(),
     protocol_version: z.string(),
     transport: z.enum(['stdio', 'http', 'sse']),
-    toolset: z.enum(['full', 'minimal', 'code', 'learn']),
+    toolset: z.enum(['full', 'minimal', 'code', 'learn', 'contextGraph']),
     server_version: z.string(),
     region: z.enum(['us', 'eu']),
 });

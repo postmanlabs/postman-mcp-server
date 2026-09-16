@@ -44,7 +44,7 @@ export const annotations = {
   title: 'Update workspace roles',
   readOnlyHint: false,
   openWorldHint: true,
-  destructiveHint: false,
+  destructiveHint: true,
   idempotentHint: true,
 };
 
