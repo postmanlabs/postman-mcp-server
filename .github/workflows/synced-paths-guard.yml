@@ -30,6 +30,7 @@ jobs:
       github.event.pull_request.user.type != 'Bot' &&
       github.event.pull_request.head.repo.full_name != github.repository
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     permissions:
       pull-requests: write
     steps:
