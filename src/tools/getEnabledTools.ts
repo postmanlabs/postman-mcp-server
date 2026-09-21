@@ -2,7 +2,12 @@ import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { enabledResources } from '../enabledResources.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 
 export const method = 'getEnabledTools';
 export const description =
@@ -10,12 +15,13 @@ export const description =
 
 export const parameters = z.object({});
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get Enabled Tools',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 export async function handler(
   _args: z.infer<typeof parameters>,

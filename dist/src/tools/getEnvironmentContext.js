@@ -1,16 +1,17 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getEnvironmentContext';
 export const description = 'Returns a markdown-formatted summary of an environment, including its name and enabled variables with their keys, values, and types.';
 export const parameters = z.object({
     environmentId: z.string().describe("The environment's ID."),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Get Environment Context',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 export async function handler(args, extra) {
     try {
         const endpoint = `/context/environments/${encodeURIComponent(String(args.environmentId))}`;

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 
 export const method = 'getResponseContext';
 export const description =
@@ -13,12 +18,13 @@ export const parameters = z.object({
   responseId: z.string().describe("The response's ID."),
 });
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get Response Context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 export async function handler(
   args: z.infer<typeof parameters>,

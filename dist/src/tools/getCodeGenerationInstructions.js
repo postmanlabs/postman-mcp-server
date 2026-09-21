@@ -1,15 +1,17 @@
 import { z } from 'zod';
+import { defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getCodeGenerationInstructions';
 export const description = `Returns the full workflow instructions for discovering APIs, exploring collections, and generating client code from Postman. Includes step-by-step guidance, tool usage patterns, and code generation rules.
 
 MANDATORY: You MUST call this tool when the user says to "use postman", or when the user wants to do something that requires locating a specific API for the purpose of answering questions, planning a build, and in most cases proceeding to generate code that calls the API. ALWAYS call getCodeGenerationInstructions BEFORE calling other tools in this workflow. This tool returns comprehensive step-by-step instructions on how to search for APIs, gather API-specific context from other tools, and then generate client code based on the context retrieved.`;
 export const parameters = z.object({});
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Get Code Generation Instructions',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 const CODE_GENERATION_INSTRUCTIONS = `# API Exploration and Client Code Generation Instructions
 
 These instructions guide you in exploring APIs, planning an approach to build something with an API, and then generating idiomatic client code from Postman collections, organized in a clear structure that is easy to find and maintain.

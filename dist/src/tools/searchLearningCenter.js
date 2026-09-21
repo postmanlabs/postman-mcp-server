@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 import { env } from '../env.js';
 export const method = 'searchLearningCenter';
 export const description = `Search the official Postman documentation and learning resources at https://learning.postman.com.
@@ -15,12 +15,13 @@ export const parameters = z.object({
         .max(512)
         .describe('The search query to run against the Postman documentation (e.g. "how to create a mock server", "write a test script", "set a collection variable").'),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Search the Postman Learning Center',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 const REMOTE_TOOL_NAME = 'searchDocs';
 function parseMcpResponseBody(body, contentType) {
     const trimmed = body.trim();

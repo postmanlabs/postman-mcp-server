@@ -117,6 +117,35 @@ const full = [
   'getPackages',
   'updatePackage',
 
+  // API Catalog
+  'getApiCatalogDiscoveryServices',
+  'postApiCatalogDiscoveryServices',
+  'getApiCatalogDiscoveryService',
+  'getApiCatalogServices',
+  'getApiCatalogService',
+  'getApiCatalogServiceEndpoints',
+  'getApiCatalogServiceMonitorRuns',
+  'getApiCatalogServiceSpecificationLints',
+  'getApiCatalogServiceCiRuns',
+  'getApiCatalogSystemEnvironments',
+  'createApiCatalogSystemEnvironment',
+  'getApiCatalogSystemEnvironment',
+  'updateApiCatalogSystemEnvironment',
+  'getApiCatalogSystemEnvironmentAssociations',
+  'addApiCatalogSystemEnvironmentAssociations',
+  'removeApiCatalogSystemEnvironmentAssociations',
+
+  // Component Library
+  'createComponent',
+  'getAllComponents',
+  'getComponent',
+  'updateComponent',
+  'getComponentDraft',
+  'updateComponentDraft',
+  'createComponentVersion',
+  'getComponentVersions',
+  'getComponentVersion',
+
   // Specs
   'createSpec',
   'deleteSpec',
@@ -171,6 +200,16 @@ const full = [
   'getAsyncSpecTaskStatus',
   'getStatusOfAnAsyncApiTask',
 
+  // Secret Scanner
+  'detectedSecretsQueries',
+  'getDetectedSecretsLocations',
+  'updateDetectedSecretResolutions',
+  'getSecretTypes',
+
+  // Audit Logs
+  'getAuditLogs',
+  'getAuditLogEventActions',
+
   // SDKs
   'getSdks',
   'createSdk',
@@ -185,9 +224,27 @@ const full = [
   'updateSdkGitConnection',
   'getSdkGitConnectionPullRequests',
 
+  // Teams
+  'getTeams',
+  'getTeam',
+  'createTeam',
+  'getTeamSettings',
+  'updateTeamSettings',
+  'getTeamAccessRequests',
+  'createAccessRequest',
+  'approveDenyAccessRequest',
+  'manageTeamMemberRoles',
+  'removeTeamMembers',
+
   // User and Tags
   'getAuthenticatedUser',
+  'getTeamUsers',
+  'getTeamUser',
   'getTaggedEntities',
+
+  // Groups
+  'getGroups',
+  'getGroup',
 
   // Instructions
   'getCodeGenerationInstructions',
@@ -217,6 +274,10 @@ const full = [
   // Analytics
   'getAnalyticsData',
   'getAnalyticsMetadata',
+
+  // Context Graph
+  'submitContextGraphAsk',
+  'getContextGraphAsk',
 ] as const;
 
 const minimal = [
@@ -293,6 +354,13 @@ const code = [
 
 const learn = ['searchLearningCenter'] as const;
 
+/**
+ * Context Graph asks. Two tools that are one workflow: submit an ask, then poll it.
+ * Kept as its own toolset so a client that only needs to question the team's software
+ * estate does not have to load the whole API surface to do it.
+ */
+const contextGraph = ['submitContextGraphAsk', 'getContextGraphAsk'] as const;
+
 const excludedFromGeneration = [
   'runCollection',
   'getEnabledTools',
@@ -348,6 +416,7 @@ export const enabledResources = {
   minimal,
   code,
   learn,
+  contextGraph,
   excludedFromGeneration,
   subtools,
   templated,

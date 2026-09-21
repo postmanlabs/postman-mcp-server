@@ -65,7 +65,7 @@ export const BaseTelemetryEventSchema = z.object({
   transport: z.enum(['stdio', 'http', 'sse']),
 
   /** Which toolset was loaded at startup */
-  toolset: z.enum(['full', 'minimal', 'code', 'learn']),
+  toolset: z.enum(['full', 'minimal', 'code', 'learn', 'contextGraph']),
 
   /** Semver version of this MCP server */
   server_version: z.string(),

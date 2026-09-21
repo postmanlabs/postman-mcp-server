@@ -1,16 +1,17 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceEnvironmentsContext';
 export const description = 'Returns a markdown-formatted summary of all environments in a workspace, including their variables. Use this to understand the environment configuration available in a workspace.';
 export const parameters = z.object({
     workspaceId: z.string().describe("The workspace's ID."),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Get Workspace Environments Context',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 export async function handler(args, extra) {
     try {
         const endpoint = `/context/workspaces/${encodeURIComponent(String(args.workspaceId))}/environments`;

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 
 export const method = 'getWorkspaceContext';
 export const description =
@@ -11,12 +16,13 @@ export const parameters = z.object({
   workspaceId: z.string().describe("The workspace's ID."),
 });
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get Workspace Context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 export async function handler(
   args: z.infer<typeof parameters>,

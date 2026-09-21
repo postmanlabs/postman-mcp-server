@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../../clients/postman.js';
 import { CallToolResult, IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, McpError, asMcpError } from '../utils/toolHelpers.js';
+import {
+  ServerContext,
+  McpError,
+  asMcpError,
+  defineToolAnnotations,
+} from '../utils/toolHelpers.js';
 import {
   handler as getCollectionApiHandler,
   parameters as getCollectionApiParameters,
@@ -28,12 +33,13 @@ export const parameters = baseParameters.extend({
     .optional(),
 });
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get Collection (map by default)',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 type ControllerArgs = z.infer<typeof parameters>;
 type HandlerExtra = {

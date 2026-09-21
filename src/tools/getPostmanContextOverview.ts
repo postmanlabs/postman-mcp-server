@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 
 export const method = 'getPostmanContextOverview';
 export const description = `Returns the Postman Context overview (markdown). Explains the core concepts (workspaces, collections, requests, installed code) and the end-to-end workflow for finding APIs, generating client code, and maintaining installed requests over time.
@@ -10,12 +15,13 @@ Call this FIRST — and only — when the user wants to explore APIs in Postman'
 
 export const parameters = z.object({});
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get Postman Context Overview',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 export async function handler(
   _args: z.infer<typeof parameters>,

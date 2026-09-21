@@ -16,7 +16,7 @@ export const annotations = {
     title: 'Transfer element to a workspace',
     readOnlyHint: false,
     openWorldHint: true,
-    destructiveHint: false,
+    destructiveHint: true,
     idempotentHint: false,
 };
 export async function handler(args, extra) {

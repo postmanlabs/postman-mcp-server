@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'listRunsForExecution';
 export const description = 'Lists runs for a monitor execution. Each execution may produce multiple runs across regions. Returns run metadata including region, state, result counts, and timestamps. Not paginated.\n\nThis is Step 2 of the monitor-run workflow: listMonitorExecutions → listRunsForExecution → getMonitorRunResults. Pass the executionId from listMonitorExecutions. Returns run objects whose `id` is the runId needed by getMonitorRunResults.';
 export const parameters = z.object({
@@ -8,12 +8,13 @@ export const parameters = z.object({
         .describe("The monitor's ID. Must be a plain UUID (e.g. `1f00bf12-7ee5-4500-a1a7-3c721a03d42c`), not a uid with numeric prefix."),
     executionId: z.string().describe("The execution's ID, obtained from listMonitorExecutions."),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'List Runs For Monitor Execution',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
-};
+    openWorldHint: false,
+});
 export async function handler(args, extra) {
     try {
         const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/executions/${encodeURIComponent(String(args.executionId))}/runs`;

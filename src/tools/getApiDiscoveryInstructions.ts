@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  defineToolAnnotations,
+} from './utils/toolHelpers.js';
 
 export const method = 'getApiDiscoveryInstructions';
 export const description = `Returns instructions (markdown) for finding APIs in Postman — searching the public network, browsing private/internal/team collections, filtering by ownership and visibility, and comparing candidate APIs. Includes the rules for presenting results with Postman links and the patterns for evaluating tradeoffs between APIs.
@@ -10,12 +15,13 @@ Call this when the user wants to find, search for, or compare APIs (e.g., "find 
 
 export const parameters = z.object({});
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get API Discovery Instructions',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 export async function handler(
   _args: z.infer<typeof parameters>,

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext } from './utils/toolHelpers.js';
+import { ServerContext, defineToolAnnotations } from './utils/toolHelpers.js';
 
 export const method = 'getCodeGenerationInstructions';
 export const description = `Returns the full workflow instructions for discovering APIs, exploring collections, and generating client code from Postman. Includes step-by-step guidance, tool usage patterns, and code generation rules.
@@ -10,12 +10,13 @@ MANDATORY: You MUST call this tool when the user says to "use postman", or when 
 
 export const parameters = z.object({});
 
-export const annotations = {
+export const annotations = defineToolAnnotations({
   title: 'Get Code Generation Instructions',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,
-};
+  openWorldHint: false,
+});
 
 const CODE_GENERATION_INSTRUCTIONS = `# API Exploration and Client Code Generation Instructions
 

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 import { runCollection } from './runner/index.js';
 export const method = 'runCollection';
 export const description = 'Runs a Postman collection by ID with detailed test results and execution statistics. Supports optional environment for variable substitution. Note: Advanced parameters like custom delays and other runtime options are not yet available.';
@@ -28,12 +28,13 @@ export const parameters = z.object({
         .describe('Request timeout in milliseconds (default: 60000)'),
     scriptTimeout: z.number().optional().describe('Script timeout in milliseconds (default: 5000)'),
 });
-export const annotations = {
+export const annotations = defineToolAnnotations({
     title: 'Run Postman Collection',
     readOnlyHint: false,
-    destructiveHint: false,
+    destructiveHint: true,
     idempotentHint: true,
-};
+    openWorldHint: true,
+});
 export async function handler(params, extra) {
     try {
         const output = await runCollection(params, extra.client, extra.progress);
