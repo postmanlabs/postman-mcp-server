@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 import { runCollection } from './runner/index.js';
 export const method = 'runCollection';
 export const description = 'Runs a Postman collection by ID with detailed test results and execution statistics. Supports optional environment for variable substitution. Note: Advanced parameters like custom delays and other runtime options are not yet available.';

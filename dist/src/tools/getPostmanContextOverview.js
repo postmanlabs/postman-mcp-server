@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getPostmanContextOverview';
 export const description = `Returns the Postman Context overview (markdown). Explains the core concepts (workspaces, collections, requests, installed code) and the end-to-end workflow for finding APIs, generating client code, and maintaining installed requests over time.
 

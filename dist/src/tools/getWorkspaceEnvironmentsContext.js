@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceEnvironmentsContext';
 export const description = 'Returns a markdown-formatted summary of all environments in a workspace, including their variables. Use this to understand the environment configuration available in a workspace.';
 export const parameters = z.object({

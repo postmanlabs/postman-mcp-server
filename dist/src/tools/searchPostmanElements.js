@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'searchPostmanElements';
 export const description = `Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, and documents).
 

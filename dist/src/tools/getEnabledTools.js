@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { enabledResources } from '../enabledResources.js';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getEnabledTools';
 export const description = 'IMPORTANT: Run this tool first when a requested tool is unavailable. Returns information about which tools are enabled in the full and minimal tool sets, helping you identify available alternatives.';
 export const parameters = z.object({});

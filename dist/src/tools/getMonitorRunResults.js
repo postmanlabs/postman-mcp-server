@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getMonitorRunResults';
 export const description = 'Gets results for a monitor run, including trimmed execution logs (beforeItem and assertion events only) and result counts. Use this to inspect per-request assertions and failure details for a specific run.\n\nThis is Step 3 of the monitor-run workflow: listMonitorExecutions → listRunsForExecution → getMonitorRunResults. The runId must come from listRunsForExecution — do NOT use an executionId here, it will return 404.';
 export const parameters = z.object({

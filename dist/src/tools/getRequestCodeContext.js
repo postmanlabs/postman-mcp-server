@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getRequestCodeContext';
 export const description = 'Returns comprehensive markdown-formatted context for generating code from a request. Includes the full request definition (method, URL, headers, query params, body, auth), all response examples with full details, and merged collection and environment variables with source tags.';
 export const parameters = z.object({

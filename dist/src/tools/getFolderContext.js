@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 export const method = 'getFolderContext';
 export const description = 'Returns a markdown-formatted summary of a folder within a collection, including its metadata, description, and authentication settings.';
 export const parameters = z.object({
