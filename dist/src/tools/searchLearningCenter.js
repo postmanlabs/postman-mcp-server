@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 import { env } from '../env.js';
 export const method = 'searchLearningCenter';
+export const title = 'Search the Postman Learning Center';
 export const description = `Search the official Postman documentation and learning resources at https://learning.postman.com.
 
 Use this tool when you need authoritative, up-to-date guidance on how to use Postman features — for example creating mock servers, writing tests, using environments, configuring monitors, or any "how do I…" question about the Postman product. Returns relevant documentation passages with their source URLs.

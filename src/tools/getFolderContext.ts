@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getFolderContext';
+export const title = 'Get folder context';
 export const description =
   'Returns a markdown-formatted summary of a folder within a collection, including its metadata, description, and authentication settings.';
 
@@ -18,7 +19,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Folder Context',
+  title: 'Get folder context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

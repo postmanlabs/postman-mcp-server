@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'searchPostmanElements';
+export const title = 'Search Postman elements';
 export const description = `Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, and documents).
 
 **Ownership:**
@@ -159,7 +160,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = defineToolAnnotations({
-    title: 'Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, documents).',
+    title: 'Search Postman elements',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,
