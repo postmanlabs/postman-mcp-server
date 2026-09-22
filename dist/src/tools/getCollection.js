@@ -1,1 +1,1 @@
-export { method, description, parameters, annotations, handler } from './getCollection/index.js';
+export { method, title, description, parameters, annotations, handler, } from './getCollection/index.js';

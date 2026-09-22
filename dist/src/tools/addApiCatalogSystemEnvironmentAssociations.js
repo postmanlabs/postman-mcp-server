@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'addApiCatalogSystemEnvironmentAssociations';
-export const title = 'Add system environment associations';
+export const title = 'Add API Catalog system environment associations';
 export const description = 'Attaches workspace environments to a system environment. Send 1 to 25\n\\`workspaceEnvironmentIds\\` per call, each an environment UID\n(\\`userId\\`-\\`environmentId\\`). \\`allowPartial=false\\` rejects the whole\ncall if any single association is ineligible, while \\`allowPartial=true\\` adds the\neligible ones and skips the rest — prefer \\`false\\` unless you intend to accept a\npartial result, and read the response to see which were skipped.\nDo not use this tool to create the environments themselves; use createEnvironment\nfirst. Requires a Postman Enterprise plan.\n';
 export const parameters = z.object({
     systemEnvironmentId: z.string().describe("The system environment's ID."),
@@ -20,7 +20,7 @@ export const parameters = z.object({
         .describe('A list of workspace environment unique IDs (`userId`-`environmentId`).'),
 });
 export const annotations = {
-    title: 'Add system environment associations',
+    title: 'Add API Catalog system environment associations',
     readOnlyHint: false,
     openWorldHint: true,
     destructiveHint: false,

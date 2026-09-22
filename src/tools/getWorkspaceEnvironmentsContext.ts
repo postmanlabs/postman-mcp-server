@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getWorkspaceEnvironmentsContext';
+export const title = 'Get workspace environments context';
 export const description =
   'Returns a markdown-formatted summary of all environments in a workspace, including their variables. Use this to understand the environment configuration available in a workspace.';
 
@@ -17,7 +18,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Workspace Environments Context',
+  title: 'Get workspace environments context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

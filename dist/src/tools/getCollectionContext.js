@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getCollectionContext';
+export const title = 'Get collection context';
 export const description = 'Returns a markdown-formatted summary of a collection, including its metadata, authentication, variables, and a tree of folders and requests. Use this to understand the structure and contents of a collection.';
 export const parameters = z.object({
     collectionId: z.string().describe("The collection's ID."),
 });
 export const annotations = defineToolAnnotations({
-    title: 'Get Collection Context',
+    title: 'Get collection context',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,

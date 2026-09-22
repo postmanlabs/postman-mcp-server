@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'transferCollectionFolders';
-export const title = 'Transfer folders';
+export const title = 'Transfer collection folders';
 export const description = 'Copies or moves folders into a collection or folder.';
 export const parameters = z.object({
     ids: z
@@ -37,7 +37,7 @@ export const parameters = z.object({
         .describe("The transferred items' placement in the target destination:\n- For `start` or `end` — Do not include the `model` and `id` values.\n- For `before` or `after` — Include the `model` and `id` properties.\n"),
 });
 export const annotations = {
-    title: 'Transfer folders',
+    title: 'Transfer collection folders',
     readOnlyHint: false,
     openWorldHint: true,
     destructiveHint: false,

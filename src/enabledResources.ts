@@ -60,7 +60,6 @@ const full = [
   'deleteCollectionComment',
   'getCollectionComments',
   'updateCollectionComment',
-  'updateApiCollectionComment',
   'createFolderComment',
   'deleteFolderComment',
   'getFolderComments',
@@ -252,18 +251,12 @@ const full = [
   'getApiDiscoveryInstructions',
   'getInstalledApiMaintenanceInstructions',
 
-  // Transfer
-  'transferCollectionFolders',
-  'transferCollectionResponses',
-  'transferCollectionResponses',
-
   // 'asyncMergePullCollectionFork' skipped
   // 'asyncMergePullCollectionTaskStatus' skipped
 
   // Duplicate Collection
   'duplicateCollection',
   'getDuplicateCollectionTaskStatus',
-  'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
   'searchPostmanElements',

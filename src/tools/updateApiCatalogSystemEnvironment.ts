@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult, ErrorCode } from '@modelcontextproto
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updateApiCatalogSystemEnvironment';
-export const title = 'Update a system environment';
+export const title = 'Update an API Catalog system environment';
 export const description =
   "Updates a system environment's \\`name\\`, \\`description\\`, \\`color\\`, or \\`isProduction\\`. Send\nat least one field; omitted fields are left unchanged. A new name must stay unique\nwithin the team — a duplicate returns 409. Pass \\`description\\` as an empty string to\nclear it. \\`label\\` cannot be changed after creation.\nDo not use this tool to change which workspace environments are attached; use\naddApiCatalogSystemEnvironmentAssociations or\nremoveApiCatalogSystemEnvironmentAssociations instead. Requires a Postman Enterprise\nplan.\n";
 export const parameters = z.object({
@@ -33,7 +33,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Update a system environment',
+  title: 'Update an API Catalog system environment',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

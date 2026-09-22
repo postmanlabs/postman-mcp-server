@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getCollectionContext';
+export const title = 'Get collection context';
 export const description =
   'Returns a markdown-formatted summary of a collection, including its metadata, authentication, variables, and a tree of folders and requests. Use this to understand the structure and contents of a collection.';
 
@@ -17,7 +18,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Collection Context',
+  title: 'Get collection context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

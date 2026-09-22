@@ -10,13 +10,14 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getEnabledTools';
+export const title = 'Get enabled tools';
 export const description =
   'IMPORTANT: Run this tool first when a requested tool is unavailable. Returns information about which tools are enabled in the full and minimal tool sets, helping you identify available alternatives.';
 
 export const parameters = z.object({});
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Enabled Tools',
+  title: 'Get enabled tools',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

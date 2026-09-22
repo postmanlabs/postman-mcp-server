@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createCollectionPullRequest';
-export const title = 'Create a pull request';
+export const title = 'Create a collection pull request';
 export const description =
   "Creates a pull request to merge changes from a forked collection into its parent\n(destination) collection. Provide the title, description, source and destination\ncollection IDs, and reviewer IDs. Use this after forking a collection\n(createCollectionFork) to propose the fork's changes for review rather than\nhard-merging them directly.\n";
 export const parameters = z.object({
@@ -17,7 +17,7 @@ export const parameters = z.object({
   destinationId: z.string().describe('The collection ID to merge the pull request into.'),
 });
 export const annotations = {
-  title: 'Create a pull request',
+  title: 'Create a collection pull request',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,
