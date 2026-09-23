@@ -3,6 +3,20 @@ import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
+const collectionItemEvent = z
+  .array(
+    z.object({
+      listen: z.enum(['test', 'prerequest']),
+      script: z
+        .object({
+          type: z.string().optional(),
+          exec: z.array(z.string().nullable()).optional(),
+        })
+        .optional(),
+    })
+  )
+  .describe('A list of scripts configured to run when specific events occur.');
+
 export const method = 'createCollection';
 export const title = 'Create a collection';
 export const description =
@@ -632,6 +646,7 @@ export const parameters = z.object({
                       .nullable()
                       .describe("The item's description.")
                       .optional(),
+                    event: collectionItemEvent.optional(),
                     request: z
                       .object({
                         url: z
@@ -716,6 +731,7 @@ export const parameters = z.object({
                               ])
                               .optional(),
                           })
+                          .passthrough()
                           .optional(),
                       })
                       .describe(
@@ -724,71 +740,84 @@ export const parameters = z.object({
                       .optional(),
                     item: z
                       .array(
-                        z.object({
-                          name: z.string().describe("The item's name.").optional(),
-                          description: z
-                            .string()
-                            .nullable()
-                            .describe("The item's description.")
-                            .optional(),
-                          request: z
-                            .object({
-                              url: z
-                                .union([z.string(), z.object({ raw: z.string().optional() })])
-                                .optional(),
-                              method: z
-                                .preprocess(
-                                  (v) => (typeof v === 'string' ? v.toUpperCase() : v),
-                                  z.enum([
-                                    'GET',
-                                    'PUT',
-                                    'POST',
-                                    'PATCH',
-                                    'DELETE',
-                                    'COPY',
-                                    'HEAD',
-                                    'OPTIONS',
-                                    'LINK',
-                                    'UNLINK',
-                                    'PURGE',
-                                    'LOCK',
-                                    'UNLOCK',
-                                    'PROPFIND',
-                                    'VIEW',
-                                  ])
-                                )
-                                .optional(),
-                              header: z
-                                .array(
-                                  z.object({
-                                    key: z.string().optional(),
-                                    value: z.string().optional(),
-                                  })
-                                )
-                                .optional(),
-                              body: z
-                                .object({ mode: z.string().optional(), raw: z.string().optional() })
-                                .optional(),
-                            })
-                            .describe('The request definition.')
-                            .optional(),
-                          item: z
-                            .array(
-                              z.object({
-                                name: z.string().optional(),
-                                request: z
+                        z
+                          .object({
+                            name: z.string().describe("The item's name.").optional(),
+                            description: z
+                              .string()
+                              .nullable()
+                              .describe("The item's description.")
+                              .optional(),
+                            event: collectionItemEvent.optional(),
+                            request: z
+                              .object({
+                                url: z
+                                  .union([z.string(), z.object({ raw: z.string().optional() })])
+                                  .optional(),
+                                method: z
+                                  .preprocess(
+                                    (v) => (typeof v === 'string' ? v.toUpperCase() : v),
+                                    z.enum([
+                                      'GET',
+                                      'PUT',
+                                      'POST',
+                                      'PATCH',
+                                      'DELETE',
+                                      'COPY',
+                                      'HEAD',
+                                      'OPTIONS',
+                                      'LINK',
+                                      'UNLINK',
+                                      'PURGE',
+                                      'LOCK',
+                                      'UNLOCK',
+                                      'PROPFIND',
+                                      'VIEW',
+                                    ])
+                                  )
+                                  .optional(),
+                                header: z
+                                  .array(
+                                    z.object({
+                                      key: z.string().optional(),
+                                      value: z.string().optional(),
+                                    })
+                                  )
+                                  .optional(),
+                                body: z
                                   .object({
-                                    url: z
-                                      .union([z.string(), z.object({ raw: z.string().optional() })])
-                                      .optional(),
-                                    method: z.string().optional(),
+                                    mode: z.string().optional(),
+                                    raw: z.string().optional(),
                                   })
                                   .optional(),
                               })
-                            )
-                            .describe('Further nested folder items.')
-                            .optional(),
-                        })
+                              .describe('The request definition.')
+                              .optional(),
+                            item: z
+                              .array(
+                                z
+                                  .object({
+                                    name: z.string().optional(),
+                                    event: collectionItemEvent.optional(),
+                                    request: z
+                                      .object({
+                                        url: z
+                                          .union([
+                                            z.string(),
+                                            z.object({ raw: z.string().optional() }),
+                                          ])
+                                          .optional(),
+                                        method: z.string().optional(),
+                                      })
+                                      .passthrough()
+                                      .optional(),
+                                  })
+                                  .passthrough()
+                              )
+                              .describe('Further nested folder items.')
+                              .optional(),
+                          })
+                          .passthrough()
                       )
                       .describe('Nested folder items for deeper folder structures.')
                       .optional(),
