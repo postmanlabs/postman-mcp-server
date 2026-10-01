@@ -56,7 +56,9 @@ export class TelemetrySession {
     setToolNames(toolNames) {
         this.toolListCount = toolNames.length;
         const sorted = [...toolNames].sort();
-        const hash = createHash('sha256').update(sorted.join(',')).digest('hex');
+        const hash = createHash('sha256')
+            .update(sorted.join(','))
+            .digest('hex');
         this.toolsetSnapshotId = hash.substring(0, 12);
     }
     getToolListCount() {

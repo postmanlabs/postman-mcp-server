@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getMockServerResponse';
-export const title = 'Get a single server response';
+export const title = 'Get a server response for a mock';
 export const description = 'Gets the full details of a specific server response, including its \\`body\\`, \\`headers\\`, and \\`language\\`.\n\n- Use \\`getMockServerResponses\\` first to list available server response IDs.\n- To check which response is active, call \\`getMock\\` and read \\`config.serverResponseId\\`.\n';
 export const parameters = z.object({
     mockId: z.string().describe("The mock's ID."),
     serverResponseId: z.string().describe("The server response's ID."),
 });
 export const annotations = {
-    title: 'Get a single server response',
+    title: 'Get a server response for a mock',
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createCollectionRequest';
-export const title = 'Create a request';
+export const title = 'Create a collection request';
 export const description =
   'Creates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\nIt is recommended that you pass the \\`name\\` property in the request body. If you do not, the system uses a null value. As a result, this creates a request with a blank name.\n';
 export const parameters = z.object({
@@ -411,7 +411,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Create a request',
+  title: 'Create a collection request',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

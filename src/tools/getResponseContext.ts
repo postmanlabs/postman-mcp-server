@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getResponseContext';
+export const title = 'Get response context';
 export const description =
   'Returns a markdown-formatted summary of a saved response example within a collection request, including its status code, headers, body, and the original request details.';
 
@@ -19,7 +20,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Response Context',
+  title: 'Get response context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

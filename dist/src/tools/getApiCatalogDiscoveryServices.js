@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogDiscoveryServices';
-export const title = 'Get discovered services';
+export const title = 'Get discovered API Catalog services';
 export const description = 'Lists services that Postman has detected but that are not necessarily in the API\nCatalog yet. Use this to find candidates to onboard, or to check whether a service has\nalready been integrated. Filter with \\`discoverySource\\` (\\`api_gateway_app\\`,\n\\`insights_project\\`, \\`infra_watcher\\`, \\`public_api\\`), \\`status\\` (\\`discovered\\`,\n\\`integrated\\`, \\`archived\\`), and \\`search\\` on the name; page with \\`limit\\` (max 100) and\n\\`cursor\\`.\nDo not use this tool for services already in the catalog — those have analytics and\ngovernance data and are read with getApiCatalogServices. Requires a Postman Enterprise\nplan.\n';
 export const parameters = z.object({
     discoverySource: z
@@ -29,7 +29,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Get discovered services',
+    title: 'Get discovered API Catalog services',
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

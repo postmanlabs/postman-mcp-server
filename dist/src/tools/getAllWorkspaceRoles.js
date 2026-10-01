@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getAllWorkspaceRoles';
-export const title = 'Get all roles';
+export const title = 'Get available workspace roles';
 export const description = "Lists the workspace role types available to the team, which depend on the team's plan.\nCall this before updateWorkspaceRoles to learn which roles you are allowed to assign.\nThis returns the catalogue of possible roles, not anyone's actual assignments — use\ngetWorkspaceRoles for those.\n";
 export const parameters = z.object({});
 export const annotations = {
-    title: 'Get all roles',
+    title: 'Get available workspace roles',
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

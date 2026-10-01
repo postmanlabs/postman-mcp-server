@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updateMockServerResponse';
-export const title = 'Update a server response';
+export const title = 'Update a server response for a mock';
 export const description =
   "Updates a server response's name, statusCode, body, headers, or language.\n\n- \\`statusCode\\` must remain a 5xx value (500–599).\n- \\`body\\` is the raw response body string. Pass the full desired body — this is a full replacement, not a partial update.\n- Updating a server response does not change which response is active. To activate it, call \\`updateMock\\` with \\`config.serverResponseId\\`.\n";
 export const parameters = z.object({
@@ -45,7 +45,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Update a server response',
+  title: 'Update a server response for a mock',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,
