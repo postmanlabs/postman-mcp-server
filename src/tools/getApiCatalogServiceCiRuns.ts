@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getApiCatalogServiceCiRuns';
-export const title = "Get a service's CI runs";
+export const title = "Get an API Catalog service's CI runs";
 export const description =
   'Lists CI collection runs for a service, with summary statistics, pipeline details, and\nGit metadata. Use this to tie test results back to a branch, workflow, or commit\nauthor. \\`systemEnvironmentId\\` is required. Filter with \\`collectionId\\`,\n\\`environmentId\\`, \\`status\\`, \\`branch\\`, \\`workflowName\\`, \\`actor\\`, \\`repoName\\`, and\n\\`repoOwner\\`; order with \\`sort\\` in \\`field:direction\\` form over \\`timestamp\\` or\n\\`duration\\`.\nDo not use this tool for scheduled monitor runs; use getApiCatalogServiceMonitorRuns\ninstead. Requires a Postman Enterprise plan.\n';
 export const parameters = z.object({
@@ -60,7 +60,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: "Get a service's CI runs",
+  title: "Get an API Catalog service's CI runs",
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

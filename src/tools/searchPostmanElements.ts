@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'searchPostmanElements';
+export const title = 'Search Postman elements';
 
 export const description = `Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, and documents).
 
@@ -192,8 +193,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title:
-    'Search for Postman entities (requests, collections, workspaces, specs, flows, environments, mocks, documents).',
+  title: 'Search Postman elements',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

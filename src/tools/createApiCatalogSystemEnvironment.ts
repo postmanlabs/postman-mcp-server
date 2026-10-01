@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'createApiCatalogSystemEnvironment';
-export const title = 'Create a system environment';
+export const title = 'Create an API Catalog system environment';
 export const description =
   'Creates a system environment for the team. \\`name\\` and \\`color\\` (a six-digit hex code\nsuch as \\`#00FF00\\`) are both required, and the name must be unique within the team — a\nduplicate returns 409. Optionally set \\`label\\` (lowercase alphanumerics, hyphens, and\nunderscores only), \\`description\\`, and \\`isProduction\\`.\nDo not use this tool to create a Postman environment with variables; use\ncreateEnvironment instead. Requires a Postman Enterprise plan.\n';
 export const parameters = z.object({
@@ -35,7 +35,7 @@ export const parameters = z.object({
     .default(false),
 });
 export const annotations = {
-  title: 'Create a system environment',
+  title: 'Create an API Catalog system environment',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

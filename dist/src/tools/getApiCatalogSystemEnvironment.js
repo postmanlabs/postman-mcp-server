@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogSystemEnvironment';
-export const title = 'Get a system environment';
+export const title = 'Get an API Catalog system environment';
 export const description = "Gets one system environment by ID. Use getApiCatalogSystemEnvironments when you need\nto discover the ID.\nDo not use this tool to list the services in that environment; use\ngetApiCatalogServices with this environment's ID instead. Requires a Postman\nEnterprise plan.\n";
 export const parameters = z.object({
     systemEnvironmentId: z.string().describe("The system environment's ID."),
 });
 export const annotations = {
-    title: 'Get a system environment',
+    title: 'Get an API Catalog system environment',
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

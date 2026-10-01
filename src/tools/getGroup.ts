@@ -4,12 +4,12 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getGroup';
-export const title = 'Get a group';
+export const title = 'Get a team group';
 export const description =
   "Gets one Postman user group by ID. Use this when you already hold a group ID — from a\ncollection or workspace role assignment — and need that group's details; use getGroups\nwhen you need to list or search.\nThis is a Postman user group, not a SCIM group and not a team.\n";
 export const parameters = z.object({ groupId: z.number().int().describe("The group's ID.") });
 export const annotations = {
-  title: 'Get a group',
+  title: 'Get a team group',
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

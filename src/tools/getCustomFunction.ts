@@ -3,20 +3,24 @@ import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
-export const method = 'deleteApiCollectionComment';
-export const title = "Delete a collection's comment";
+export const method = 'getCustomFunction';
+export const title = 'Get a custom function';
 export const description =
-  "Deletes a comment from an API's collection. On success, this returns an HTTP \\`204 No Content\\` response.\n\n**Note:**\n\nDeleting the first comment of a thread deletes all the comments in the thread.\n";
+  "Gets a custom function's metadata by ID. Pass \\`include=content\\` to also return its\nJavaScript source, which is required before editing it with updateCustomFunction.\n";
 export const parameters = z.object({
-  apiId: z.string().describe("The API's ID."),
-  collectionId: z.string().describe("The collection's unique ID."),
-  commentId: z.number().int().describe("The comment's ID."),
+  customFunctionId: z.string().describe("The custom function's ID."),
+  include: z
+    .literal('content')
+    .describe(
+      "The related fields to include in the response. Currently only `content` is supported. Omit this parameter to receive only the resource's metadata."
+    )
+    .optional(),
 });
 export const annotations = {
-  title: "Delete a collection's comment",
-  readOnlyHint: false,
-  openWorldHint: true,
-  destructiveHint: true,
+  title: 'Get a custom function',
+  readOnlyHint: true,
+  openWorldHint: false,
+  destructiveHint: false,
   idempotentHint: true,
 };
 
@@ -25,13 +29,14 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/apis/${encodeURIComponent(String(args.apiId))}/collections/${encodeURIComponent(String(args.collectionId))}/comments/${encodeURIComponent(String(args.commentId))}`;
+    const endpoint = `/custom-functions/${encodeURIComponent(String(args.customFunctionId))}`;
     const query = new URLSearchParams();
+    if (args.include !== undefined) query.set('include', String(args.include));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
       headers: extra.headers,
     };
-    const result = await extra.client.delete(url, options);
+    const result = await extra.client.get(url, options);
     return {
       content: [
         {

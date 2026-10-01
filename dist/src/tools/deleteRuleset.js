@@ -1,15 +1,11 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
-export const method = 'deleteApiCollectionComment';
-export const title = "Delete a collection's comment";
-export const description = "Deletes a comment from an API's collection. On success, this returns an HTTP \\`204 No Content\\` response.\n\n**Note:**\n\nDeleting the first comment of a thread deletes all the comments in the thread.\n";
-export const parameters = z.object({
-    apiId: z.string().describe("The API's ID."),
-    collectionId: z.string().describe("The collection's unique ID."),
-    commentId: z.number().int().describe("The comment's ID."),
-});
+export const method = 'deleteRuleset';
+export const title = 'Delete a ruleset';
+export const description = "Permanently deletes a custom ruleset, which stops its rules from applying to every\ngovernance group it was assigned to. To stop applying it to one group only, use\ndeleteRulesetAssignment instead. Postman-managed rulesets (\\`type: system\\`) can't be\ndeleted and return 403.\n";
+export const parameters = z.object({ rulesetId: z.string().describe("The ruleset's ID.") });
 export const annotations = {
-    title: "Delete a collection's comment",
+    title: 'Delete a ruleset',
     readOnlyHint: false,
     openWorldHint: true,
     destructiveHint: true,
@@ -17,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/apis/${encodeURIComponent(String(args.apiId))}/collections/${encodeURIComponent(String(args.collectionId))}/comments/${encodeURIComponent(String(args.commentId))}`;
+        const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

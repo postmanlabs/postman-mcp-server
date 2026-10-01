@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'removeApiCatalogSystemEnvironmentAssociations';
-export const title = 'Remove system environment associations';
+export const title = 'Remove API Catalog system environment associations';
 export const description =
   'Detaches workspace environments from a system environment. Send 1 to 25\n\\`workspaceEnvironmentIds\\` per call, each an environment UID\n(\\`userId\\`-\\`environmentId\\`). This only removes the association — the underlying Postman\nenvironments are left intact.\nDo not use this tool to delete an environment; use deleteEnvironment instead. Requires\na Postman Enterprise plan.\n';
 export const parameters = z.object({
@@ -21,7 +21,7 @@ export const parameters = z.object({
     .describe('A list of workspace environment unique IDs (`userId`-`environmentId`).'),
 });
 export const annotations = {
-  title: 'Remove system environment associations',
+  title: 'Remove API Catalog system environment associations',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: true,

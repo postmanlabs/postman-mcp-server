@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updateWorkspaceGlobalVariables';
-export const title = 'Update global variables';
+export const title = "Update a workspace's global variables";
 export const description =
   "Updates and replaces a workspace's global [variables](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes). This endpoint replaces all existing global variables with the variables you pass in the request body.";
 export const parameters = z.object({
@@ -30,7 +30,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Update global variables',
+  title: "Update a workspace's global variables",
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

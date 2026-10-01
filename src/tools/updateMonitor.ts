@@ -40,17 +40,58 @@ export const parameters = z.object({
           followRedirects: z.boolean().describe('If true, follow redirects enabled.').optional(),
           requestDelay: z
             .number()
-            .gte(1)
+            .int()
+            .gte(0)
             .lte(900000)
-            .describe("The monitor's request delay value, in milliseconds.")
+            .describe(
+              "The monitor's delay between requests, in milliseconds, as a whole number. A `0` value means no delay. The maximum value is `600000` (10 minutes) on free plans and `900000` (15 minutes) on paid plans. This value is checked only when the value changes."
+            )
             .optional(),
           requestTimeout: z
             .number()
+            .int()
             .gte(1)
             .lte(900000)
-            .describe("The monitor's request timeout value, in milliseconds.")
+            .nullable()
+            .describe(
+              "The monitor's request timeout, in milliseconds, as a whole number. A `null` value means no timeout, and so does omitting it when creating a monitor. A monitor with no timeout returns a `null` value. The maximum value is `600000` (10 minutes) on free plans and `900000` (15 minutes) on paid plans, checked only when the value changes."
+            )
             .optional(),
           strictSSL: z.boolean().describe('If true, strict SSL enabled.').optional(),
+          requestSelection: z
+            .object({
+              selectedItems: z
+                .array(
+                  z
+                    .object({
+                      id: z
+                        .string()
+                        .regex(
+                          new RegExp(
+                            '^(?:[0-9]{1,23}-)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$|^[0-9a-f]{24}$'
+                          )
+                        )
+                        .max(60)
+                        .describe(
+                          "The collection item's ID:\n\n- For a collection that contains only HTTP requests, use the item's UID in `<ownerId>-<id>` format (for example, `12345678-5daabc50-8451-45f6-922d-96b403b4f28e`). An ID without the `ownerId` prefix is also accepted.\n- For a collection that contains GraphQL or gRPC requests, use the item's 24 character hexadecimal ID (for example, `66f1c0e2a1b2c3d4e5f60718`). Letters must be lowercase.\n"
+                        ),
+                    })
+                    .strict()
+                )
+                .min(1)
+                .describe(
+                  "The collection items to run, in run order. Each entry's position in this array is its position in the run, not the collection's ordering. Each item must exist in the monitor's collection, or the request returns an HTTP `400 Bad Request` error."
+                ),
+            })
+            .strict()
+            .nullable()
+            .describe(
+              "The ordered subset of the monitor's collection to run. If set, the monitor runs exactly these items in the given order instead of the full collection. Pass a `null` value to clear the selection and run the full collection again."
+            )
+            .optional(),
+        })
+        .refine((value) => Object.keys(value).length >= 1, {
+          message: 'Must include at least 1 property.',
         })
         .describe("Information about the monitor's option settings.")
         .optional(),

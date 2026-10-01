@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'listRunsForExecution';
+export const title = 'List runs for a monitor execution';
 export const description =
   'Lists runs for a monitor execution. Each execution may produce multiple runs across regions. Returns run metadata including region, state, result counts, and timestamps. Not paginated.\n\nThis is Step 2 of the monitor-run workflow: listMonitorExecutions → listRunsForExecution → getMonitorRunResults. Pass the executionId from listMonitorExecutions. Returns run objects whose `id` is the runId needed by getMonitorRunResults.';
 
@@ -22,7 +23,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'List Runs For Monitor Execution',
+  title: 'List runs for a monitor execution',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

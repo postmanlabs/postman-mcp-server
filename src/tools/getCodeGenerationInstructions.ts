@@ -4,6 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, defineToolAnnotations } from './utils/toolHelpers.js';
 
 export const method = 'getCodeGenerationInstructions';
+export const title = 'Get code generation instructions';
 export const description = `Returns the full workflow instructions for discovering APIs, exploring collections, and generating client code from Postman. Includes step-by-step guidance, tool usage patterns, and code generation rules.
 
 MANDATORY: You MUST call this tool when the user says to "use postman", or when the user wants to do something that requires locating a specific API for the purpose of answering questions, planning a build, and in most cases proceeding to generate code that calls the API. ALWAYS call getCodeGenerationInstructions BEFORE calling other tools in this workflow. This tool returns comprehensive step-by-step instructions on how to search for APIs, gather API-specific context from other tools, and then generate client code based on the context retrieved.`;
@@ -11,7 +12,7 @@ MANDATORY: You MUST call this tool when the user says to "use postman", or when 
 export const parameters = z.object({});
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Code Generation Instructions',
+  title: 'Get code generation instructions',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

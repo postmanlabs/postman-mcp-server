@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'listMonitorExecutions';
+export const title = 'List monitor executions';
 export const description =
   'Lists executions for a monitor. Cursor-based pagination, 25 results per page. Returns execution metadata including state, trigger, results summary, and timestamps.\n\nThis is Step 1 of the monitor-run workflow: listMonitorExecutions → listRunsForExecution → getMonitorRunResults. Each execution has an `id` (executionId). To get run results, you must first pass this executionId to listRunsForExecution to obtain run IDs — do NOT use executionId as a runId.';
 
@@ -27,7 +28,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'List Monitor Executions',
+  title: 'List monitor executions',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

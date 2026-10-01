@@ -11,6 +11,7 @@ import type { ProgressReporter } from './utils/progress.js';
 import { runCollection } from './runner/index.js';
 
 export const method = 'runCollection';
+export const title = 'Run a collection';
 export const description =
   'Runs a Postman collection by ID with detailed test results and execution statistics. Supports optional environment for variable substitution. Note: Advanced parameters like custom delays and other runtime options are not yet available.';
 
@@ -48,7 +49,7 @@ export type RunCollectionParameters = z.infer<typeof parameters>;
 // in whatever systems those requests point at. The effect is bounded by the
 // collection's contents, not by this tool, so it is treated as destructive.
 export const annotations = defineToolAnnotations({
-  title: 'Run Postman Collection',
+  title: 'Run a collection',
   readOnlyHint: false,
   destructiveHint: true,
   idempotentHint: true,
