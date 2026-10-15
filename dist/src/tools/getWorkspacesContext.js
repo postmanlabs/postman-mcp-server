@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getWorkspacesContext';
+export const title = 'Get workspaces context';
 export const description = 'Returns a markdown-formatted summary of all workspaces accessible to the user. Use this to discover available workspaces and their collections before diving into specific resources. Supports pagination and filtering by name.';
 export const parameters = z.object({
     cursor: z
@@ -17,7 +18,7 @@ export const parameters = z.object({
     name: z.string().describe('Filter workspaces by name.').optional(),
 });
 export const annotations = defineToolAnnotations({
-    title: 'Get Workspaces Context',
+    title: 'Get workspaces context',
     readOnlyHint: true,
     destructiveHint: false,
     idempotentHint: true,

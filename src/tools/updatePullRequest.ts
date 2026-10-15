@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'updatePullRequest';
-export const title = 'Update a pull request';
+export const title = 'Update a collection pull request';
 export const description =
   'Updates the editable metadata of an open pull request, such as its title,\ndescription, or reviewers. Use reviewPullRequest (not this tool) to approve,\ndecline, or merge a pull request.\n';
 export const parameters = z.object({
@@ -18,7 +18,7 @@ export const parameters = z.object({
     ),
 });
 export const annotations = {
-  title: 'Update a pull request',
+  title: 'Update a collection pull request',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

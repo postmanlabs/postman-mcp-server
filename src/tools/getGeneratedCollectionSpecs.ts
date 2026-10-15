@@ -4,14 +4,14 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getGeneratedCollectionSpecs';
-export const title = 'Get generated spec';
+export const title = "Get a collection's generated specs";
 export const description = 'Gets the API specification generated for the given collection.';
 export const parameters = z.object({
   collectionUid: z.string().describe("The collection's unique ID."),
   elementType: z.literal('spec').describe('The `spec` value.'),
 });
 export const annotations = {
-  title: 'Get generated spec',
+  title: "Get a collection's generated specs",
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

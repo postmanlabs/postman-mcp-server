@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'removeWorkspaceFromPrivateNetwork';
-export const title = 'Remove a workspace';
+export const title = 'Remove a workspace from the Private API Network';
 export const description = "Removes a workspace from your team's Private API Network. This does not delete the workspace itself — it only removes it from the Private API Network folder.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
 export const annotations = {
-    title: 'Remove a workspace',
+    title: 'Remove a workspace from the Private API Network',
     readOnlyHint: false,
     openWorldHint: true,
     destructiveHint: true,

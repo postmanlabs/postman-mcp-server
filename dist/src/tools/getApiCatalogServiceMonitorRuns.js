@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogServiceMonitorRuns';
-export const title = "Get a service's monitor runs";
+export const title = "Get an API Catalog service's monitor runs";
 export const description = "Lists scheduled monitor runs for a service, with summary statistics per run. Use this\nto check whether a service's monitors are passing and when they last ran.\n\\`systemEnvironmentId\\` is required. Filter with \\`collectionId\\`, \\`environmentId\\`, and\n\\`status\\`; order with \\`sort\\` in \\`field:direction\\` form over \\`timestamp\\`, \\`duration\\`, or\n\\`failedAssertions\\`.\nDo not use this tool for CI-triggered runs; those are separate and read with\ngetApiCatalogServiceCiRuns. Requires a Postman Enterprise plan.\n";
 export const parameters = z.object({
     serviceId: z.string().describe("The service's ID."),
@@ -33,7 +33,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Get a service's monitor runs",
+    title: "Get an API Catalog service's monitor runs",
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

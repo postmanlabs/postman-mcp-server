@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'respondPrivateNetworkAddRequest';
-export const title = 'Respond to an add request';
+export const title = 'Respond to a Private API Network add request';
 export const description =
   "Responds to a user's request to add a workspace to your team's Private API Network. Only managers can approve or deny a request. Once approved, the workspace will appear in the team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
 export const parameters = z.object({
@@ -21,7 +21,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Respond to an add request',
+  title: 'Respond to a Private API Network add request',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

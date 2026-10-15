@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getStatusOfAnAsyncApiTask';
-export const title = 'Get status of an asynchronous task';
+export const title = 'Get status of an async API task';
 export const description = 'Gets the status of an asynchronous task.';
 export const parameters = z.object({
   apiId: z.string().describe("The API's ID."),
@@ -14,7 +14,7 @@ export const parameters = z.object({
     .describe('The `application/vnd.api.v10+json` request header required to use the endpoint.'),
 });
 export const annotations = {
-  title: 'Get status of an asynchronous task',
+  title: 'Get status of an async API task',
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

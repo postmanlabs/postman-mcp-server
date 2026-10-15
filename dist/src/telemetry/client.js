@@ -103,7 +103,8 @@ export class TelemetryClient {
         this.buffer.push(event);
         this.bufferSizeBytes += eventSize;
         this.resetIdleTimer();
-        if (this.buffer.length >= MAX_BUFFER_COUNT || this.bufferSizeBytes >= MAX_BUFFER_BYTES) {
+        if (this.buffer.length >= MAX_BUFFER_COUNT ||
+            this.bufferSizeBytes >= MAX_BUFFER_BYTES) {
             void this.flush();
         }
     }

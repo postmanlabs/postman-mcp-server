@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'reviewPullRequest';
-export const title = 'Review a pull request';
+export const title = 'Review a collection pull request';
 export const description =
   'Reviews a pull request by performing an action on it. The required \\`action\\` field\ndetermines the outcome:\n  - \\`approve\\`  — approve the pull request for merge.\n  - \\`merge\\`    — merge the pull request into its destination (parent) collection.\n  - \\`decline\\`  — decline the pull request; optionally include a \\`comment\\` explaining why.\n  - \\`unapprove\\` — revoke a previous \\`approve\\` (does not decline the pull request).\nUse this tool to formally approve, merge, decline, or unapprove a pull request.\n';
 export const parameters = z.object({
@@ -22,7 +22,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Review a pull request',
+  title: 'Review a collection pull request',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

@@ -1,14 +1,14 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogService';
-export const title = 'Get a service by ID';
+export const title = 'Get an API Catalog service';
 export const description = "Gets one catalogued service's health, traffic, compliance, ownership, and dependencies\nin a given system environment. Both the service ID and the required\n\\`systemEnvironmentId\\` are needed; get them from getApiCatalogServices and\ngetApiCatalogSystemEnvironments. The same service reports different data per\nenvironment, so the environment is part of the question, not an optional filter.\nDo not use this tool for per-endpoint metrics; use getApiCatalogServiceEndpoints\ninstead. Requires a Postman Enterprise plan.\n";
 export const parameters = z.object({
     serviceId: z.string().describe("The service's ID."),
     systemEnvironmentId: z.string().describe("The system environment's ID."),
 });
 export const annotations = {
-    title: 'Get a service by ID',
+    title: 'Get an API Catalog service',
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,
