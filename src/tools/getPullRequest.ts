@@ -4,14 +4,14 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getPullRequest';
-export const title = 'Get a pull request';
+export const title = 'Get a collection pull request';
 export const description =
   'Gets a single pull request by its ID, including source and destination details,\nreviewers, and the current merge/review status. Use this to inspect a specific\npull request returned by getCollectionPullRequests.\n';
 export const parameters = z.object({
   pullRequestId: z.string().describe("The pull request's ID."),
 });
 export const annotations = {
-  title: 'Get a pull request',
+  title: 'Get a collection pull request',
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

@@ -14,6 +14,7 @@ import {
 import { handler as getCollectionMapHandler } from './getCollectionMap.js';
 
 export const method = 'getCollection';
+export const title = 'Get a collection (map by default)';
 export const description = `Get information about a collection. By default this tool returns the lightweight collection map (metadata + recursive itemRefs).
 Use the model parameter to opt in to Postman's full API responses:
 - model=minimal — root-level folder/request IDs only
@@ -34,7 +35,7 @@ export const parameters = baseParameters.extend({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Collection (map by default)',
+  title: 'Get a collection (map by default)',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

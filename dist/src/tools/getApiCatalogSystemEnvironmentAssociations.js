@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogSystemEnvironmentAssociations';
-export const title = "Get a system environment's associations";
+export const title = "Get an API Catalog system environment's associations";
 export const description = 'Lists the workspace environments attached to a system environment. Use this to see\nwhich Postman environments feed a deployment stage before adding or removing any.\nNarrow to one workspace with \\`workspaceId\\`; page with \\`limit\\` (max 100) and \\`cursor\\`.\nRequires a Postman Enterprise plan.\n';
 export const parameters = z.object({
     systemEnvironmentId: z.string().describe("The system environment's ID."),
@@ -22,7 +22,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: "Get a system environment's associations",
+    title: "Get an API Catalog system environment's associations",
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

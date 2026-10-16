@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getEnvironmentContext';
+export const title = 'Get environment context';
 export const description =
   'Returns a markdown-formatted summary of an environment, including its name and enabled variables with their keys, values, and types.';
 
@@ -17,7 +18,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Environment Context',
+  title: 'Get environment context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

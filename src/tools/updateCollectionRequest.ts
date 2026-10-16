@@ -1,12 +1,17 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  mergeCollectionRequestEvents,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateCollectionRequest';
-export const title = 'Update a request';
+export const title = 'Update a collection request';
 export const description =
-  'Updates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- You must pass a collection ID (\\`12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), not a collection(\\`12345678-12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), in this endpoint.\n- This endpoint does not support changing the folder of a request.\n- This endpoint acts like a PATCH method. It only updates the values that you pass in the request body.';
+  'Updates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- You must pass a collection ID (\\`12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), not a collection(\\`12345678-12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), in this endpoint.\n- This endpoint does not support changing the folder of a request.\n- This endpoint acts like a PATCH method. It only updates the values that you pass in the request body.\n- **Events (\\`events\\`).** Events are merged by \\`listen\\` type, so you only need to send the event you are changing. A \\`listen\\` type you omit keeps its stored script. To empty a script, send its event with \\`script.exec\\` set to \\`[]\\` — sending \\`events: []\\` changes nothing.';
 export const parameters = z.object({
   requestId: z.string().describe("The request's ID."),
   collectionId: z.string().describe("The collection's ID."),
@@ -397,11 +402,13 @@ export const parameters = z.object({
           .optional(),
       })
     )
-    .describe("The request's pre-request and test scripts.")
+    .describe(
+      'A list of scripts configured to run when specific events occur. Merged by `listen` type: send only the event you are changing, and any `listen` type you omit keeps its stored script. To empty a script, send its event with `script.exec` set to `[]`; sending an empty array changes nothing.'
+    )
     .optional(),
 });
 export const annotations = {
-  title: 'Update a request',
+  title: 'Update a collection request',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,
@@ -429,7 +436,14 @@ export async function handler(
     if (args.graphqlModeData !== undefined) bodyPayload.graphqlModeData = args.graphqlModeData;
     if (args.dataOptions !== undefined) bodyPayload.dataOptions = args.dataOptions;
     if (args.auth !== undefined) bodyPayload.auth = args.auth;
-    if (args.events !== undefined) bodyPayload.events = args.events;
+    if (args.events !== undefined) {
+      bodyPayload.events = await mergeCollectionRequestEvents(
+        extra.client,
+        endpoint,
+        args.events,
+        extra.headers
+      );
+    }
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,

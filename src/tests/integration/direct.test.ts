@@ -886,6 +886,212 @@ describe('Postman MCP - Direct Integration Tests', () => {
     });
   });
 
+  describe('Collection Script Preservation', () => {
+    const scriptedCollection = (name: string) => ({
+      info: {
+        name,
+        schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+      },
+      event: [
+        {
+          listen: 'prerequest',
+          script: { type: 'text/javascript', exec: ['// collection level'] },
+        },
+      ],
+      item: [
+        {
+          name: 'Top Level Request',
+          event: [
+            { listen: 'test', script: { type: 'text/javascript', exec: ["pm.test('top', () => {})"] } },
+          ],
+          request: { url: 'https://postman-echo.com/get', method: 'GET' },
+        },
+        {
+          name: 'Folder',
+          item: [
+            {
+              name: 'Nested Request',
+              event: [
+                {
+                  listen: 'prerequest',
+                  script: { type: 'text/javascript', exec: ['// nested pre'] },
+                },
+                {
+                  listen: 'test',
+                  script: { type: 'text/javascript', exec: ["pm.test('nested', () => {})"] },
+                },
+              ],
+              request: {
+                url: 'https://postman-echo.com/post',
+                method: 'POST',
+                auth: { type: 'bearer', bearer: [{ key: 'token', value: 'nested-token' }] },
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    async function readCollection(collectionId: string): Promise<any> {
+      const result = await client.callTool(
+        { name: 'getCollection', arguments: { collectionId, model: 'full' } },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(CollectionDataFactory.validateResponse(result)).toBe(true);
+      return CollectionDataFactory.extractCollectionFromResponse(result);
+    }
+
+    const findItem = (items: any[], name: string): any => {
+      for (const item of items ?? []) {
+        if (item.name === name) return item;
+        const found = findItem(item.item, name);
+        if (found) return found;
+      }
+      return undefined;
+    };
+
+    const execFor = (item: any, listen: string): string[] | undefined =>
+      item?.event?.find((event: any) => event.listen === listen)?.script?.exec;
+
+    // PSTAPI-1542 / issue #181: scripts on folder-nested requests used to be stripped
+    // by input validation before the request reached the API.
+    it('should keep scripts on folder-nested requests through createCollection', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Nested Script Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionId = await createCollection(
+        scriptedCollection('[Integration Test] Nested Scripts') as any,
+        workspaceId
+      );
+      createdCollectionIds.push(collectionId);
+
+      const collection = await readCollection(collectionId);
+      const nested = findItem(collection.item, 'Nested Request');
+
+      expect(execFor(nested, 'prerequest')).toEqual(['// nested pre']);
+      expect(execFor(nested, 'test')).toEqual(["pm.test('nested', () => {})"]);
+      // The nested request's auth credentials must survive too, not just its type.
+      expect(nested.request.auth).toMatchObject({
+        type: 'bearer',
+        bearer: [expect.objectContaining({ key: 'token', value: 'nested-token' })],
+      });
+      // Collection-level and top-level scripts must keep working.
+      expect(collection.event?.[0]?.script?.exec).toEqual(['// collection level']);
+      expect(execFor(findItem(collection.item, 'Top Level Request'), 'test')).toEqual([
+        "pm.test('top', () => {})",
+      ]);
+    });
+
+    // The customer scenario: read a collection back and write it out again. Every
+    // round trip used to drop the scripts on folder-nested requests.
+    it('should keep scripts on folder-nested requests through putCollection', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Nested Script Put Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionId = await createCollection(
+        scriptedCollection('[Integration Test] Nested Scripts Put') as any,
+        workspaceId
+      );
+      createdCollectionIds.push(collectionId);
+
+      const roundTripped = await readCollection(collectionId);
+      roundTripped.info.name = '[Integration Test] Nested Scripts Put (updated)';
+
+      const updateResult = await client.callTool(
+        { name: 'putCollection', arguments: { collectionId, collection: roundTripped } },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(updateResult.isError).toBeFalsy();
+
+      const collection = await readCollection(collectionId);
+      const nested = findItem(collection.item, 'Nested Request');
+
+      expect(execFor(nested, 'prerequest')).toEqual(['// nested pre']);
+      expect(execFor(nested, 'test')).toEqual(["pm.test('nested', () => {})"]);
+      expect(nested.request.auth).toMatchObject({
+        type: 'bearer',
+        bearer: [expect.objectContaining({ key: 'token', value: 'nested-token' })],
+      });
+    });
+
+    // PSTAPI-1383 / issue #150: the endpoint replaces the whole `events` array, so
+    // updating one listen type used to delete the request's other scripts.
+    it('should keep the other event types when updateCollectionRequest sends one', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Event Merge Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionId = await createCollection(
+        scriptedCollection('[Integration Test] Event Merge') as any,
+        workspaceId
+      );
+      createdCollectionIds.push(collectionId);
+
+      const requestId = findItem((await readCollection(collectionId)).item, 'Nested Request')?.id;
+      expect(requestId).toBeTruthy();
+
+      const updateResult = await client.callTool(
+        {
+          name: 'updateCollectionRequest',
+          arguments: {
+            collectionId,
+            requestId,
+            events: [
+              {
+                listen: 'test',
+                script: { type: 'text/javascript', exec: ["pm.test('replaced', () => {})"] },
+              },
+            ],
+          },
+        },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(updateResult.isError).toBeFalsy();
+
+      const nested = findItem((await readCollection(collectionId)).item, 'Nested Request');
+      expect(execFor(nested, 'test')).toEqual(["pm.test('replaced', () => {})"]);
+      expect(execFor(nested, 'prerequest')).toEqual(['// nested pre']);
+    });
+
+    it('should leave every script in place when updateCollectionRequest sends no events', async () => {
+      const workspace = WorkspaceDataFactory.createWorkspace({
+        name: '[Integration Test] Event No-op Workspace',
+      });
+      const workspaceId = await createWorkspace(workspace);
+      createdWorkspaceIds.push(workspaceId);
+
+      const collectionId = await createCollection(
+        scriptedCollection('[Integration Test] Event No-op') as any,
+        workspaceId
+      );
+      createdCollectionIds.push(collectionId);
+
+      const requestId = findItem((await readCollection(collectionId)).item, 'Nested Request')?.id;
+
+      const updateResult = await client.callTool(
+        { name: 'updateCollectionRequest', arguments: { collectionId, requestId, events: [] } },
+        undefined,
+        { timeout: 100000 }
+      );
+      expect(updateResult.isError).toBeFalsy();
+
+      const nested = findItem((await readCollection(collectionId)).item, 'Nested Request');
+      expect(execFor(nested, 'prerequest')).toEqual(['// nested pre']);
+      expect(execFor(nested, 'test')).toEqual(["pm.test('nested', () => {})"]);
+    });
+  });
+
   async function createWorkspace(workspaceData: TestWorkspace): Promise<string> {
     const result = await client.callTool(
       {

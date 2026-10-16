@@ -622,6 +622,29 @@ export const parameters = z.object({
                     .nullable()
                     .describe("The item's description.")
                     .optional(),
+                event: z
+                    .array(z.object({
+                    id: z.string().describe("The event's ID.").optional(),
+                    listen: z
+                        .enum(['test', 'prerequest'])
+                        .describe('The `prerequest` (pre-request) or `test` (post-response) value.'),
+                    script: z
+                        .object({
+                        id: z.string().describe("The script's ID.").optional(),
+                        type: z
+                            .string()
+                            .describe('The type of script. For example, `text/javascript`.')
+                            .optional(),
+                        exec: z
+                            .array(z.string())
+                            .describe('A list of script strings, where each line represents a line of code.')
+                            .optional(),
+                    })
+                        .describe('Information about the Javascript code that runs when the event fires.')
+                        .optional(),
+                }))
+                    .describe('A list of scripts configured to run when specific events occur. Include this on requests inside folders to keep their pre-request (`prerequest`) and post-response (`test`) scripts — scripts you omit here are not carried over from the stored item.')
+                    .optional(),
                 request: z
                     .object({
                     url: z
@@ -699,18 +722,45 @@ export const parameters = z.object({
                         ])
                             .optional(),
                     })
+                        .catchall(z.unknown())
+                        .describe('The request\'s authentication. Set `type` and include the matching credential array, for example `{ "type": "bearer", "bearer": [{ "key": "token", "value": "..." }] }`.')
                         .optional(),
                 })
+                    .catchall(z.unknown())
                     .describe('The request definition. Include for request items, omit for folder items.')
                     .optional(),
                 item: z
-                    .array(z.object({
+                    .array(z
+                    .object({
                     id: z.string().describe("The collection item's ID.").optional(),
                     name: z.string().describe("The item's name.").optional(),
                     description: z
                         .string()
                         .nullable()
                         .describe("The item's description.")
+                        .optional(),
+                    event: z
+                        .array(z.object({
+                        id: z.string().describe("The event's ID.").optional(),
+                        listen: z
+                            .enum(['test', 'prerequest'])
+                            .describe('The `prerequest` (pre-request) or `test` (post-response) value.'),
+                        script: z
+                            .object({
+                            id: z.string().describe("The script's ID.").optional(),
+                            type: z
+                                .string()
+                                .describe('The type of script. For example, `text/javascript`.')
+                                .optional(),
+                            exec: z
+                                .array(z.string())
+                                .describe('A list of script strings, where each line represents a line of code.')
+                                .optional(),
+                        })
+                            .describe('Information about the Javascript code that runs when the event fires.')
+                            .optional(),
+                    }))
+                        .describe('A list of scripts configured to run when specific events occur. Include this on requests inside folders to keep their pre-request (`prerequest`) and post-response (`test`) scripts — scripts you omit here are not carried over from the stored item.')
                         .optional(),
                     request: z
                         .object({
@@ -743,30 +793,89 @@ export const parameters = z.object({
                         }))
                             .optional(),
                         body: z
-                            .object({ mode: z.string().optional(), raw: z.string().optional() })
+                            .object({
+                            mode: z.string().optional(),
+                            raw: z.string().optional(),
+                        })
+                            .optional(),
+                        auth: z
+                            .object({
+                            type: z
+                                .enum([
+                                'noauth',
+                                'basic',
+                                'bearer',
+                                'apikey',
+                                'digest',
+                                'oauth1',
+                                'oauth2',
+                                'hawk',
+                                'awsv4',
+                                'ntlm',
+                                'edgegrid',
+                            ])
+                                .optional(),
+                        })
+                            .catchall(z.unknown())
+                            .describe('The request\'s authentication. Set `type` and include the matching credential array, for example `{ "type": "bearer", "bearer": [{ "key": "token", "value": "..." }] }`.')
                             .optional(),
                     })
+                        .catchall(z.unknown())
                         .describe('The request definition.')
                         .optional(),
                     item: z
-                        .array(z.object({
+                        .array(z
+                        .object({
                         id: z.string().optional(),
                         name: z.string().optional(),
+                        event: z
+                            .array(z.object({
+                            id: z.string().describe("The event's ID.").optional(),
+                            listen: z
+                                .enum(['test', 'prerequest'])
+                                .describe('The `prerequest` (pre-request) or `test` (post-response) value.'),
+                            script: z
+                                .object({
+                                id: z
+                                    .string()
+                                    .describe("The script's ID.")
+                                    .optional(),
+                                type: z
+                                    .string()
+                                    .describe('The type of script. For example, `text/javascript`.')
+                                    .optional(),
+                                exec: z
+                                    .array(z.string())
+                                    .describe('A list of script strings, where each line represents a line of code.')
+                                    .optional(),
+                            })
+                                .describe('Information about the Javascript code that runs when the event fires.')
+                                .optional(),
+                        }))
+                            .describe('A list of scripts configured to run when specific events occur. Include this on requests inside folders to keep their pre-request (`prerequest`) and post-response (`test`) scripts — scripts you omit here are not carried over from the stored item.')
+                            .optional(),
                         request: z
                             .object({
                             url: z
-                                .union([z.string(), z.object({ raw: z.string().optional() })])
+                                .union([
+                                z.string(),
+                                z.object({ raw: z.string().optional() }),
+                            ])
                                 .optional(),
                             method: z.string().optional(),
                         })
+                            .catchall(z.unknown())
                             .optional(),
-                    }))
+                    })
+                        .catchall(z.unknown()))
                         .describe('Further nested folder items.')
                         .optional(),
-                }))
+                })
+                    .catchall(z.unknown()))
                     .describe('Nested folder items for deeper folder structures.')
                     .optional(),
             })
+                .catchall(z.unknown())
                 .describe("A nested collection item — either a request (has 'request') or a folder (has 'item')."))
                 .describe("A list of items contained in this folder. Use this property to create folder structures within the collection. Each item can be a request (with a 'request' property) or a nested folder (with its own 'item' property). Omit the 'request' property for folder items.")
                 .optional(),

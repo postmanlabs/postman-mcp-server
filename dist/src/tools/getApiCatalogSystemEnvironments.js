@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { asMcpError, McpError } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogSystemEnvironments';
-export const title = 'Get all system environments';
+export const title = 'Get all API Catalog system environments';
 export const description = "Lists the team's system environments — the deployment stages (for example staging,\nproduction) that every service-scoped API Catalog read is keyed by. Call this first\nwhenever you need a \\`systemEnvironmentId\\` for getApiCatalogServices,\ngetApiCatalogService, getApiCatalogServiceEndpoints, getApiCatalogServiceMonitorRuns,\nor getApiCatalogServiceCiRuns. Pass \\`isProduction=true\\` to return only production\nenvironments; page with \\`limit\\` (max 100) and \\`cursor\\`.\nThese are not Postman environments holding variables — do not confuse them with\ngetEnvironments. Requires a Postman Enterprise plan.\n";
 export const parameters = z.object({
     isProduction: z
@@ -21,7 +21,7 @@ export const parameters = z.object({
         .optional(),
 });
 export const annotations = {
-    title: 'Get all system environments',
+    title: 'Get all API Catalog system environments',
     readOnlyHint: true,
     openWorldHint: false,
     destructiveHint: false,

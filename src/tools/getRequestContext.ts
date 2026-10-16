@@ -9,6 +9,7 @@ import {
 } from './utils/toolHelpers.js';
 
 export const method = 'getRequestContext';
+export const title = 'Get request context';
 export const description =
   'Returns a markdown-formatted summary of a request within a collection, including its method, URL, headers, query parameters, path variables, body, authentication, and response example references.';
 
@@ -18,7 +19,7 @@ export const parameters = z.object({
 });
 
 export const annotations = defineToolAnnotations({
-  title: 'Get Request Context',
+  title: 'Get request context',
   readOnlyHint: true,
   destructiveHint: false,
   idempotentHint: true,

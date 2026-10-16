@@ -1,6 +1,7 @@
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { USER_AGENT } from '../constants.js';
 import { env } from '../env.js';
+const DEFAULT_REQUEST_TIMEOUT_MS = 300_000;
 export var ContentType;
 (function (ContentType) {
     ContentType["Json"] = "application/json";
@@ -77,7 +78,7 @@ export class PostmanAPIClient {
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
             ...optionsWithoutHeaders,
             headers,
-            signal: AbortSignal.timeout(300000),
+            signal: options.signal ?? AbortSignal.timeout(DEFAULT_REQUEST_TIMEOUT_MS),
         });
         if (!response.ok) {
             await this.handleErrorResponse(response);

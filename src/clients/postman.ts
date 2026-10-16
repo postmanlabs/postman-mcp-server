@@ -3,6 +3,8 @@ import { USER_AGENT } from '../constants.js';
 import type { ServerContext } from '../tools/utils/toolHelpers.js';
 import { env } from '../env.js';
 
+const DEFAULT_REQUEST_TIMEOUT_MS = 300_000;
+
 export enum ContentType {
   Json = 'application/json',
   JsonPatch = 'application/json-patch+json',
@@ -152,7 +154,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...optionsWithoutHeaders,
       headers,
-      signal: AbortSignal.timeout(300000),
+      signal: options.signal ?? AbortSignal.timeout(DEFAULT_REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {

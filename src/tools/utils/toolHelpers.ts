@@ -1,4 +1,4 @@
-import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { McpError, ErrorCode, IsomorphicHeaders } from '@modelcontextprotocol/sdk/types.js';
 
 export { McpError };
 
@@ -10,6 +10,72 @@ export interface ServerContext {
 export function asMcpError(error: unknown): McpError {
   const cause = (error as any)?.cause ?? String(error);
   return new McpError(ErrorCode.InternalError, cause);
+}
+
+/**
+ * The read surface {@link mergeCollectionRequestEvents} needs from an API client.
+ *
+ * Declared structurally rather than imported so this module keeps its only
+ * dependency on the MCP SDK, which is what lets it be copied between packages
+ * without rewriting import paths.
+ */
+export interface ReadOnlyApiClient {
+  get<T = any>(endpoint: string, options?: { headers?: IsomorphicHeaders }): Promise<T>;
+}
+
+/** A single entry of a collection request's `events` array. */
+export interface CollectionRequestEvent {
+  listen?: string | null;
+  [key: string]: unknown;
+}
+
+/**
+ * Merges an incoming `events` array into a collection request's stored events,
+ * keyed by `listen` type.
+ *
+ * The update-request endpoint patches top-level fields but replaces `events`
+ * wholesale, so a caller that sends only a `test` event deletes the request's
+ * `prerequest` script (and vice versa) with no error. This reads the request's
+ * current events and re-appends the `listen` types the caller did not supply,
+ * which turns the call into a per-`listen` patch.
+ *
+ * @param client - Client used to read the request's current state.
+ * @param endpoint - Endpoint of the request being updated.
+ * @param incoming - The `events` array supplied by the caller.
+ * @param headers - Headers to forward on the read.
+ * @returns The `events` array to send, with untouched `listen` types preserved.
+ * @throws McpError When the current events cannot be read, so that the update is
+ * not sent with an array that would drop the caller's other scripts.
+ */
+export async function mergeCollectionRequestEvents(
+  client: ReadOnlyApiClient,
+  endpoint: string,
+  incoming: readonly CollectionRequestEvent[],
+  headers?: IsomorphicHeaders
+): Promise<readonly CollectionRequestEvent[]> {
+  // An empty array is a no-op server side, so there is nothing to preserve.
+  if (!Array.isArray(incoming) || incoming.length === 0) return incoming;
+
+  const suppliedListenTypes = new Set(incoming.map((event) => event?.listen));
+
+  let current: any;
+  try {
+    current = await client.get(endpoint, { headers });
+  } catch (error) {
+    const cause = (error as any)?.cause ?? String(error);
+    throw new McpError(
+      ErrorCode.InternalError,
+      `Could not read the request's existing scripts, so the update was not sent — sending it would have deleted any event types absent from "events". Retry, or include every event you want to keep. Cause: ${cause}`
+    );
+  }
+
+  const storedEvents = current?.data?.events;
+  if (!Array.isArray(storedEvents)) return incoming;
+
+  const preserved = storedEvents.filter(
+    (event: CollectionRequestEvent) => !suppliedListenTypes.has(event?.listen)
+  );
+  return preserved.length > 0 ? [...incoming, ...preserved] : incoming;
 }
 
 /**

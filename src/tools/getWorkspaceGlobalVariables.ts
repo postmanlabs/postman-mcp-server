@@ -4,12 +4,12 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getWorkspaceGlobalVariables';
-export const title = 'Get global variables';
+export const title = "Get a workspace's global variables";
 export const description =
   "Gets a workspace's global [variables](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes). Global variables enable you to access data between collections, requests, scripts, and environments and are available throughout a workspace.";
 export const parameters = z.object({ workspaceId: z.string().describe("The workspace's ID.") });
 export const annotations = {
-  title: 'Get global variables',
+  title: "Get a workspace's global variables",
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

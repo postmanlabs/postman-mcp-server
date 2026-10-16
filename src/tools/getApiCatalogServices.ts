@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'getApiCatalogServices';
-export const title = 'Get all services';
+export const title = 'Get all API Catalog services';
 export const description =
   'Lists the services catalogued in one system environment, with their analytics,\ncompliance, and governance metadata. \\`systemEnvironmentId\\` is required — call\ngetApiCatalogSystemEnvironments first to get one, and repeat this call per environment\nwhen you need a cross-environment view. Narrow with \\`name\\`, \\`tags\\`, and\n\\`governanceGroupId\\`; page with \\`limit\\` (max 100) and \\`cursor\\`.\nDo not use this tool to find services that are not catalogued yet; use\ngetApiCatalogDiscoveryServices instead. Requires a Postman Enterprise plan.\n';
 export const parameters = z.object({
@@ -40,7 +40,7 @@ export const parameters = z.object({
     .optional(),
 });
 export const annotations = {
-  title: 'Get all services',
+  title: 'Get all API Catalog services',
   readOnlyHint: true,
   openWorldHint: false,
   destructiveHint: false,

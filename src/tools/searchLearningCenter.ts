@@ -10,6 +10,7 @@ import {
 import { env } from '../env.js';
 
 export const method = 'searchLearningCenter';
+export const title = 'Search the Postman Learning Center';
 
 export const description = `Search the official Postman documentation and learning resources at https://learning.postman.com.
 

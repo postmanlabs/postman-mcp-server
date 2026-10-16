@@ -4,7 +4,7 @@ import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/typ
 import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
 
 export const method = 'transferCollectionResponses';
-export const title = 'Transfer responses';
+export const title = 'Transfer collection responses';
 export const description = 'Copies or moves responses into a request.';
 export const parameters = z.object({
   ids: z
@@ -45,7 +45,7 @@ export const parameters = z.object({
     ),
 });
 export const annotations = {
-  title: 'Transfer responses',
+  title: 'Transfer collection responses',
   readOnlyHint: false,
   openWorldHint: true,
   destructiveHint: false,

@@ -23,6 +23,12 @@ const full = [
   'pullCollectionChanges',
   'createCollectionFork',
   'mergeCollectionFork',
+  'asyncMergePullCollectionFork',
+  'asyncMergePullCollectionTaskStatus',
+
+  // Collection Roles
+  'getCollectionRoles',
+  'updateCollectionRoles',
 
   // Collection Pull Requests
   'getCollectionPullRequests',
@@ -60,7 +66,6 @@ const full = [
   'deleteCollectionComment',
   'getCollectionComments',
   'updateCollectionComment',
-  'updateApiCollectionComment',
   'createFolderComment',
   'deleteFolderComment',
   'getFolderComments',
@@ -82,6 +87,12 @@ const full = [
   'getEnvironments',
   'patchEnvironment',
   'putEnvironment',
+
+  // Environment Forks
+  'getEnvironmentForks',
+  'forkEnvironment',
+  'mergeEnvironmentFork',
+  'pullEnvironment',
 
   // Mocks
   'createMock',
@@ -135,6 +146,28 @@ const full = [
   'addApiCatalogSystemEnvironmentAssociations',
   'removeApiCatalogSystemEnvironmentAssociations',
 
+  // API Governance
+  'getAllRulesets',
+  'createRuleset',
+  'getRuleset',
+  'updateRuleset',
+  'deleteRuleset',
+  'getRulesetAssignments',
+  'createRulesetAssignment',
+  'deleteRulesetAssignment',
+  'getAllGovernanceGroups',
+  'createGovernanceGroup',
+  'updateGovernanceGroup',
+  'deleteGovernanceGroup',
+  'getGovernanceGroupAssignments',
+  'getGovernanceGroupWorkspaces',
+  'updateGovernanceGroupWorkspaces',
+  'getAllCustomFunctions',
+  'createCustomFunction',
+  'getCustomFunction',
+  'updateCustomFunction',
+  'deleteCustomFunction',
+
   // Component Library
   'createComponent',
   'getAllComponents',
@@ -157,6 +190,12 @@ const full = [
   'getSpecFile',
   'getSpecFiles',
   'updateSpecFile',
+  'updateSpecSyncOptions',
+
+  // Spec Version Tags
+  'getSpecVersionTags',
+  'createSpecVersionTag',
+  'getSpecVersionTag',
 
   // Workspaces
   'createWorkspace',
@@ -252,18 +291,9 @@ const full = [
   'getApiDiscoveryInstructions',
   'getInstalledApiMaintenanceInstructions',
 
-  // Transfer
-  'transferCollectionFolders',
-  'transferCollectionResponses',
-  'transferCollectionResponses',
-
-  // 'asyncMergePullCollectionFork' skipped
-  // 'asyncMergePullCollectionTaskStatus' skipped
-
   // Duplicate Collection
   'duplicateCollection',
   'getDuplicateCollectionTaskStatus',
-  'deleteApiCollectionComment',
   'deleteSpecFile',
   'getEnabledTools',
   'searchPostmanElements',
