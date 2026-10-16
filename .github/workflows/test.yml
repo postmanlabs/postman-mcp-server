@@ -23,6 +23,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: Enable corepack
       run: corepack enable
     - name: Use Node.js ${{ matrix.node-version }}
@@ -46,6 +48,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: Enable corepack
       run: corepack enable
     - name: Use Node.js 20.x
