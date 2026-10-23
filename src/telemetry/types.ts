@@ -33,6 +33,24 @@ export enum TelemetryErrorStage {
 // Base Telemetry Event Schema
 // ---------------------------------------------------------------------------
 
+/** Recognized client-reported plugin routes; these values are not attestation. */
+export const PluginSourceSchema = z.enum([
+  'postman-claude-code-plugin',
+  'postman-codex-plugin',
+  'postman-cursor-plugin',
+  'postman-factory-plugin',
+  'postman-opencode-plugin',
+  'postman-pi-plugin',
+  'postman-copilot-plugin',
+  'postman-kimi-plugin',
+  'postman-antigravity-plugin',
+]);
+
+/** Bounded release version; arbitrary header text must not enter telemetry. */
+export const PluginVersionSchema = z.string().max(64).regex(
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/,
+);
+
 /**
  * Fields shared by every telemetry event.
  */
@@ -57,6 +75,12 @@ export const BaseTelemetryEventSchema = z.object({
 
   /** Semver version of the MCP client */
   client_version: z.string(),
+
+  /** Allowlisted X-Source from HTTP initialize. Empty means unattributed. */
+  plugin_source: PluginSourceSchema.or(z.literal('')).optional(),
+
+  /** Validated X-Plugin-Version, only when plugin_source is recognized. */
+  plugin_version: PluginVersionSchema.or(z.literal('')).optional(),
 
   /** MCP protocol version negotiated during initialization */
   protocol_version: z.string(),

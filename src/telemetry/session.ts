@@ -2,6 +2,11 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { randomUUID, createHash } from 'node:crypto';
+import { z } from 'zod';
+import { PluginSourceSchema, PluginVersionSchema } from './types.js';
+
+const PluginSourceHeaderSchema = z.string().max(96).trim().pipe(PluginSourceSchema);
+const PluginVersionHeaderSchema = z.string().max(64).trim().pipe(PluginVersionSchema);
 
 /**
  * Options for constructing a TelemetrySession.
@@ -31,6 +36,8 @@ export interface TelemetrySessionOptions {
 
   clientName?: string;
   clientVersion?: string;
+  pluginSource?: string;
+  pluginVersion?: string;
   protocolVersion?: string;
   /** Keys of the client-advertised capabilities object from the MCP
    *  `initialize` request. Pre-extracted to keys so the snapshot is small
@@ -62,6 +69,9 @@ export interface SerializedTelemetrySession {
   serverVersion: string;
   clientName: string;
   clientVersion: string;
+  /** Optional for snapshots written before plugin attribution was introduced. */
+  pluginSource?: string;
+  pluginVersion?: string;
   protocolVersion: string;
   clientCapabilities: string[];
   toolsetSnapshotId: string;
@@ -84,6 +94,8 @@ export class TelemetrySession {
 
   clientName: string;
   clientVersion: string;
+  pluginSource: z.infer<typeof PluginSourceSchema> | '';
+  pluginVersion: string;
   protocolVersion: string;
   clientCapabilities: string[];
   toolsetSnapshotId: string;
@@ -103,6 +115,9 @@ export class TelemetrySession {
 
     this.clientName = options.clientName ?? '';
     this.clientVersion = options.clientVersion ?? '';
+    this.pluginSource = '';
+    this.pluginVersion = '';
+    this.setPluginInfo(options.pluginSource, options.pluginVersion);
     this.protocolVersion = options.protocolVersion ?? '';
     this.clientCapabilities = options.clientCapabilities ?? [];
     this.toolsetSnapshotId = options.toolsetSnapshotId ?? '';
@@ -138,6 +153,18 @@ export class TelemetrySession {
     this.clientName = clientInfo.name;
     this.clientVersion = clientInfo.version;
     this.protocolVersion = protocolVersion;
+  }
+
+  /**
+   * Captures only recognized plugin metadata. Called at HTTP initialization;
+   * later requests cannot reattribute the session. Invalid values are dropped,
+   * without rejecting otherwise valid MCP requests or retaining raw headers.
+   */
+  setPluginInfo(source: unknown, version: unknown): void {
+    const parsedSource = PluginSourceHeaderSchema.safeParse(source);
+    const parsedVersion = PluginVersionHeaderSchema.safeParse(version);
+    this.pluginSource = parsedSource.success ? parsedSource.data : '';
+    this.pluginVersion = parsedSource.success && parsedVersion.success ? parsedVersion.data : '';
   }
 
   /**
@@ -181,6 +208,8 @@ export class TelemetrySession {
       serverVersion: this.serverVersion,
       clientName: this.clientName,
       clientVersion: this.clientVersion,
+      pluginSource: this.pluginSource,
+      pluginVersion: this.pluginVersion,
       protocolVersion: this.protocolVersion,
       clientCapabilities: this.clientCapabilities,
       toolsetSnapshotId: this.toolsetSnapshotId,
@@ -200,6 +229,8 @@ export class TelemetrySession {
       serverVersion: snapshot.serverVersion,
       clientName: snapshot.clientName,
       clientVersion: snapshot.clientVersion,
+      pluginSource: snapshot.pluginSource,
+      pluginVersion: snapshot.pluginVersion,
       protocolVersion: snapshot.protocolVersion,
       clientCapabilities: snapshot.clientCapabilities ?? [],
       toolsetSnapshotId: snapshot.toolsetSnapshotId,

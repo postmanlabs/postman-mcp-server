@@ -2,6 +2,10 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { randomUUID, createHash } from 'node:crypto';
+import { z } from 'zod';
+import { PluginSourceSchema, PluginVersionSchema } from './types.js';
+const PluginSourceHeaderSchema = z.string().max(96).trim().pipe(PluginSourceSchema);
+const PluginVersionHeaderSchema = z.string().max(64).trim().pipe(PluginVersionSchema);
 const TRACE_GAP_MS = 30_000;
 export class TelemetrySession {
     installId;
@@ -13,6 +17,8 @@ export class TelemetrySession {
     serverVersion;
     clientName;
     clientVersion;
+    pluginSource;
+    pluginVersion;
     protocolVersion;
     clientCapabilities;
     toolsetSnapshotId;
@@ -29,6 +35,9 @@ export class TelemetrySession {
         this.serverVersion = options.serverVersion;
         this.clientName = options.clientName ?? '';
         this.clientVersion = options.clientVersion ?? '';
+        this.pluginSource = '';
+        this.pluginVersion = '';
+        this.setPluginInfo(options.pluginSource, options.pluginVersion);
         this.protocolVersion = options.protocolVersion ?? '';
         this.clientCapabilities = options.clientCapabilities ?? [];
         this.toolsetSnapshotId = options.toolsetSnapshotId ?? '';
@@ -50,13 +59,21 @@ export class TelemetrySession {
         this.clientVersion = clientInfo.version;
         this.protocolVersion = protocolVersion;
     }
+    setPluginInfo(source, version) {
+        const parsedSource = PluginSourceHeaderSchema.safeParse(source);
+        const parsedVersion = PluginVersionHeaderSchema.safeParse(version);
+        this.pluginSource = parsedSource.success ? parsedSource.data : '';
+        this.pluginVersion = parsedSource.success && parsedVersion.success ? parsedVersion.data : '';
+    }
     setClientCapabilities(capabilities) {
         this.clientCapabilities = Object.keys(capabilities ?? {});
     }
     setToolNames(toolNames) {
         this.toolListCount = toolNames.length;
         const sorted = [...toolNames].sort();
-        const hash = createHash('sha256').update(sorted.join(',')).digest('hex');
+        const hash = createHash('sha256')
+            .update(sorted.join(','))
+            .digest('hex');
         this.toolsetSnapshotId = hash.substring(0, 12);
     }
     getToolListCount() {
@@ -73,6 +90,8 @@ export class TelemetrySession {
             serverVersion: this.serverVersion,
             clientName: this.clientName,
             clientVersion: this.clientVersion,
+            pluginSource: this.pluginSource,
+            pluginVersion: this.pluginVersion,
             protocolVersion: this.protocolVersion,
             clientCapabilities: this.clientCapabilities,
             toolsetSnapshotId: this.toolsetSnapshotId,
@@ -90,6 +109,8 @@ export class TelemetrySession {
             serverVersion: snapshot.serverVersion,
             clientName: snapshot.clientName,
             clientVersion: snapshot.clientVersion,
+            pluginSource: snapshot.pluginSource,
+            pluginVersion: snapshot.pluginVersion,
             protocolVersion: snapshot.protocolVersion,
             clientCapabilities: snapshot.clientCapabilities ?? [],
             toolsetSnapshotId: snapshot.toolsetSnapshotId,

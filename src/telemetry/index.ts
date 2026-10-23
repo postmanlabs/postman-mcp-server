@@ -30,6 +30,7 @@ export function createTelemetryClient(options: CreateTelemetryClientOptions): IT
 
   return new TelemetryClient({
     apiKey: options.apiKey,
+    pluginAttributionEnabled: options.pluginAttributionEnabled,
   });
 }
 
