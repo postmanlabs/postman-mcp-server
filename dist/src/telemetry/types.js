@@ -16,6 +16,18 @@ export var TelemetryErrorStage;
     TelemetryErrorStage["UPSTREAM"] = "upstream";
     TelemetryErrorStage["TIMEOUT"] = "timeout";
 })(TelemetryErrorStage || (TelemetryErrorStage = {}));
+export const PluginSourceSchema = z.enum([
+    'postman-claude-code-plugin',
+    'postman-codex-plugin',
+    'postman-cursor-plugin',
+    'postman-factory-plugin',
+    'postman-opencode-plugin',
+    'postman-pi-plugin',
+    'postman-copilot-plugin',
+    'postman-kimi-plugin',
+    'postman-antigravity-plugin',
+]);
+export const PluginVersionSchema = z.string().max(64).regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/);
 export const BaseTelemetryEventSchema = z.object({
     event_type: z.enum(['session_init', 'tool_call']),
     timestamp: z.string(),
@@ -24,6 +36,8 @@ export const BaseTelemetryEventSchema = z.object({
     trace_id: z.string(),
     client_name: z.string(),
     client_version: z.string(),
+    plugin_source: PluginSourceSchema.or(z.literal('')).optional(),
+    plugin_version: PluginVersionSchema.or(z.literal('')).optional(),
     protocol_version: z.string(),
     transport: z.enum(['stdio', 'http', 'sse']),
     toolset: z.enum(['full', 'minimal', 'code', 'learn', 'contextGraph']),

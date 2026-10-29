@@ -43,18 +43,21 @@ export class PostmanAPIClient implements IPostmanAPIClient {
   private readonly apiKey?: string;
   private readonly serverContext?: ServerContext;
   private readonly srvTraceId?: string;
+  private readonly userAgentComment?: string;
   private static instance: PostmanAPIClient | null = null;
 
   constructor(
     apiKey?: string,
     baseUrl: string = env.POSTMAN_API_BASE_URL,
     serverContext?: ServerContext,
-    srvTraceId?: string
+    srvTraceId?: string,
+    userAgentComment?: string
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
     this.serverContext = serverContext;
     this.srvTraceId = srvTraceId;
+    this.userAgentComment = userAgentComment;
   }
 
   /**
@@ -124,6 +127,10 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     let userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
     if (this.serverContext?.serverType) {
       userAgentHeader = `${userAgentHeader} (toolset: ${this.serverContext.serverType})`;
+    }
+
+    if (this.userAgentComment) {
+      userAgentHeader = `${userAgentHeader} (${this.userAgentComment})`;
     }
 
     const disallowed = new Set([
