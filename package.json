@@ -32,7 +32,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "dotenv": "^17.3.1",
     "newman": "^6.2.2",
     "nunjucks": "^3.2.4",
