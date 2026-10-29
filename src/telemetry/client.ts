@@ -10,6 +10,8 @@ import type {
  */
 export interface TelemetryClientOptions {
   apiKey: string;
+  /** Enable only once the receiver accepts the additive plugin fields. */
+  pluginAttributionEnabled?: boolean;
 }
 
 /**
@@ -111,6 +113,7 @@ const RETRYABLE_STATUS_CODES = new Set([502, 503]);
 export class TelemetryClient {
   private readonly apiKey: string;
   private readonly table: string;
+  private readonly pluginAttributionEnabled: boolean;
 
   private buffer: TelemetryEvent[] = [];
   private bufferSizeBytes = 0;
@@ -120,6 +123,7 @@ export class TelemetryClient {
   constructor(options: TelemetryClientOptions) {
     this.apiKey = options.apiKey;
     this.table = TELEMETRY_TABLE;
+    this.pluginAttributionEnabled = options.pluginAttributionEnabled ?? false;
   }
 
   /**
@@ -225,6 +229,8 @@ export class TelemetryClient {
     trace_id: string;
     client_name: string;
     client_version: string;
+    plugin_source?: TelemetrySession['pluginSource'];
+    plugin_version?: string;
     protocol_version: string;
     transport: 'stdio' | 'http' | 'sse';
     toolset: 'full' | 'minimal' | 'code' | 'learn' | 'contextGraph';
@@ -239,6 +245,10 @@ export class TelemetryClient {
       trace_id: session.getTraceId(conversationId),
       client_name: session.clientName,
       client_version: session.clientVersion,
+      ...(this.pluginAttributionEnabled ? {
+        plugin_source: session.pluginSource,
+        plugin_version: session.pluginVersion,
+      } : {}),
       protocol_version: session.protocolVersion,
       transport: session.transport,
       toolset: session.toolset,

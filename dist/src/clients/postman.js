@@ -13,12 +13,14 @@ export class PostmanAPIClient {
     apiKey;
     serverContext;
     srvTraceId;
+    userAgentComment;
     static instance = null;
-    constructor(apiKey, baseUrl = env.POSTMAN_API_BASE_URL, serverContext, srvTraceId) {
+    constructor(apiKey, baseUrl = env.POSTMAN_API_BASE_URL, serverContext, srvTraceId, userAgentComment) {
         this.apiKey = apiKey;
         this.baseUrl = baseUrl;
         this.serverContext = serverContext;
         this.srvTraceId = srvTraceId;
+        this.userAgentComment = userAgentComment;
     }
     static getInstance(apiKey, baseUrl) {
         if (!PostmanAPIClient.instance) {
@@ -55,6 +57,9 @@ export class PostmanAPIClient {
         let userAgentHeader = userAgentValue ? `${userAgentValue}/${USER_AGENT}` : USER_AGENT;
         if (this.serverContext?.serverType) {
             userAgentHeader = `${userAgentHeader} (toolset: ${this.serverContext.serverType})`;
+        }
+        if (this.userAgentComment) {
+            userAgentHeader = `${userAgentHeader} (${this.userAgentComment})`;
         }
         const disallowed = new Set([
             'content-length',

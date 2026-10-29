@@ -6,6 +6,7 @@ export function createTelemetryClient(options) {
     }
     return new TelemetryClient({
         apiKey: options.apiKey,
+        pluginAttributionEnabled: options.pluginAttributionEnabled,
     });
 }
 export { TelemetryClient } from './client.js';
