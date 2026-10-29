@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError, defineToolAnnotations, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
 import { env } from '../env.js';
 export const method = 'searchLearningCenter';
 export const title = 'Search the Postman Learning Center';

@@ -8,7 +8,7 @@
     "url": "https://github.com/postmanlabs/postman-mcp-server",
     "source": "github"
   },
-  "version": "2.14.0",
+  "version": "2.15.0",
   "icons": [
     {
       "src": "https://raw.githubusercontent.com/postmanlabs/postman-mcp-server/main/icon.png",
@@ -22,7 +22,7 @@
     {
       "registryType": "npm",
       "identifier": "@postman/postman-mcp-server",
-      "version": "2.14.0",
+      "version": "2.15.0",
       "transport": {
         "type": "stdio"
       },
@@ -37,7 +37,7 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.14.0/postman-mcp-server-minimal.mcpb",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-minimal.mcpb",
       "fileSha256": "d21682282ab6655dccc80a8bf21f6e435e2e9f403a51b3c59d1d03293a4d1340",
       "transport": {
         "type": "stdio"
@@ -53,7 +53,7 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.14.0/postman-mcp-server-full.mcpb",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-full.mcpb",
       "fileSha256": "98ee9c827e61172c86d701f371b27840b0dae79d31b09988a35ee2cfae4e4ccb",
       "transport": {
         "type": "stdio"
@@ -69,7 +69,7 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.14.0/postman-mcp-server-code.mcpb",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-code.mcpb",
       "fileSha256": "3fca5cd3f09c1b3715af4251036f895bd5f8e96ddcb4916a70c0921d11344066",
       "transport": {
         "type": "stdio"
@@ -85,7 +85,7 @@
     },
     {
       "registryType": "mcpb",
-      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.14.0/postman-mcp-server-learn.mcpb",
+      "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-learn.mcpb",
       "fileSha256": "a7875cee7cedc59609bd10fb9a32fa156e51d0e79e663d00c204a5f4810c38b2",
       "transport": {
         "type": "stdio"
