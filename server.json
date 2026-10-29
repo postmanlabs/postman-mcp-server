@@ -38,7 +38,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-minimal.mcpb",
-      "fileSha256": "d21682282ab6655dccc80a8bf21f6e435e2e9f403a51b3c59d1d03293a4d1340",
+      "fileSha256": "de3ecfeab86d2499f8178cbdb7cb1d4437b227e1b08ab5be2902d9ff82011f0d",
       "transport": {
         "type": "stdio"
       },
@@ -54,7 +54,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-full.mcpb",
-      "fileSha256": "98ee9c827e61172c86d701f371b27840b0dae79d31b09988a35ee2cfae4e4ccb",
+      "fileSha256": "b6e75cfb5a78b0ca32940744fa863232e0e5ffbbde9844dfbec16ffb123b759f",
       "transport": {
         "type": "stdio"
       },
@@ -70,7 +70,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-code.mcpb",
-      "fileSha256": "3fca5cd3f09c1b3715af4251036f895bd5f8e96ddcb4916a70c0921d11344066",
+      "fileSha256": "030fedff3ae07f08f3279ec3f55761bd26845914a8a95c37a6fbb3a78755e336",
       "transport": {
         "type": "stdio"
       },
@@ -86,7 +86,7 @@
     {
       "registryType": "mcpb",
       "identifier": "https://github.com/postmanlabs/postman-mcp-server/releases/download/v2.15.0/postman-mcp-server-learn.mcpb",
-      "fileSha256": "a7875cee7cedc59609bd10fb9a32fa156e51d0e79e663d00c204a5f4810c38b2",
+      "fileSha256": "121f2beb4659231cfec979dc197246508ed011ec4d71a9f38de3251fa466e48e",
       "transport": {
         "type": "stdio"
       },
