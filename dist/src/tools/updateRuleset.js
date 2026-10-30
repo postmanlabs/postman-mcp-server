@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateRuleset';
 export const title = 'Update a ruleset';
 export const description = "Updates a custom ruleset's name, description, or content. Only the fields you send\nchange, but \\`content\\` replaces the entire ruleset rather than merging rules, so read\nthe current content with getRuleset (\\`include=content\\`) and send the full edited\ndocument. Changes take effect for every governance group the ruleset is assigned to.\nPostman-managed rulesets (\\`type: system\\`) can't be updated and return 403.\n";
@@ -32,7 +32,7 @@ export async function handler(args, extra) {
             .length < 1) {
             throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
         }
-        const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}`;
+        const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

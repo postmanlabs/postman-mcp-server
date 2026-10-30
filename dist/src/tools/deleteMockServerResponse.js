@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteMockServerResponse';
 export const title = 'Delete a server response for a mock';
 export const description = 'Deletes a server response from a mock server.\n\n- If this server response is currently active (\\`config.serverResponseId\\` on the mock), deleting it will not automatically deactivate it. Call \\`updateMock\\` with \\`config.serverResponseId: null\\` first to deactivate.\n- This action is destructive and cannot be undone.\n';
@@ -16,7 +16,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/server-responses/${encodeURIComponent(String(args.serverResponseId))}`;
+        const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}/server-responses/${encodePathSegment(args.serverResponseId, 'serverResponseId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

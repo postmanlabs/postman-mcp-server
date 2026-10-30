@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getDetectedSecretsLocations';
 export const title = 'Get detected secrets locations';
 export const description = 'Lists where one detected secret appears — the workspaces and resources holding it. Use\nthis after detectedSecretsQueries to turn a secret ID into the concrete places a person\nhas to go and fix. Requires a \\`workspaceId\\`, and can be narrowed further with\n\\`resourceType\\` and a \\`since\\`/\\`until\\` window.\nDo not use this tool to search for secrets across the team; use detectedSecretsQueries\ninstead. Requires a Postman Enterprise plan.\n';
@@ -52,7 +52,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/detected-secrets/${encodeURIComponent(String(args.secretId))}/locations`;
+        const endpoint = `/detected-secrets/${encodePathSegment(args.secretId, 'secretId')}/locations`;
         const query = new URLSearchParams();
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));

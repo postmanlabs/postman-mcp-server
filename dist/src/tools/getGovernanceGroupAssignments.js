@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getGovernanceGroupAssignments';
 export const title = "Get a governance group's ruleset assignments";
 export const description = "Lists the rulesets assigned to a governance group. Each assignment's \\`rulesetId\\` can be\npassed to getRuleset. To go the other way, from a ruleset to its groups, use\ngetRulesetAssignments.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/governance-groups/${encodeURIComponent(String(args.groupId))}/assignments`;
+        const endpoint = `/governance-groups/${encodePathSegment(args.groupId, 'groupId')}/assignments`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

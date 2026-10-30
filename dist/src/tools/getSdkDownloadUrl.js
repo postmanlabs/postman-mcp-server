@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSdkDownloadUrl';
 export const title = "Get an SDK's download URL";
 export const description = "Gets a short-lived signed URL for a generated SDK's zip archive. The response carries a\nURL, not the archive — the API deliberately does not stream file contents — and the URL\nexpires within a few minutes, so fetch it at the moment you intend to download and do\nnot store or pass it around.\nOnly works once the SDK's \\`buildStatus\\` is \\`succeeded\\`; check with getSdk first, since\nasking too early returns 409. Requires a Postman Team or Enterprise plan.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/sdks/${encodeURIComponent(String(args.sdkId))}/downloads`;
+        const endpoint = `/sdks/${encodePathSegment(args.sdkId, 'sdkId')}/downloads`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

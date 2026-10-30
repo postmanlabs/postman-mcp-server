@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteCollectionResponse';
 export const title = 'Delete a collection response';
 export const description = 'Deletes a response in a collection.';
@@ -16,7 +16,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/responses/${encodeURIComponent(String(args.responseId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/responses/${encodePathSegment(args.responseId, 'responseId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

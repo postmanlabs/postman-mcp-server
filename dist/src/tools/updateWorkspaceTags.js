@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateWorkspaceTags';
 export const title = "Update a workspace's tags";
 export const description = "Updates a workspace's associated tags. This endpoint replaces all existing tags with those you pass in the request body.";
@@ -11,7 +11,7 @@ export const parameters = z.object({
         .object({
         slug: z
             .string()
-            .regex(new RegExp('^[a-z][a-z0-9-]*[a-z0-9]+$'))
+            .regex(new RegExp('^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])$'))
             .min(2)
             .max(64)
             .describe("The tag's ID within a team or individual (non-team) user scope."),
@@ -30,7 +30,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/tags`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/tags`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'createCollectionFork';
 export const title = 'Create a collection fork';
@@ -25,7 +30,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/fork/${encodeURIComponent(String(args.collectionId))}`;
+    const endpoint = `/collections/fork/${encodePathSegment(args.collectionId, 'collectionId')}`;
     const query = new URLSearchParams();
     if (args.workspace !== undefined) query.set('workspace', String(args.workspace));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'addApiCatalogSystemEnvironmentAssociations';
 export const title = 'Add API Catalog system environment associations';
@@ -39,7 +44,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/api-catalog/system-environments/${encodeURIComponent(String(args.systemEnvironmentId))}/associations`;
+    const endpoint = `/api-catalog/system-environments/${encodePathSegment(args.systemEnvironmentId, 'systemEnvironmentId')}/associations`;
     const query = new URLSearchParams();
     if (args.allowPartial !== undefined) query.set('allowPartial', String(args.allowPartial));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

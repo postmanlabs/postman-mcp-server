@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createAccessRequest';
 export const title = 'Create an access request';
 export const description = "Creates an access request against a team — to join it, to raise a user's role, to add\nmembers, or to request team role access to another team.\nThis asks for a privilege change on someone's behalf, and if team discovery is enabled\nthe request is approved automatically, which means it can grant access with no human in\nthe loop. Only call it on an explicit request from the person the access is for.\n";
@@ -44,7 +44,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/access-requests`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/access-requests`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

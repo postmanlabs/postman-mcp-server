@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createCollectionFork';
 export const title = 'Create a collection fork';
 export const description = 'Creates a [fork](https://learning.postman.com/docs/collaborating-in-postman/version-control/#creating-a-fork) from an existing collection into a workspace.';
@@ -18,7 +18,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/fork/${encodeURIComponent(String(args.collectionId))}`;
+        const endpoint = `/collections/fork/${encodePathSegment(args.collectionId, 'collectionId')}`;
         const query = new URLSearchParams();
         if (args.workspace !== undefined)
             query.set('workspace', String(args.workspace));

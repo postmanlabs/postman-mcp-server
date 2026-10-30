@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createResponseComment';
 export const title = 'Create a response comment';
 export const description = 'Creates a comment on a response. To create a reply on an existing comment, include the \\`threadId\\` property in the request body.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n';
@@ -35,7 +35,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/responses/${encodeURIComponent(String(args.responseId))}/comments`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/responses/${encodePathSegment(args.responseId, 'responseId')}/comments`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

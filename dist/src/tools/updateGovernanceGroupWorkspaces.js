@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateGovernanceGroupWorkspaces';
 export const title = "Update a governance group's workspaces";
 export const description = "Adds and removes workspaces in a custom governance group in one atomic request. Put\nworkspace IDs to add in \\`create\\` and IDs to remove in \\`delete\\`; omit either list if\nunused. Removed workspaces stop being governed by the group's rulesets. If any\nworkspace in the batch can't be applied, nothing changes and the request fails with\n409. Postman-managed groups (\\`type: system\\`) return 403.\n";
@@ -28,7 +28,7 @@ export async function handler(args, extra) {
         if ([args['create'], args['delete']].filter((value) => value !== undefined).length < 1) {
             throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
         }
-        const endpoint = `/governance-groups/${encodeURIComponent(String(args.groupId))}/bulk-workspaces`;
+        const endpoint = `/governance-groups/${encodePathSegment(args.groupId, 'groupId')}/bulk-workspaces`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

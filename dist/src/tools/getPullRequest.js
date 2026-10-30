@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getPullRequest';
 export const title = 'Get a collection pull request';
 export const description = 'Gets a single pull request by its ID, including source and destination details,\nreviewers, and the current merge/review status. Use this to inspect a specific\npull request returned by getCollectionPullRequests.\n';
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/pull-requests/${encodeURIComponent(String(args.pullRequestId))}`;
+        const endpoint = `/pull-requests/${encodePathSegment(args.pullRequestId, 'pullRequestId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

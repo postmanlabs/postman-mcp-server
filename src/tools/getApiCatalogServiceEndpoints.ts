@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getApiCatalogServiceEndpoints';
 export const title = "Get an API Catalog service's endpoints";
@@ -70,7 +75,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/api-catalog/services/${encodeURIComponent(String(args.serviceId))}/endpoints`;
+    const endpoint = `/api-catalog/services/${encodePathSegment(args.serviceId, 'serviceId')}/endpoints`;
     const query = new URLSearchParams();
     if (args.systemEnvironmentId !== undefined)
       query.set('systemEnvironmentId', String(args.systemEnvironmentId));

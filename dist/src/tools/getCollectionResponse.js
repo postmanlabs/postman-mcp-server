@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getCollectionResponse';
 export const title = 'Get a collection response';
 export const description = 'Gets information about a response in a collection.';
@@ -25,7 +25,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/responses/${encodeURIComponent(String(args.responseId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/responses/${encodePathSegment(args.responseId, 'responseId')}`;
         const query = new URLSearchParams();
         if (args.ids !== undefined)
             query.set('ids', String(args.ids));

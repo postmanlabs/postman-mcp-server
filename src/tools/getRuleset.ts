@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getRuleset';
 export const title = 'Get a ruleset';
@@ -29,7 +34,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}`;
+    const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}`;
     const query = new URLSearchParams();
     if (args.include !== undefined) query.set('include', String(args.include));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

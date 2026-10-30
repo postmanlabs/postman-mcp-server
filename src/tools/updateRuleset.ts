@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateRuleset';
 export const title = 'Update a ruleset';
@@ -40,7 +45,7 @@ export async function handler(
     ) {
       throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
     }
-    const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}`;
+    const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

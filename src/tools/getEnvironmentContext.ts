@@ -5,6 +5,7 @@ import {
   ServerContext,
   asMcpError,
   McpError,
+  encodePathSegment,
   defineToolAnnotations,
 } from './utils/toolHelpers.js';
 
@@ -30,7 +31,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/context/environments/${encodeURIComponent(String(args.environmentId))}`;
+    const endpoint = `/context/environments/${encodePathSegment(args.environmentId, 'environmentId')}`;
     const result = await extra.client.get(endpoint, {
       headers: extra.headers,
     });

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'removeWorkspaceFromPrivateNetwork';
 export const title = 'Remove a workspace from the Private API Network';
 export const description = "Removes a workspace from your team's Private API Network. This does not delete the workspace itself — it only removes it from the Private API Network folder.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/network/private/workspace/${encodeURIComponent(String(args.workspaceId))}`;
+        const endpoint = `/network/private/workspace/${encodePathSegment(args.workspaceId, 'workspaceId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

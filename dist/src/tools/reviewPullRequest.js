@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'reviewPullRequest';
 export const title = 'Review a collection pull request';
 export const description = 'Reviews a pull request by performing an action on it. The required \\`action\\` field\ndetermines the outcome:\n  - \\`approve\\`  — approve the pull request for merge.\n  - \\`merge\\`    — merge the pull request into its destination (parent) collection.\n  - \\`decline\\`  — decline the pull request; optionally include a \\`comment\\` explaining why.\n  - \\`unapprove\\` — revoke a previous \\`approve\\` (does not decline the pull request).\nUse this tool to formally approve, merge, decline, or unapprove a pull request.\n';
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/pull-requests/${encodeURIComponent(String(args.pullRequestId))}/tasks`;
+        const endpoint = `/pull-requests/${encodePathSegment(args.pullRequestId, 'pullRequestId')}/tasks`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

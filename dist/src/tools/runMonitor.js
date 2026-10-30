@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'runMonitor';
 export const title = 'Run a monitor';
 export const description = "Runs a monitor and returns its run results.\n\n**Note:**\n\n- If you pass the \\`async=true\\` query parameter, the response does not return the \\`stats\\`, \\`executions\\`, and \\`failures\\` responses. To get this information for an asynchronous run, call the GET \\`/monitors/{id}\\` endpoint.\n- If the call exceeds 300 seconds, the endpoint returns an HTTP \\`202 Accepted\\` response. Use the GET \\`/monitors/{id}\\` endpoint to check the run's status in the response's \\`lastRun\\` property. To avoid this, it is recommended that you include the \\`async=true\\` query parameter when using this endpoint.\n";
@@ -19,7 +19,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/run`;
+        const endpoint = `/monitors/${encodePathSegment(args.monitorId, 'monitorId')}/run`;
         const query = new URLSearchParams();
         if (args.async !== undefined)
             query.set('async', String(args.async));

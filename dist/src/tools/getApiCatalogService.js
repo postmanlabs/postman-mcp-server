@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogService';
 export const title = 'Get an API Catalog service';
 export const description = "Gets one catalogued service's health, traffic, compliance, ownership, and dependencies\nin a given system environment. Both the service ID and the required\n\\`systemEnvironmentId\\` are needed; get them from getApiCatalogServices and\ngetApiCatalogSystemEnvironments. The same service reports different data per\nenvironment, so the environment is part of the question, not an optional filter.\nDo not use this tool for per-endpoint metrics; use getApiCatalogServiceEndpoints\ninstead. Requires a Postman Enterprise plan.\n";
@@ -16,7 +16,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/services/${encodeURIComponent(String(args.serviceId))}`;
+        const endpoint = `/api-catalog/services/${encodePathSegment(args.serviceId, 'serviceId')}`;
         const query = new URLSearchParams();
         if (args.systemEnvironmentId !== undefined)
             query.set('systemEnvironmentId', String(args.systemEnvironmentId));

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateComponentDraft';
 export const title = 'Update a component draft';
 export const description = "Updates a component's working draft content, format, or both. Include at least one\nfield; omitted fields remain unchanged. Edits are not visible to teammates referencing\nthe component until you publish them with createComponentVersion. Archived components\ncannot be edited — restore them with updateComponent first.\nDo not use this tool to publish changes; use createComponentVersion instead.\nRequires a Postman Enterprise plan.\n";
@@ -28,7 +28,7 @@ export async function handler(args, extra) {
         if ([args['content'], args['format']].filter((value) => value !== undefined).length < 1) {
             throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
         }
-        const endpoint = `/components/${encodeURIComponent(String(args.componentId))}/drafts`;
+        const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}/drafts`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

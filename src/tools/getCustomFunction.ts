@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getCustomFunction';
 export const title = 'Get a custom function';
@@ -29,7 +34,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/custom-functions/${encodeURIComponent(String(args.customFunctionId))}`;
+    const endpoint = `/custom-functions/${encodePathSegment(args.customFunctionId, 'customFunctionId')}`;
     const query = new URLSearchParams();
     if (args.include !== undefined) query.set('include', String(args.include));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

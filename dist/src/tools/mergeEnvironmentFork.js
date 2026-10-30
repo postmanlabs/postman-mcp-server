@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'mergeEnvironmentFork';
 export const title = 'Merge an environment fork';
 export const description = "Merges a forked environment's changes up into its parent. The path holds the parent\nenvironment and \\`source\\` holds the fork's unique ID — this direction sends the fork's\nvalues to the parent, so anyone using the parent sees them. Set \\`deleteSource\\` to true\nto delete the fork after a successful merge; it defaults to false.\nTo move changes the other way, from parent down into a fork, use pullEnvironment\ninstead.\n";
@@ -21,7 +21,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/environments/${encodeURIComponent(String(args.environmentId))}/merges`;
+        const endpoint = `/environments/${encodePathSegment(args.environmentId, 'environmentId')}/merges`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateResponseComment';
 export const title = "Update a response's comment";
@@ -40,7 +45,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/responses/${encodeURIComponent(String(args.responseId))}/comments/${encodeURIComponent(String(args.commentId))}`;
+    const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/responses/${encodePathSegment(args.responseId, 'responseId')}/comments/${encodePathSegment(args.commentId, 'commentId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

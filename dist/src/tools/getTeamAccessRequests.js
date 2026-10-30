@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getTeamAccessRequests';
 export const title = "Get a team's access requests";
 export const description = "Lists a team's pending access requests — people asking to join, to be promoted, or to\nadd members. Use this to report on what is waiting for a decision, and to get the\nrequest IDs that approveDenyAccessRequest needs.\nReading requests is safe; acting on them is not. Do not chain straight into\napproveDenyAccessRequest without an explicit decision from an operator.\n";
@@ -28,7 +28,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/access-requests`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/access-requests`;
         const query = new URLSearchParams();
         if (args.cursor !== undefined)
             query.set('cursor', String(args.cursor));

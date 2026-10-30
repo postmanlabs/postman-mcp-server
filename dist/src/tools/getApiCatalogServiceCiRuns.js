@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogServiceCiRuns';
 export const title = "Get an API Catalog service's CI runs";
 export const description = 'Lists CI collection runs for a service, with summary statistics, pipeline details, and\nGit metadata. Use this to tie test results back to a branch, workflow, or commit\nauthor. \\`systemEnvironmentId\\` is required. Filter with \\`collectionId\\`,\n\\`environmentId\\`, \\`status\\`, \\`branch\\`, \\`workflowName\\`, \\`actor\\`, \\`repoName\\`, and\n\\`repoOwner\\`; order with \\`sort\\` in \\`field:direction\\` form over \\`timestamp\\` or\n\\`duration\\`.\nDo not use this tool for scheduled monitor runs; use getApiCatalogServiceMonitorRuns\ninstead. Requires a Postman Enterprise plan.\n';
@@ -58,7 +58,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/services/${encodeURIComponent(String(args.serviceId))}/ci-runs`;
+        const endpoint = `/api-catalog/services/${encodePathSegment(args.serviceId, 'serviceId')}/ci-runs`;
         const query = new URLSearchParams();
         if (args.systemEnvironmentId !== undefined)
             query.set('systemEnvironmentId', String(args.systemEnvironmentId));

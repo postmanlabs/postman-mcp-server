@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'resolveCommentThread';
 export const title = 'Resolve a comment thread';
 export const description = 'Resolves a comment and any associated replies. On success, this returns an HTTP \\`204 No Content\\` response.\n\nComment thread IDs return in the GET \\`/comments\\` response for [collections](https://www.postman.com/postman/workspace/postman-public-workspace/request/12959542-a6582e0a-9382-4760-8b91-53a8aa6cb8d7) and [collection items](https://www.postman.com/postman/workspace/postman-public-workspace/folder/12959542-efeda219-66e1-474c-a83b-253d15723bf7).\n';
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/comments-resolutions/${encodeURIComponent(String(args.threadId))}`;
+        const endpoint = `/comments-resolutions/${encodePathSegment(args.threadId, 'threadId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

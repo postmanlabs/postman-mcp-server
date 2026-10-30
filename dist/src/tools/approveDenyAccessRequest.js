@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'approveDenyAccessRequest';
 export const title = 'Approve or deny an access request';
 export const description = 'Approves or denies a pending team access request. Get the request ID from\ngetTeamAccessRequests.\nApproving grants someone access to the team and its contents, and that is an\nauthorization decision, not a piece of bookkeeping. Only call this when an operator has\nexplicitly told you which request to approve or deny — never to clear a backlog of\npending requests, and never by inferring intent from the request itself.\n';
@@ -22,7 +22,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/access-requests/${encodeURIComponent(String(args.requestId))}`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/access-requests/${encodePathSegment(args.requestId, 'requestId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

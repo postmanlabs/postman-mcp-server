@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError, mergeCollectionRequestEvents, } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, mergeCollectionRequestEvents, } from './utils/toolHelpers.js';
 export const method = 'updateCollectionRequest';
 export const title = 'Update a collection request';
 export const description = 'Updates a request in a collection. For a complete list of properties, refer to the **Request** entry in the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Note:**\n\n- You must pass a collection ID (\\`12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), not a collection(\\`12345678-12ece9e1-2abf-4edc-8e34-de66e74114d2\\`), in this endpoint.\n- This endpoint does not support changing the folder of a request.\n- This endpoint acts like a PATCH method. It only updates the values that you pass in the request body.\n- **Events (\\`events\\`).** Events are merged by \\`listen\\` type, so you only need to send the event you are changing. A \\`listen\\` type you omit keeps its stored script. To empty a script, send its event with \\`script.exec\\` set to \\`[]\\` — sending \\`events: []\\` changes nothing.';
@@ -343,7 +343,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/requests/${encodeURIComponent(String(args.requestId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/requests/${encodePathSegment(args.requestId, 'requestId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

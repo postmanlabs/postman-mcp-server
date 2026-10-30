@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getTeam';
 export const title = 'Get a team';
 export const description = "Gets one Postman team by ID. Pass \\`include=members\\` to list everyone with access —\nmanagers, members, guests, and groups representing other teams — or \\`include=userRoles\\`\nfor the team's role assignments. Use getTeams when you need to discover the ID.\nMember entries carry IDs rather than names; resolve them with getTeamUsers and\ngetGroups.\n";
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

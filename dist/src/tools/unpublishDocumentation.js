@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'unpublishDocumentation';
 export const title = "Unpublish a collection's documentation";
 export const description = "Unpublishes a collection's documentation. On success, this returns an HTTP \\`204 No Content\\` response.";
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/public-documentations`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/public-documentations`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

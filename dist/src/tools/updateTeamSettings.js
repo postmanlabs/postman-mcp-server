@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateTeamSettings';
 export const title = 'Update team settings';
 export const description = "Updates a team's settings. This is a PUT and applies team-wide, affecting every member\nat once — read the current values with getTeamSettings first and send the full intended\nstate, since a partial body can reset settings you did not mean to touch.\nOnly call this on an explicit instruction naming the setting to change. Do not use it to\ninfer configuration an operator did not ask for.\n";
@@ -29,7 +29,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/settings`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/settings`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

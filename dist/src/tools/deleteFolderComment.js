@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteFolderComment';
 export const title = "Delete a folder's comment";
 export const description = 'Deletes a comment from a folder. On success, this returns an HTTP \\`204 No Content\\` response.\n\n**Note:**\n\nDeleting the first comment of a thread deletes all the comments in the thread.\n';
@@ -17,7 +17,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/folders/${encodeURIComponent(String(args.folderId))}/comments/${encodeURIComponent(String(args.commentId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/folders/${encodePathSegment(args.folderId, 'folderId')}/comments/${encodePathSegment(args.commentId, 'commentId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

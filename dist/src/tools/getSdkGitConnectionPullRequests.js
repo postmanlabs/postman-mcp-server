@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSdkGitConnectionPullRequests';
 export const title = "Get an SDK Git connection's pull requests";
 export const description = 'Lists the SDK-update pull requests opened through one Git connection. Use this to report\non what has been delivered to a repository and what is still waiting to be merged. The\nrecord survives disconnection, so a disconnected connection still returns its history.\nThese are pull requests in the connected Git repository, not Postman collection pull\nrequests — use getCollectionPullRequests for those. Requires a Postman Team or\nEnterprise plan.\n';
@@ -29,7 +29,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/sdk-git-connections/${encodeURIComponent(String(args.sdkGitConnectionId))}/pull-requests`;
+        const endpoint = `/sdk-git-connections/${encodePathSegment(args.sdkGitConnectionId, 'sdkGitConnectionId')}/pull-requests`;
         const query = new URLSearchParams();
         if (args.status !== undefined)
             query.set('status', String(args.status));

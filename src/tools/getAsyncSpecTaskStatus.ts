@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getAsyncSpecTaskStatus';
 export const title = 'Get status of an async spec task';
@@ -24,7 +29,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/${encodeURIComponent(String(args.elementType))}/${encodeURIComponent(String(args.elementId))}/tasks/${encodeURIComponent(String(args.taskId))}`;
+    const endpoint = `/${encodePathSegment(args.elementType, 'elementType')}/${encodePathSegment(args.elementId, 'elementId')}/tasks/${encodePathSegment(args.taskId, 'taskId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
