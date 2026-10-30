@@ -31,7 +31,7 @@ The [Postman MCP Server collection](https://www.postman.com/postman/postman-publ
 
 For the best developer experience and fastest setup, use **OAuth** on the remote server (`https://mcp.postman.com`). OAuth is fully compliant with the [MCP Authorization specification](https://modelcontextprotocol.io/specification/draft/basic/authorization) and requires no manual API key configuration.
 
-The EU remote server and the local server support only [Postman API key](https://postman.postman.co/settings/me/api-keys) authentication.
+The EU remote server and the local server support only [Postman API key](https://postman.postman.co/settings/me/api-keys) authentication. The local server can also run without a key, through the Postman CLI; see [Running locally without an API key](#running-locally-without-an-api-key).
 
 ---
 
@@ -54,6 +54,17 @@ npx @postman/postman-mcp-server
 ```
 
 Add `--code` or `--full` for Code or Full mode. Set `POSTMAN_API_KEY` as an environment variable.
+
+### Running locally without an API key
+
+If `POSTMAN_API_KEY` is not set, or the Postman API rejects it, the local server still starts. Its tools then run through the [Postman CLI](https://learning.postman.com/docs/postman-cli/postman-cli-overview/), which you install separately (`npm install -g postman-cli`):
+
+- **Identity.** The CLI uses your `postman login` session if you have one. Otherwise the server starts a guest session; guest work is saved to a temporary workspace, and `postman signup` keeps it.
+- **Tools.** 29 of the 42 minimal-mode tools are available; `getEnabledTools` lists the rest and why. Collections are read and written in the v3 format.
+- **Finding the CLI.** If `postman` is not on the server's `PATH`, set `POSTMAN_CLI_PATH` to the executable.
+- **EU region.** Guest sessions exist only in the US region. With `--region eu`, run `postman login --region eu` first.
+
+Set an API key at any time and restart the server to get every tool.
 
 For IDE-specific setup instructions, see the following table. For more information, see the [Postman MCP Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/overview).
 
