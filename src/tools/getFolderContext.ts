@@ -5,6 +5,7 @@ import {
   ServerContext,
   asMcpError,
   McpError,
+  encodePathSegment,
   defineToolAnnotations,
 } from './utils/toolHelpers.js';
 
@@ -32,7 +33,7 @@ export async function handler(
 ): Promise<CallToolResult> {
   try {
     const result = await extra.client.get(
-      `/context/collections/${encodeURIComponent(String(args.collectionId))}/folders/${encodeURIComponent(String(args.folderId))}`,
+      `/context/collections/${encodePathSegment(args.collectionId, 'collectionId')}/folders/${encodePathSegment(args.folderId, 'folderId')}`,
       { headers: extra.headers }
     );
 

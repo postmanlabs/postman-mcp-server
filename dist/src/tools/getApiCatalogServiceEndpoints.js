@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogServiceEndpoints';
 export const title = "Get an API Catalog service's endpoints";
 export const description = "Lists the endpoints Postman has observed for a service, with per-endpoint traffic and\nperformance metrics. Use this to find a service's slowest or most error-prone\nendpoints. \\`systemEnvironmentId\\` is required. Filter with \\`httpMethods\\`, \\`hosts\\`,\n\\`responseCodes\\`, and \\`search\\` on the path; order with \\`sort\\` in \\`field:direction\\` form\nover \\`count\\`, \\`endpoint\\`, \\`p95LatencyMs\\`, or \\`errorRate\\`.\nThese are observed endpoints, not a specification — do not use this tool to read a\nservice's OpenAPI definition. Requires a Postman Enterprise plan.\n";
@@ -52,7 +52,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/services/${encodeURIComponent(String(args.serviceId))}/endpoints`;
+        const endpoint = `/api-catalog/services/${encodePathSegment(args.serviceId, 'serviceId')}/endpoints`;
         const query = new URLSearchParams();
         if (args.systemEnvironmentId !== undefined)
             query.set('systemEnvironmentId', String(args.systemEnvironmentId));

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getMockServerResponse';
 export const title = 'Get a server response for a mock';
 export const description = 'Gets the full details of a specific server response, including its \\`body\\`, \\`headers\\`, and \\`language\\`.\n\n- Use \\`getMockServerResponses\\` first to list available server response IDs.\n- To check which response is active, call \\`getMock\\` and read \\`config.serverResponseId\\`.\n';
@@ -16,7 +16,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/server-responses/${encodeURIComponent(String(args.serverResponseId))}`;
+        const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}/server-responses/${encodePathSegment(args.serverResponseId, 'serverResponseId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

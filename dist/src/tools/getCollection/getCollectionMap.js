@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from '../utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from '../utils/toolHelpers.js';
 export const method = 'getCollectionMap';
 export const description = `Get a Postman collection map with metadata and a complete recursive index of all folders and requests. Response includes collection metadata and description. Response includes itemRefs property (name and id only) instead of the full item array. After calling, present the collection summary and ask the user where they\'d like to explore next, calling getCollectionFolder and/or getCollectionRequest tools in parallel to get more data quickly.
   Once you've called this tool, DO NOT call searchPostmanElements to find items in or related to this collection. Instead, use the map in itemRefs.
@@ -44,7 +44,7 @@ function buildItemRefs(items) {
 }
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}`;
         const query = new URLSearchParams();
         if (args.access_key !== undefined)
             query.set('access_key', String(args.access_key));

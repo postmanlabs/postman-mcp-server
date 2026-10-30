@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteGovernanceGroup';
 export const title = 'Delete a governance group';
 export const description = "Deletes a custom governance group. This also removes all of its workspace assignments\nand every ruleset assignment targeting it, so those workspaces stop being governed by\nthe group's rulesets. The workspaces and rulesets themselves are not deleted.\nPostman-managed groups (\\`type: system\\`) can't be deleted and return 403.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/governance-groups/${encodeURIComponent(String(args.groupId))}`;
+        const endpoint = `/governance-groups/${encodePathSegment(args.groupId, 'groupId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

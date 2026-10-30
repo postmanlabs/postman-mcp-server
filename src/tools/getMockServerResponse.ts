@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getMockServerResponse';
 export const title = 'Get a server response for a mock';
@@ -24,7 +29,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/server-responses/${encodeURIComponent(String(args.serverResponseId))}`;
+    const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}/server-responses/${encodePathSegment(args.serverResponseId, 'serverResponseId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {

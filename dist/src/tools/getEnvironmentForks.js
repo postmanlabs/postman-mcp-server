@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getEnvironmentForks';
 export const title = "Get an environment's forks";
 export const description = 'Lists the forks of an environment. Use this to find fork IDs before merging or pulling,\nor to see who has diverged from a shared environment. Page with \\`limit\\` and \\`cursor\\`,\nand order with \\`sort\\` and \\`direction\\`.\nThis returns forks of one environment, not every environment in a workspace — use\ngetEnvironments for that.\n';
@@ -32,7 +32,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/environments/${encodeURIComponent(String(args.environmentId))}/forks`;
+        const endpoint = `/environments/${encodePathSegment(args.environmentId, 'environmentId')}/forks`;
         const query = new URLSearchParams();
         if (args.cursor !== undefined)
             query.set('cursor', String(args.cursor));

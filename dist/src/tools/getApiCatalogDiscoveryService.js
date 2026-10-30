@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogDiscoveryService';
 export const title = 'Get a discovered API Catalog service';
 export const description = "Gets one discovered service in detail, including its endpoint list and its OpenAPI\ndefinition as a base64-encoded string — decode that value before reading it. Use\ngetApiCatalogDiscoveryServices first to find the service ID.\nDo not use this tool for a catalogued service's health, traffic, or ownership data;\nuse getApiCatalogService instead. Requires a Postman Enterprise plan.\n";
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/discovery-services/${encodeURIComponent(String(args.serviceId))}`;
+        const endpoint = `/api-catalog/discovery-services/${encodePathSegment(args.serviceId, 'serviceId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

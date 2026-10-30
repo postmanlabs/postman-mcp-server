@@ -12,6 +12,32 @@ export function asMcpError(error: unknown): McpError {
   return new McpError(ErrorCode.InternalError, cause);
 }
 
+const DOT_SEGMENTS: ReadonlySet<string> = new Set(['.', '..']);
+
+/**
+ * Encodes a value for use as one URL path segment.
+ *
+ * `encodeURIComponent` leaves `.` and `..` untouched, and URL parsers resolve a
+ * segment made only of them, so `/files/..` would silently address the parent
+ * resource. Those two values are rejected rather than escaped, because an
+ * escaped dot may be decoded again by an intermediary.
+ *
+ * @param value - The path parameter value.
+ * @param name - Parameter name, used in the error message.
+ * @returns The percent-encoded segment.
+ * @throws McpError When the value is exactly `.` or `..`.
+ */
+export function encodePathSegment(value: unknown, name = 'path parameter'): string {
+  const segment = String(value);
+  if (DOT_SEGMENTS.has(segment)) {
+    throw new McpError(
+      ErrorCode.InvalidParams,
+      `Invalid value for ${name}: "${segment}" is not allowed as a path segment.`
+    );
+  }
+  return encodeURIComponent(segment);
+}
+
 /**
  * The read surface {@link mergeCollectionRequestEvents} needs from an API client.
  *

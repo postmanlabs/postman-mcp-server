@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSdk';
 export const title = 'Get an SDK';
 export const description = 'Gets one SDK, including the \\`buildStatus\\` of its generation job. This is the tool to\npoll after createSdk: \\`succeeded\\` means the archive is ready for getSdkDownloadUrl,\nand a failure status is reported here rather than by the original call.\nRequires a Postman Team or Enterprise plan.\n';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/sdks/${encodeURIComponent(String(args.sdkId))}`;
+        const endpoint = `/sdks/${encodePathSegment(args.sdkId, 'sdkId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

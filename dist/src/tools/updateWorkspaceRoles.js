@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateWorkspaceRoles';
 export const title = 'Update workspace roles';
 export const description = 'Changes who can access a workspace, for users, user groups, or partners. Read the\ncurrent state with getWorkspaceRoles first and get assignable role names from\ngetAllWorkspaceRoles.\nSeveral constraints will reject an otherwise reasonable call: at most 50 operations per\nrequest, exactly one action per user, group, or partner in a body, and partner roles and\nuser roles cannot be changed in the same call. Personal workspaces do not support role\nassignment, the external Guest role is not supported, and user groups require an\nEnterprise plan. Pass the \\`identifierType=scim\\` header to use SCIM IDs.\nThis grants or removes access to everything in the workspace, so only call it on an\nexplicit instruction naming the people and roles involved.\n';
@@ -38,7 +38,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/roles`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/roles`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceEnvironmentsContext';
 export const title = 'Get workspace environments context';
 export const description = 'Returns a markdown-formatted summary of all environments in a workspace, including their variables. Use this to understand the environment configuration available in a workspace.';
@@ -15,7 +15,7 @@ export const annotations = defineToolAnnotations({
 });
 export async function handler(args, extra) {
     try {
-        const endpoint = `/context/workspaces/${encodeURIComponent(String(args.workspaceId))}/environments`;
+        const endpoint = `/context/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/environments`;
         const result = await extra.client.get(endpoint, {
             headers: extra.headers,
         });

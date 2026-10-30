@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createRequestComment';
 export const title = 'Create a request comment';
 export const description = "The request ID must contain the team ID as a prefix, in \\`teamId-requestId\\` format.\n\nFor example, if you're creating a comment on collection ID \\`24585957-7b2c98f7-30db-4b67-8685-0079f48a0947\\` (note on the prefix), and\nthe collection request's ID is \\`2c450b59-9bbf-729b-6ac0-f92535a7c336\\`, then the \\`{requestId}\\` must be \\`24585957-2c450b59-9bbf-729b-6ac0-f92535a7c336\\`.\n";
@@ -37,7 +37,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/requests/${encodeURIComponent(String(args.requestId))}/comments`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/requests/${encodePathSegment(args.requestId, 'requestId')}/comments`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

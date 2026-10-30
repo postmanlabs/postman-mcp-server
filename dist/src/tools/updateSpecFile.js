@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateSpecFile';
 export const title = 'Update a spec file';
 export const description = 'Updates a file for an OpenAPI or protobuf 2 or 3 specification.\n\n**Note:**\n\n- This endpoint does not accept an empty request body. You must pass one of the accepted values.\n- This endpoint does not accept multiple request body properties in a single call. For example, you cannot pass both the \\`content\\` and \\`type\\` property at the same time.\n- Multi-file specifications can only have one root file.\n- When updating a file type to \\`ROOT\\`, the previous root file is updated to the \\`DEFAULT\\` file type.\n- Files cannot exceed a maximum of 10 MB in size.\n';
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/files/${encodeURIComponent(String(args.filePath))}`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/files/${encodePathSegment(args.filePath, 'filePath')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

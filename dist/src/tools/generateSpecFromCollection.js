@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'generateSpecFromCollection';
 export const title = 'Generate spec from collection';
 export const description = 'Generates an OpenAPI 2.0, 3.0, or 3.1 specification for the given collection. The response contains a polling link to the task status.';
@@ -24,7 +24,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionUid))}/generations/${encodeURIComponent(String(args.elementType))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionUid, 'collectionUid')}/generations/${encodePathSegment(args.elementType, 'elementType')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

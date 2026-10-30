@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateGovernanceGroup';
 export const title = 'Update a governance group';
@@ -28,7 +33,7 @@ export async function handler(
     if ([args['name'], args['description']].filter((value) => value !== undefined).length < 1) {
       throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
     }
-    const endpoint = `/governance-groups/${encodeURIComponent(String(args.groupId))}`;
+    const endpoint = `/governance-groups/${encodePathSegment(args.groupId, 'groupId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

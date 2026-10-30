@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'manageTeamMemberRoles';
 export const title = 'Manage team member roles';
 export const description = "Adds or removes roles in bulk for users, groups, teams, and organizations within a team.\nRemoving a role from a group or a team strips that role's permissions from every member\nof it at once, so the blast radius is much larger than the size of the request body.\nThis changes who can do what. Only call it on an explicit instruction naming the\nentities and roles involved, and read the current state with getTeam\n(\\`include=userRoles\\`) first so you can describe what will change.\n";
@@ -182,7 +182,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/bulk-members`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/bulk-members`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

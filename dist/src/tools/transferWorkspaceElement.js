@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'transferWorkspaceElement';
 export const title = 'Transfer element to a workspace';
 export const description = "Moves or copies an element — a collection, environment, mock, monitor, or Flows module or\naction — from one workspace into another. Both workspaces' activity feeds record the\nchange.\nTransferring changes who can see the element, since access follows the destination\nworkspace. Team workspaces cannot transfer into personal workspaces. To duplicate a\ncollection without moving it, use duplicateCollection instead.\n";
@@ -21,7 +21,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/element-transfers`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/element-transfers`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

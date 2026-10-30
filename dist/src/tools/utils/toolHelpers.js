@@ -4,6 +4,14 @@ export function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
 }
+const DOT_SEGMENTS = new Set(['.', '..']);
+export function encodePathSegment(value, name = 'path parameter') {
+    const segment = String(value);
+    if (DOT_SEGMENTS.has(segment)) {
+        throw new McpError(ErrorCode.InvalidParams, `Invalid value for ${name}: "${segment}" is not allowed as a path segment.`);
+    }
+    return encodeURIComponent(segment);
+}
 export async function mergeCollectionRequestEvents(client, endpoint, incoming, headers) {
     if (!Array.isArray(incoming) || incoming.length === 0)
         return incoming;

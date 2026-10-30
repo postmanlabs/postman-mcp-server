@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSpecVersionTags';
 export const title = "Get a specification's version tags";
 export const description = "Lists a specification's version tags — the point-in-time snapshots used to track how a\nspecification changed over time. Use this to discover tag IDs and names, or to see\nwhether the current state of a specification has been tagged yet. Page with \\`limit\\` and\n\\`cursor\\`.\nDo not use this tool to read a tag's contents; use getSpecVersionTag with a tag ID from\nthis response instead.\n";
@@ -24,7 +24,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/version-tags`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/version-tags`;
         const query = new URLSearchParams();
         if (args.cursor !== undefined)
             query.set('cursor', String(args.cursor));

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'patchWorkspaceUpdate';
 export const title = 'Update a workspace update';
 export const description = 'Edits a published workspace update. Requires the \\`application/merge-patch+json\\`\nContent-Type header, and only the fields you send are changed.\nWatchers may have already read the original, so correct an update rather than rewriting\nits meaning, and post a new one with createWorkspaceUpdate when the news itself has\nchanged.\n';
@@ -46,7 +46,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/updates/${encodeURIComponent(String(args.updateId))}`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/updates/${encodePathSegment(args.updateId, 'updateId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

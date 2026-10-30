@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceUpdates';
 export const title = 'Get all workspace updates';
 export const description = "Lists a workspace's updates — the announcement posts that keep workspace watchers\ninformed about new features, bug fixes, breaking changes, and other news. Filter by\n\\`category\\` and page with \\`cursor\\`.\nThese are authored announcements, not a record of what changed in the workspace. For\nthat use getWorkspaceActivityFeed, and for the workspace's own settings use\ngetWorkspace.\n";
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/updates`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/updates`;
         const query = new URLSearchParams();
         if (args.cursor !== undefined)
             query.set('cursor', String(args.cursor));

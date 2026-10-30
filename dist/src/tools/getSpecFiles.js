@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSpecFiles';
 export const title = "Get a spec's files";
 export const description = 'Gets all the files in an API specification.';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/files`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/files`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

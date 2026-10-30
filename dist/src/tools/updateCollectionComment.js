@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateCollectionComment';
 export const title = "Update a collection's comment";
 export const description = 'Updates a comment on a collection.\n\n**Note:**\n\nThis endpoint accepts a max of 10,000 characters.\n';
@@ -30,7 +30,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/comments/${encodeURIComponent(String(args.commentId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/comments/${encodePathSegment(args.commentId, 'commentId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

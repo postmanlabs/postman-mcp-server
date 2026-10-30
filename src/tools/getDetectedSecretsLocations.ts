@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getDetectedSecretsLocations';
 export const title = 'Get detected secrets locations';
@@ -66,7 +71,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/detected-secrets/${encodeURIComponent(String(args.secretId))}/locations`;
+    const endpoint = `/detected-secrets/${encodePathSegment(args.secretId, 'secretId')}/locations`;
     const query = new URLSearchParams();
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));

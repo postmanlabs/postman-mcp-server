@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateCollectionRoles';
 export const title = "Update a collection's roles";
 export const description = 'Changes who can view or edit a collection. Send a \\`roles\\` array where each entry has\n\\`op: update\\`, a \\`path\\` of \\`/user\\`, \\`/group\\`, or \\`/team\\`, and a \\`value\\` array of\n\\`{id, role}\\` pairs with \\`role\\` set to \\`VIEWER\\` or \\`EDITOR\\`. This overwrites the roles\nfor each ID you name, so read the current state with getCollectionRoles first and send\nthe full intended set — omitting someone you meant to keep will change their access.\nReturns 204 with no body on success. The caller must hold the Editor role on the\ncollection, and external Partner and Guest roles are not supported here.\n';
@@ -34,7 +34,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/roles`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/roles`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

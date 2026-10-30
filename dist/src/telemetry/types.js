@@ -27,10 +27,7 @@ export const PluginSourceSchema = z.enum([
     'postman-kimi-plugin',
     'postman-antigravity-plugin',
 ]);
-export const PluginVersionSchema = z
-    .string()
-    .max(64)
-    .regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/);
+export const PluginVersionSchema = z.string().max(64).regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/);
 export const BaseTelemetryEventSchema = z.object({
     event_type: z.enum(['session_init', 'tool_call']),
     timestamp: z.string(),

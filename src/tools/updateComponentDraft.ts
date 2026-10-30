@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateComponentDraft';
 export const title = 'Update a component draft';
@@ -34,7 +39,7 @@ export async function handler(
     if ([args['content'], args['format']].filter((value) => value !== undefined).length < 1) {
       throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
     }
-    const endpoint = `/components/${encodeURIComponent(String(args.componentId))}/drafts`;
+    const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}/drafts`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

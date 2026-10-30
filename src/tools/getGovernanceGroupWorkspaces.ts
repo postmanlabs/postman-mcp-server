@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getGovernanceGroupWorkspaces';
 export const title = "Get a governance group's workspaces";
@@ -36,7 +41,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/governance-groups/${encodeURIComponent(String(args.groupId))}/workspaces`;
+    const endpoint = `/governance-groups/${encodePathSegment(args.groupId, 'groupId')}/workspaces`;
     const query = new URLSearchParams();
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
     if (args.limit !== undefined) query.set('limit', String(args.limit));

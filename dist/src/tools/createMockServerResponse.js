@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createMockServerResponse';
 export const title = 'Create a server response for a mock';
 export const description = 'Creates a server response on a mock server. Server responses simulate 5xx server-level failures (e.g. 500, 503) that are agnostic to any specific route — when active, every request to the mock returns this response.\n\n- \\`statusCode\\` must be a 5xx value (500–599).\n- \\`body\\` is a raw string — pass the response body exactly as the mock should return it (e.g. a JSON string like \\`"{\\"message\\":\\"error\\"}"\\` or plain text).\n- \\`language\\` controls syntax highlighting in the Postman UI (\\`json\\`, \\`xml\\`, \\`html\\`, \\`javascript\\`, \\`text\\`). It does not affect the actual response Content-Type — set that via \\`headers\\` instead.\n- \\`headers\\` is an array of \\`{key, value}\\` pairs for response headers (e.g. \\`[{"key": "Content-Type", "value": "application/json"}]\\`).\n- You can create multiple server responses per mock, but only one can be active at a time. Creating a response does NOT automatically activate it — call \\`updateMock\\` with \\`config.serverResponseId\\` set to the new response\'s \\`id\\` to activate it.\n';
@@ -44,7 +44,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/server-responses`;
+        const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}/server-responses`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

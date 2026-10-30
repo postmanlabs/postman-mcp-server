@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogServiceSpecificationLints';
 export const title = "Get an API Catalog service's specification lints";
 export const description = "Lists specification lint runs for a service, with per-severity issue counts. Use this\nto see whether a service's specifications pass governance rules and which severities\nare failing. Unlike the other service reads, this one takes no \\`systemEnvironmentId\\`;\nscope it with \\`specId\\` instead. \\`severity\\` is a threshold — higher severities are\nalways included. Order with \\`sort\\` in \\`field:direction\\` form over \\`timestamp\\` or\n\\`errorCount\\`.\nDo not use this tool to lint a specification on demand; it only reports runs that have\nalready happened. Requires a Postman Enterprise plan.\n";
@@ -40,7 +40,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/services/${encodeURIComponent(String(args.serviceId))}/spec-lints`;
+        const endpoint = `/api-catalog/services/${encodePathSegment(args.serviceId, 'serviceId')}/spec-lints`;
         const query = new URLSearchParams();
         if (args.specId !== undefined)
             query.set('specId', String(args.specId));

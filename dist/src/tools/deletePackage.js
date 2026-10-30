@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deletePackage';
 export const title = 'Delete a package';
 export const description = 'Deletes a package and its associated index script content.\nThis operation returns no content and also succeeds when the package no longer exists.\nDo not use this tool to clear or replace script content while retaining the package;\nuse updatePackage instead.\n';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/packages/${encodeURIComponent(String(args.packageId))}`;
+        const endpoint = `/packages/${encodePathSegment(args.packageId, 'packageId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

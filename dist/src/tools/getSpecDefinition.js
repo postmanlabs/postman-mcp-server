@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSpecDefinition';
 export const title = "Get a spec's definition";
 export const description = "Gets the complete contents of an OpenAPI or AsyncAPI specification's definition.";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/definitions`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/definitions`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

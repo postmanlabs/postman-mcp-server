@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getCollectionFolder';
 export const title = 'Get a collection folder';
 export const description = 'Gets information about a folder in a collection.';
@@ -25,7 +25,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/folders/${encodeURIComponent(String(args.folderId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/folders/${encodePathSegment(args.folderId, 'folderId')}`;
         const query = new URLSearchParams();
         if (args.ids !== undefined)
             query.set('ids', String(args.ids));

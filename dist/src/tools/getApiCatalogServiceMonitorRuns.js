@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogServiceMonitorRuns';
 export const title = "Get an API Catalog service's monitor runs";
 export const description = "Lists scheduled monitor runs for a service, with summary statistics per run. Use this\nto check whether a service's monitors are passing and when they last ran.\n\\`systemEnvironmentId\\` is required. Filter with \\`collectionId\\`, \\`environmentId\\`, and\n\\`status\\`; order with \\`sort\\` in \\`field:direction\\` form over \\`timestamp\\`, \\`duration\\`, or\n\\`failedAssertions\\`.\nDo not use this tool for CI-triggered runs; those are separate and read with\ngetApiCatalogServiceCiRuns. Requires a Postman Enterprise plan.\n";
@@ -41,7 +41,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/services/${encodeURIComponent(String(args.serviceId))}/monitor-runs`;
+        const endpoint = `/api-catalog/services/${encodePathSegment(args.serviceId, 'serviceId')}/monitor-runs`;
         const query = new URLSearchParams();
         if (args.systemEnvironmentId !== undefined)
             query.set('systemEnvironmentId', String(args.systemEnvironmentId));

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getComponentVersion';
 export const title = 'Get a component version';
 export const description = 'Gets a single published version of a component by version ID. Pass \\`include=content\\`\nto return the published content itself. Use getComponentVersions first when you need\nto discover a version ID.\nDo not use this tool to read the working draft; use getComponentDraft instead.\nRequires a Postman Enterprise plan.\n';
@@ -20,7 +20,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/components/${encodeURIComponent(String(args.componentId))}/versions/${encodeURIComponent(String(args.versionId))}`;
+        const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}/versions/${encodePathSegment(args.versionId, 'versionId')}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteMock';
 export const title = 'Delete a mock server';
 export const description = 'Deletes a mock server.\n- Resource: Mock server entity. This is destructive.\n- Ensure you are targeting the correct mock ID.\n';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}`;
+        const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateSdkGitConnection';
 export const title = 'Update an SDK Git connection';
 export const description = "Changes an SDK Git connection's lifecycle status. Setting \\`active\\` connects or\nreconnects the repository and resumes auto-update pull requests; \\`disconnected\\` stops\nany further pull requests being opened while preserving the historical record, which\nstays queryable through getSdkGitConnectionPullRequests. The call is idempotent, so\nsetting current values is a harmless no-op.\nThe \\`inaccessible\\` status is set by Postman and cannot be assigned here — seeing it\nmeans the repository or its credentials need attention on the Git side.\n\\`autoUpdatePullRequestsEnabled\\` is Enterprise-only and is forced to false on Team\nplans. Requires a Postman Team or Enterprise plan.\n";
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/sdk-git-connections/${encodeURIComponent(String(args.sdkGitConnectionId))}`;
+        const endpoint = `/sdk-git-connections/${encodePathSegment(args.sdkGitConnectionId, 'sdkGitConnectionId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

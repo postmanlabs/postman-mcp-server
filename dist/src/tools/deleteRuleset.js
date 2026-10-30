@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteRuleset';
 export const title = 'Delete a ruleset';
 export const description = "Permanently deletes a custom ruleset, which stops its rules from applying to every\ngovernance group it was assigned to. To stop applying it to one group only, use\ndeleteRulesetAssignment instead. Postman-managed rulesets (\\`type: system\\`) can't be\ndeleted and return 403.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}`;
+        const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

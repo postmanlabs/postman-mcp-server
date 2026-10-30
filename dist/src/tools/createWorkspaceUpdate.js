@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createWorkspaceUpdate';
 export const title = 'Create a workspace update';
 export const description = "Publishes an update in a workspace, notifying everyone watching it. Use this to announce\na breaking change, a release, or a deprecation to the workspace's consumers.\nThis notifies real people, so only post when explicitly asked to announce something, and\npost the message you were given rather than a summary you composed. It does not change\nthe workspace itself — use updateWorkspace for settings.\n";
@@ -38,7 +38,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/updates`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/updates`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

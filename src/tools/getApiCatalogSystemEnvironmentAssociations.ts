@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getApiCatalogSystemEnvironmentAssociations';
 export const title = "Get an API Catalog system environment's associations";
@@ -42,7 +47,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/api-catalog/system-environments/${encodeURIComponent(String(args.systemEnvironmentId))}/associations`;
+    const endpoint = `/api-catalog/system-environments/${encodePathSegment(args.systemEnvironmentId, 'systemEnvironmentId')}/associations`;
     const query = new URLSearchParams();
     if (args.workspaceId !== undefined) query.set('workspaceId', String(args.workspaceId));
     if (args.limit !== undefined) query.set('limit', String(args.limit));
