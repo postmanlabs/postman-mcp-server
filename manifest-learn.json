@@ -47,9 +47,9 @@
     "postman_api_key": {
       "type": "string",
       "title": "Postman API Key",
-      "description": "A valid Postman API key used to authenticate requests.",
+      "description": "Optional. The learn toolset does not need a Postman API key.",
       "sensitive": true,
-      "required": true
+      "required": false
     }
   },
   "compatibility": {

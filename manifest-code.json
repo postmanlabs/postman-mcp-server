@@ -47,9 +47,9 @@
     "postman_api_key": {
       "type": "string",
       "title": "Postman API Key",
-      "description": "A valid Postman API key used to authenticate requests.",
+      "description": "Optional. A Postman API key gives access to every tool. Without one, the server runs a smaller set of tools through the Postman CLI (installed separately), signed in with `postman login` or as a guest.",
       "sensitive": true,
-      "required": true
+      "required": false
     }
   },
   "compatibility": {
