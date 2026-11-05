@@ -33,6 +33,8 @@ For the best developer experience and fastest setup, use **OAuth** on the remote
 
 The EU remote server and the local server support only [Postman API key](https://postman.postman.co/settings/me/api-keys) authentication.
 
+> **Note:** One-click IDE installation buttons (such as the "Install in VS Code" button on the [MCP Server product page](https://www.postman.com/product/mcp-server/)) rely on OAuth and connect to the US remote server. For the EU region or API key authentication, use manual configuration.
+
 ---
 
 ## Quick start
@@ -84,6 +86,65 @@ The Postman MCP Server supports the EU region for remote and local servers:
 - For streamable HTTP, the remote server is available at `https://mcp.eu.postman.com/mcp` (Full), `https://mcp.eu.postman.com/code`, and `https://mcp.eu.postman.com/minimal`.
 - For the STDIO public package, use the `--region eu` flag, or set the `POSTMAN_API_BASE_URL` environment variable directly.
 - OAuth isn't supported for the EU server. The EU remote server only supports API key authentication.
+
+> **Note:** The "Install in VS Code" one-click button generates a configuration for the US OAuth endpoint (`https://mcp.postman.com/mcp`). Because the EU server requires API key authentication, one-click installation is not supported for the EU region. To connect VS Code to the EU server, use manual configuration.
+
+### Manual VS Code configuration (EU region)
+
+Add the following to `.vscode/mcp.json` in your workspace (or user MCP configuration):
+
+**Remote server (EU):**
+
+```json
+{
+  "servers": {
+    "postman": {
+      "type": "http",
+      "url": "https://mcp.eu.postman.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:postman-api-key}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "id": "postman-api-key",
+      "type": "promptString",
+      "description": "Enter your Postman API key",
+      "password": true
+    }
+  ]
+}
+```
+
+Change `/mcp` to `/code` or `/minimal` for Code or Minimal mode. When VS Code connects to the server, it will securely prompt for your Postman API key.
+
+**Local server (EU):**
+
+```json
+{
+  "servers": {
+    "postman": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@postman/postman-mcp-server", "--full", "--region", "eu"],
+      "env": {
+        "POSTMAN_API_KEY": "${input:postman-api-key}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "id": "postman-api-key",
+      "type": "promptString",
+      "description": "Enter your Postman API key",
+      "password": true
+    }
+  ]
+}
+```
+
+For more details on manual configuration across all supported clients, see the [Postman Remote Server docs](https://learning.postman.com/docs/reference/postman-api/postman-mcp-server/postman-mcp-remote-server#visual-studio-code).
 
 ---
 
