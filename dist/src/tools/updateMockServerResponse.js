@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateMockServerResponse';
 export const title = 'Update a server response for a mock';
 export const description = "Updates a server response's name, statusCode, body, headers, or language.\n\n- \\`statusCode\\` must remain a 5xx value (500–599).\n- \\`body\\` is the raw response body string. Pass the full desired body — this is a full replacement, not a partial update.\n- Updating a server response does not change which response is active. To activate it, call \\`updateMock\\` with \\`config.serverResponseId\\`.\n";
@@ -46,7 +46,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/server-responses/${encodeURIComponent(String(args.serverResponseId))}`;
+        const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}/server-responses/${encodePathSegment(args.serverResponseId, 'serverResponseId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

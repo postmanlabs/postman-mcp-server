@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getEnvironmentForks';
 export const title = "Get an environment's forks";
@@ -42,7 +47,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/environments/${encodeURIComponent(String(args.environmentId))}/forks`;
+    const endpoint = `/environments/${encodePathSegment(args.environmentId, 'environmentId')}/forks`;
     const query = new URLSearchParams();
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
     if (args.direction !== undefined) query.set('direction', String(args.direction));

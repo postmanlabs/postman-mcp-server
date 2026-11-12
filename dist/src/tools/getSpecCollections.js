@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSpecCollections';
 export const title = "Get a spec's generated collections";
 export const description = "Gets all of an API specification's generated collections.";
@@ -25,7 +25,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/generations/${encodeURIComponent(String(args.elementType))}`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/generations/${encodePathSegment(args.elementType, 'elementType')}`;
         const query = new URLSearchParams();
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));

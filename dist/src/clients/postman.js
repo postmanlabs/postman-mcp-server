@@ -62,6 +62,7 @@ export class PostmanAPIClient {
             userAgentHeader = `${userAgentHeader} (${this.userAgentComment})`;
         }
         const disallowed = new Set([
+            'content-type',
             'content-length',
             'transfer-encoding',
             'connection',

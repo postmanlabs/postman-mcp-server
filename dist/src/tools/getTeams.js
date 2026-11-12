@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, withHeaderArgs, } from './utils/toolHelpers.js';
 export const method = 'getTeams';
 export const title = 'Get all teams';
 export const description = "Lists the Postman teams in the organization. Use this to discover team IDs before\nreading a team's settings, members, or access requests. Page with \\`limit\\` and \\`cursor\\`,\nand pass \\`teamSettings\\` or \\`userRoles\\` to include those in the response.\nThis lists teams in the organization, not the members of a team — use getTeamUsers for\npeople and getGroups for user groups.\n";
@@ -44,7 +44,7 @@ export async function handler(args, extra) {
             query.set('userRoles', String(args.userRoles));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {
-            headers: extra.headers,
+            headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
         };
         const result = await extra.client.get(url, options);
         return {

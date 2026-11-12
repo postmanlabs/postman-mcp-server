@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getSdkGitConnectionPullRequests';
 export const title = "Get an SDK Git connection's pull requests";
@@ -41,7 +46,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/sdk-git-connections/${encodeURIComponent(String(args.sdkGitConnectionId))}/pull-requests`;
+    const endpoint = `/sdk-git-connections/${encodePathSegment(args.sdkGitConnectionId, 'sdkGitConnectionId')}/pull-requests`;
     const query = new URLSearchParams();
     if (args.status !== undefined) query.set('status', String(args.status));
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));

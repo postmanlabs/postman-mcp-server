@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'patchCollection';
 export const title = 'Update part of a collection';
 export const description = "Updates specific collection information, such as its name, events, or its variables. For more information, see the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).\n\n**Important usage notes:**\n\n- **Sequential calls only.** Do NOT call \\`patchCollection\\` in parallel with other \\`patchCollection\\` calls for the same collection — concurrent PATCH requests conflict with each other and cause cancellation errors. Always wait for one call to complete before making another.\n- **Partial updates.** Only include the fields you want to change. Omit all other fields entirely; unspecified fields are left unchanged.\n- **Variables (\\`collection.variable\\`).** Send \\`key\\` and \\`value\\` for each variable, and use \\`disabled\\` to turn one off. An \\`enabled\\` field is accepted but silently ignored, so \\`disabled\\` is the only one that takes effect.\n- **Secret variables.** You can't set secret variables through this endpoint. Manage cloud- or vault-backed secrets through environments instead.\n- **Events (\\`collection.events\\`).** Each event's \\`script.id\\` is required and must be supplied by you — generate a UUID string for it. Omitting it fails with \\`Parameters required: ('id') for key: 'collection.events.script'\\`. The event itself is identified by its \\`script.id\\`.\n";
@@ -285,7 +285,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, withHeaderArgs, } from './utils/toolHelpers.js';
 export const method = 'removeTeamMembers';
 export const title = 'Remove team members';
 export const description = "Removes users, groups, or organizations from a Postman team. Returns 204 with no body on\nsuccess.\nThis is destructive and not self-reversing: removed members lose access to the team's\ncollections, environments, and workspaces, and restoring them means re-inviting them and\nrebuilding their roles. Only call it on an explicit instruction naming exactly who to\nremove. Never call it to tidy up inactive members, to act on a list you assembled\nyourself, or as a step in some larger cleanup.\n";
@@ -27,7 +27,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/bulk-members`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/bulk-members`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
@@ -36,7 +36,7 @@ export async function handler(args, extra) {
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            headers: extra.headers,
+            headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
         };
         const result = await extra.client.delete(url, options);
         return {

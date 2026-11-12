@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getResponseContext';
 export const title = 'Get response context';
 export const description = 'Returns a markdown-formatted summary of a saved response example within a collection request, including its status code, headers, body, and the original request details.';
@@ -17,7 +17,7 @@ export const annotations = defineToolAnnotations({
 });
 export async function handler(args, extra) {
     try {
-        const result = await extra.client.get(`/context/collections/${encodeURIComponent(String(args.collectionId))}/requests/${encodeURIComponent(String(args.requestId))}/responses/${encodeURIComponent(String(args.responseId))}`, { headers: extra.headers });
+        const result = await extra.client.get(`/context/collections/${encodePathSegment(args.collectionId, 'collectionId')}/requests/${encodePathSegment(args.requestId, 'requestId')}/responses/${encodePathSegment(args.responseId, 'responseId')}`, { headers: extra.headers });
         return {
             content: [{ type: 'text', text: result }],
         };

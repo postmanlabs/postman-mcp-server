@@ -1,11 +1,17 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getCollectionUpdatesTasks';
 export const title = 'Get status of a collection update task';
-export const description = 'Gets the status of an asynchronous collection update task.';
+export const description =
+  'Gets the status of an asynchronous collection update. Use it to poll a task started by\nputCollection called with \\`Prefer: respond-async\\`, passing the task ID from its 202\nresponse. Tasks started by generateCollection, generateSpecFromCollection,\nsyncCollectionWithSpec, or syncSpecWithCollection are polled with getAsyncSpecTaskStatus\ninstead. An unknown or made-up task ID reports \\`status: failed\\` rather than a 404.\n';
 export const parameters = z.object({ taskId: z.string().describe("The task's ID.") });
 export const annotations = {
   title: 'Get status of a collection update task',
@@ -20,7 +26,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collection-updates-tasks/${encodeURIComponent(String(args.taskId))}`;
+    const endpoint = `/collection-updates-tasks/${encodePathSegment(args.taskId, 'taskId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {

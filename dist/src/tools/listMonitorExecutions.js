@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'listMonitorExecutions';
 export const title = 'List monitor executions';
 export const description = 'Lists executions for a monitor. Cursor-based pagination, 25 results per page. Returns execution metadata including state, trigger, results summary, and timestamps.\n\nThis is Step 1 of the monitor-run workflow: listMonitorExecutions → listRunsForExecution → getMonitorRunResults. Each execution has an `id` (executionId). To get run results, you must first pass this executionId to listRunsForExecution to obtain run IDs — do NOT use executionId as a runId.';
@@ -21,7 +21,7 @@ export const annotations = defineToolAnnotations({
 });
 export async function handler(args, extra) {
     try {
-        const endpoint = `/monitors/${encodeURIComponent(String(args.monitorId))}/executions`;
+        const endpoint = `/monitors/${encodePathSegment(args.monitorId, 'monitorId')}/executions`;
         const query = new URLSearchParams();
         if (args.cursor)
             query.set('cursor', args.cursor);

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'removeApiCatalogSystemEnvironmentAssociations';
 export const title = 'Remove API Catalog system environment associations';
 export const description = 'Detaches workspace environments from a system environment. Send 1 to 25\n\\`workspaceEnvironmentIds\\` per call, each an environment UID\n(\\`userId\\`-\\`environmentId\\`). This only removes the association — the underlying Postman\nenvironments are left intact.\nDo not use this tool to delete an environment; use deleteEnvironment instead. Requires\na Postman Enterprise plan.\n';
@@ -24,7 +24,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/system-environments/${encodeURIComponent(String(args.systemEnvironmentId))}/associations`;
+        const endpoint = `/api-catalog/system-environments/${encodePathSegment(args.systemEnvironmentId, 'systemEnvironmentId')}/associations`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

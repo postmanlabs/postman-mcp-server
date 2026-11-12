@@ -1,7 +1,13 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+  withHeaderArgs,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateWorkspaceRoles';
 export const title = 'Update workspace roles';
@@ -53,7 +59,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/roles`;
+    const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/roles`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
@@ -61,7 +67,7 @@ export async function handler(
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.JsonPatch,
-      headers: extra.headers,
+      headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
     };
     const result = await extra.client.patch(url, options);
     return {

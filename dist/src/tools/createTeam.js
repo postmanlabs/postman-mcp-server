@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, withHeaderArgs, } from './utils/toolHelpers.js';
 export const method = 'createTeam';
 export const title = 'Create a team';
 export const description = 'Creates a new Postman team in the organization. \\`name\\` accepts only alphanumeric\ncharacters and spaces.\nThis creates a billable organizational unit and is not something to do speculatively —\nonly call it on an explicit, specific instruction to create a team, never to satisfy a\nvaguer request such as organizing or setting up a workspace. Use createWorkspace for\nthat instead.\n';
@@ -35,7 +35,7 @@ export async function handler(args, extra) {
         const options = {
             body: JSON.stringify(bodyPayload),
             contentType: ContentType.Json,
-            headers: extra.headers,
+            headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
         };
         const result = await extra.client.post(url, options);
         return {

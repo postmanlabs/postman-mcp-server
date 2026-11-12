@@ -1,7 +1,13 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+  withHeaderArgs,
+} from './utils/toolHelpers.js';
 
 export const method = 'getTeamAccessRequests';
 export const title = "Get a team's access requests";
@@ -38,13 +44,13 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/access-requests`;
+    const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/access-requests`;
     const query = new URLSearchParams();
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
-      headers: extra.headers,
+      headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
     };
     const result = await extra.client.get(url, options);
     return {

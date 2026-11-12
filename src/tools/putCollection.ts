@@ -1,7 +1,13 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+  withHeaderArgs,
+} from './utils/toolHelpers.js';
 
 export const method = 'putCollection';
 export const title = "Replace a collection's data";
@@ -1569,7 +1575,7 @@ export const annotations = {
   title: "Replace a collection's data",
   readOnlyHint: false,
   openWorldHint: true,
-  destructiveHint: false,
+  destructiveHint: true,
   idempotentHint: true,
 };
 
@@ -1578,7 +1584,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
+    const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
@@ -1586,7 +1592,7 @@ export async function handler(
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
-      headers: extra.headers,
+      headers: withHeaderArgs(extra.headers, { Prefer: args['Prefer'] }),
     };
     const result = await extra.client.put(url, options);
     return {

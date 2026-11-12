@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createSpecVersionTag';
 export const title = 'Create a version tag';
 export const description = "Tags the specification's current state as a new version snapshot under the \\`name\\` you\nsupply. Use this to mark a release or a reviewed state before making further edits.\nA tag attaches to the specification's current changelog group, so tagging twice without\nany intervening change conflicts with a 409 — edit the specification first to open a new\nchangelog group, then tag again.\nDo not use this tool to save specification content; use updateSpecFile for that and tag\nafterwards.\n";
@@ -17,7 +17,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/version-tags`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/version-tags`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

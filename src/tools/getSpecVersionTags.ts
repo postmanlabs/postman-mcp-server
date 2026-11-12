@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getSpecVersionTags';
 export const title = "Get a specification's version tags";
@@ -34,7 +39,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/version-tags`;
+    const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/version-tags`;
     const query = new URLSearchParams();
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));
     if (args.limit !== undefined) query.set('limit', String(args.limit));

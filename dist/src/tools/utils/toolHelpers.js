@@ -4,6 +4,14 @@ export function asMcpError(error) {
     const cause = error?.cause ?? String(error);
     return new McpError(ErrorCode.InternalError, cause);
 }
+const DOT_SEGMENTS = new Set(['.', '..']);
+export function encodePathSegment(value, name = 'path parameter') {
+    const segment = String(value);
+    if (DOT_SEGMENTS.has(segment)) {
+        throw new McpError(ErrorCode.InvalidParams, `Invalid value for ${name}: "${segment}" is not allowed as a path segment.`);
+    }
+    return encodeURIComponent(segment);
+}
 export async function mergeCollectionRequestEvents(client, endpoint, incoming, headers) {
     if (!Array.isArray(incoming) || incoming.length === 0)
         return incoming;
@@ -21,6 +29,15 @@ export async function mergeCollectionRequestEvents(client, endpoint, incoming, h
         return incoming;
     const preserved = storedEvents.filter((event) => !suppliedListenTypes.has(event?.listen));
     return preserved.length > 0 ? [...incoming, ...preserved] : incoming;
+}
+export function withHeaderArgs(inbound, headerArgs) {
+    const supplied = Object.entries(headerArgs).filter(([, value]) => value !== undefined && value !== '');
+    const suppliedNames = new Set(supplied.map(([name]) => name.toLowerCase()));
+    const kept = Object.entries(inbound ?? {}).filter(([name]) => !suppliedNames.has(name.toLowerCase()));
+    return {
+        ...Object.fromEntries(kept),
+        ...Object.fromEntries(supplied.map(([name, value]) => [name, String(value)])),
+    };
 }
 export function defineToolAnnotations(annotations) {
     return annotations;

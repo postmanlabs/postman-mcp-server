@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getSdkGitConnection';
 export const title = 'Get an SDK Git connection';
 export const description = 'Gets one SDK Git connection, including which SDK was last delivered to its target\nbranch and the most recent SDK-update pull request. Use this to check whether a\nconnection is healthy and current.\nRequires a Postman Team or Enterprise plan.\n';
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/sdk-git-connections/${encodeURIComponent(String(args.sdkGitConnectionId))}`;
+        const endpoint = `/sdk-git-connections/${encodePathSegment(args.sdkGitConnectionId, 'sdkGitConnectionId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

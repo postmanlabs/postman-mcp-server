@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
 import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updatePackage';
 export const title = 'Update a package';
 export const description = "Updates an active package's description, index script content, or both.\nInclude at least one field and only the fields you want to change; omitted fields\nremain unchanged. Do not use this tool to create or delete a package.\n";
@@ -31,7 +31,7 @@ export async function handler(args, extra) {
         if ([args['description'], args['script']].filter((value) => value !== undefined).length < 1) {
             throw new McpError(ErrorCode.InvalidParams, 'Request body must include at least 1 property.');
         }
-        const endpoint = `/packages/${encodeURIComponent(String(args.packageId))}`;
+        const endpoint = `/packages/${encodePathSegment(args.packageId, 'packageId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

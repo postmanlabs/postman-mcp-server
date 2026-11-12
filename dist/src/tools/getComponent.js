@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getComponent';
 export const title = 'Get a component';
 export const description = "Gets a single component's metadata by ID. Use \\`include\\` (\\`hasVersions\\`,\n\\`latestVersion\\`, \\`latestVersion.content\\`) or \\`expand\\` (\\`latestVersion\\`) when you also\nneed the most recently published version. Use getAllComponents first when you need to\ndiscover a component ID.\nDo not use this tool to read unpublished edits; use getComponentDraft instead.\nRequires a Postman Enterprise plan.\n";
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/components/${encodeURIComponent(String(args.componentId))}`;
+        const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

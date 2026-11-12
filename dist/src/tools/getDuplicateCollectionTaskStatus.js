@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getDuplicateCollectionTaskStatus';
 export const title = 'Get status of a collection duplication task';
 export const description = 'Gets the status of a collection duplication task.';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collection-duplicate-tasks/${encodeURIComponent(String(args.taskId))}`;
+        const endpoint = `/collection-duplicate-tasks/${encodePathSegment(args.taskId, 'taskId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

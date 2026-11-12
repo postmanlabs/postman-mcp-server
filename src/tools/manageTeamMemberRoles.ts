@@ -1,7 +1,13 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+  withHeaderArgs,
+} from './utils/toolHelpers.js';
 
 export const method = 'manageTeamMemberRoles';
 export const title = 'Manage team member roles';
@@ -233,7 +239,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/bulk-members`;
+    const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/bulk-members`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};
@@ -242,7 +248,7 @@ export async function handler(
     const options: any = {
       body: JSON.stringify(bodyPayload),
       contentType: ContentType.Json,
-      headers: extra.headers,
+      headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
     };
     const result = await extra.client.post(url, options);
     return {

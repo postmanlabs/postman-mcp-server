@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { PluginSourceSchema, PluginVersionSchema } from './types.js';
 const PluginSourceHeaderSchema = z.string().max(96).trim().pipe(PluginSourceSchema);
 const PluginVersionHeaderSchema = z.string().max(64).trim().pipe(PluginVersionSchema);
+const PLUGIN_USER_AGENT_FORMAT = /^([^/\s]+)\/([^/\s]+)$/;
+const PLUGIN_USER_AGENT_MAX_LENGTH = 96 + 1 + 64;
 const TRACE_GAP_MS = 30_000;
 export class TelemetrySession {
     installId;
@@ -65,13 +67,26 @@ export class TelemetrySession {
         this.pluginSource = parsedSource.success ? parsedSource.data : '';
         this.pluginVersion = parsedSource.success && parsedVersion.success ? parsedVersion.data : '';
     }
+    setPluginInfoFromHeaders(headers) {
+        if (headers['x-source'] !== undefined) {
+            this.setPluginInfo(headers['x-source'], headers['x-plugin-version']);
+            return;
+        }
+        const userAgent = headers['user-agent'];
+        const [, source, version] = (typeof userAgent === 'string' && userAgent.length <= PLUGIN_USER_AGENT_MAX_LENGTH
+            ? PLUGIN_USER_AGENT_FORMAT.exec(userAgent.trim())
+            : null) ?? [];
+        this.setPluginInfo(source, version);
+    }
     setClientCapabilities(capabilities) {
         this.clientCapabilities = Object.keys(capabilities ?? {});
     }
     setToolNames(toolNames) {
         this.toolListCount = toolNames.length;
         const sorted = [...toolNames].sort();
-        const hash = createHash('sha256').update(sorted.join(',')).digest('hex');
+        const hash = createHash('sha256')
+            .update(sorted.join(','))
+            .digest('hex');
         this.toolsetSnapshotId = hash.substring(0, 12);
     }
     getToolListCount() {

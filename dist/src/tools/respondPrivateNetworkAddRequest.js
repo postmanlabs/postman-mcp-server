@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'respondPrivateNetworkAddRequest';
 export const title = 'Respond to a Private API Network add request';
 export const description = "Responds to a user's request to add a workspace to your team's Private API Network. Only managers can approve or deny a request. Once approved, the workspace will appear in the team's Private API Network.\n\nWARNING: This tool is for Private API Network management, not for general workspace operations. For workspace management use: getWorkspaces, getWorkspace, createWorkspace, updateWorkspace, deleteWorkspace.\n";
@@ -26,7 +26,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/network/private/network-entity/request/${encodeURIComponent(String(args.requestId))}`;
+        const endpoint = `/network/private/network-entity/request/${encodePathSegment(args.requestId, 'requestId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

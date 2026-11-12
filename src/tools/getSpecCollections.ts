@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getSpecCollections';
 export const title = "Get a spec's generated collections";
@@ -34,7 +39,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/generations/${encodeURIComponent(String(args.elementType))}`;
+    const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/generations/${encodePathSegment(args.elementType, 'elementType')}`;
     const query = new URLSearchParams();
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     if (args.cursor !== undefined) query.set('cursor', String(args.cursor));

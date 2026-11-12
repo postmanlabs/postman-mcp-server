@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateDetectedSecretResolutions';
 export const title = 'Update detected secret resolution status';
 export const description = "Records how a detected secret was dealt with, in one workspace. Requires \\`workspaceId\\`\nand a \\`resolution\\` of \\`FALSE_POSITIVE\\` (not really a secret), \\`REVOKED\\` (was real, key\nhas been rotated), or \\`ACCEPTED_RISK\\` (real, exposure accepted).\nThis only records a judgement — it does not revoke a credential, remove the secret from\nthe collection, or make the exposure safe. Never mark something \\`REVOKED\\` unless the\nkey has actually been rotated, and never mark it \\`ACCEPTED_RISK\\` on a person's behalf:\nboth are decisions a human owner has to make. Requires a Postman Enterprise plan.\n";
@@ -20,7 +20,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/detected-secrets/${encodeURIComponent(String(args.secretId))}`;
+        const endpoint = `/detected-secrets/${encodePathSegment(args.secretId, 'secretId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

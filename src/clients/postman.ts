@@ -134,6 +134,7 @@ export class PostmanAPIClient implements IPostmanAPIClient {
     }
 
     const disallowed = new Set([
+      'content-type',
       'content-length',
       'transfer-encoding',
       'connection',

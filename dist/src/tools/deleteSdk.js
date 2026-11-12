@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteSdk';
 export const title = 'Delete an SDK';
 export const description = 'Deletes an SDK record and the stored archive behind it. Returns 204 with no body on\nsuccess. Anyone still holding a download URL loses access to the artifact.\nThis cannot cancel a generation job that is still running — a job in progress has to\nfinish first. Only call this on an explicit instruction naming the SDK. Requires a\nPostman Team or Enterprise plan.\n';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/sdks/${encodeURIComponent(String(args.sdkId))}`;
+        const endpoint = `/sdks/${encodePathSegment(args.sdkId, 'sdkId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

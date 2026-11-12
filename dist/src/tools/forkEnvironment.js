@@ -1,12 +1,12 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'forkEnvironment';
 export const title = 'Fork an environment';
-export const description = 'Forks an environment into a workspace, giving that workspace an editable copy that\nstays linked to the original. Requires the destination \\`workspaceId\\` as a query\nparameter and a \\`forkName\\` label in the body. Use this when a team needs to change\nvariable values without touching a shared environment.\nDo not use this tool to copy an environment into a workspace with no ongoing link;\ncreate a new environment with createEnvironment and set its values instead.\n';
+export const description = "Forks an environment into a workspace, giving that workspace an editable copy that\nstays linked to the original. Requires the destination workspace's ID as the\n\\`workspace\\` query parameter and a \\`forkName\\` label in the body. Use this when a team\nneeds to change variable values without touching a shared environment.\nDo not use this tool to copy an environment into a workspace with no ongoing link;\ncreate a new environment with createEnvironment and set its values instead.\n";
 export const parameters = z.object({
     environmentId: z.string().describe("The environment's unique ID."),
-    workspaceId: z.string().describe("The workspace's ID."),
+    workspace: z.string().describe("The destination workspace's ID."),
     forkName: z.string().describe("The forked environment's label."),
 });
 export const annotations = {
@@ -18,10 +18,10 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/environments/${encodeURIComponent(String(args.environmentId))}/forks`;
+        const endpoint = `/environments/${encodePathSegment(args.environmentId, 'environmentId')}/forks`;
         const query = new URLSearchParams();
-        if (args.workspaceId !== undefined)
-            query.set('workspaceId', String(args.workspaceId));
+        if (args.workspace !== undefined)
+            query.set('workspace', String(args.workspace));
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
         if (args.forkName !== undefined)

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getTeamUser';
 export const title = 'Get a team user';
 export const description = "Gets one member of the Postman team by user ID. Use this when you already hold a user\nID — from an audit log entry or a role assignment — and need that single person's\ndetails; use getTeamUsers when you need to search or list.\nThis returns another person on the team. To find out who the current API key belongs\nto, use getAuthenticatedUser instead.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/users/${encodeURIComponent(String(args.userId))}`;
+        const endpoint = `/users/${encodePathSegment(args.userId, 'userId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

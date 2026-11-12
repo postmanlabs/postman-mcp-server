@@ -17,6 +17,7 @@ const envSchema = z.object({
     .string()
     .url()
     .default('https://learning.postman.com/_mcp/server'),
+  POSTMAN_LEARNING_CENTER_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
 
   // Telemetry configuration. OFF by default for the open-source distribution;
   // users opt in explicitly with POSTMAN_MCP_TELEMETRY=true. The STDIO transport

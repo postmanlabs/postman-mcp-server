@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'syncCollectionWithSpec';
 export const title = 'Sync collection with spec';
@@ -24,7 +29,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${encodeURIComponent(String(args.collectionUid))}/synchronizations`;
+    const endpoint = `/collections/${encodePathSegment(args.collectionUid, 'collectionUid')}/synchronizations`;
     const query = new URLSearchParams();
     if (args.specId !== undefined) query.set('specId', String(args.specId));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
