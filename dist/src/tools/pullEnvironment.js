@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'pullEnvironment';
 export const title = 'Pull changes into an environment fork';
 export const description = "Pulls a parent environment's changes down into a fork. The path holds the fork being\nupdated and \\`source\\` holds the parent environment's unique ID — this direction leaves\nthe parent untouched. Use it to bring a fork back up to date before merging, which\nkeeps the merge from overwriting newer parent values.\nTo send a fork's changes up to the parent, use mergeEnvironmentFork instead.\n";
@@ -17,7 +17,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/environments/${encodeURIComponent(String(args.environmentUid))}/pulls`;
+        const endpoint = `/environments/${encodePathSegment(args.environmentUid, 'environmentUid')}/pulls`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

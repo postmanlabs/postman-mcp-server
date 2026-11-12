@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'deleteRulesetAssignment';
 export const title = 'Unassign a ruleset from a governance group';
@@ -27,7 +32,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}/assignments`;
+    const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}/assignments`;
     const query = new URLSearchParams();
     if (args.targetType !== undefined) query.set('targetType', String(args.targetType));
     if (args.targetId !== undefined) query.set('targetId', String(args.targetId));

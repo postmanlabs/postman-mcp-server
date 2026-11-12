@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getGovernanceGroupWorkspaces';
 export const title = "Get a governance group's workspaces";
 export const description = 'Lists the IDs of the workspaces assigned to a custom governance group. Page with\n\\`limit\\` (max 100) and \\`cursor\\` from \\`meta.nextCursor\\`. Postman-managed groups\n(\\`type: system\\`) return 403.\n';
@@ -26,7 +26,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/governance-groups/${encodeURIComponent(String(args.groupId))}/workspaces`;
+        const endpoint = `/governance-groups/${encodePathSegment(args.groupId, 'groupId')}/workspaces`;
         const query = new URLSearchParams();
         if (args.cursor !== undefined)
             query.set('cursor', String(args.cursor));

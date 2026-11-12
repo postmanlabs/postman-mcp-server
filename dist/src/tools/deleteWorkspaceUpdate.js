@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteWorkspaceUpdate';
 export const title = 'Delete a workspace update';
 export const description = 'Deletes a workspace update. This removes an announcement watchers may already have seen\nand cannot be undone.\nPrefer patchWorkspaceUpdate to correct a mistake — deleting leaves consumers with no\nrecord of a change they were told about. Only delete on an explicit instruction.\n';
@@ -16,7 +16,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/updates/${encodeURIComponent(String(args.updateId))}`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/updates/${encodePathSegment(args.updateId, 'updateId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updatePullRequest';
 export const title = 'Update a collection pull request';
 export const description = 'Updates the editable metadata of an open pull request, such as its title,\ndescription, or reviewers. Use reviewPullRequest (not this tool) to approve,\ndecline, or merge a pull request.\n';
@@ -21,7 +21,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/pull-requests/${encodeURIComponent(String(args.pullRequestId))}`;
+        const endpoint = `/pull-requests/${encodePathSegment(args.pullRequestId, 'pullRequestId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getTeamSettings';
 export const title = "Get a team's settings";
 export const description = "Gets a team's settings. Use this to report on a team's current configuration, and to\nread the existing values before changing any of them with updateTeamSettings.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/settings`;
+        const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/settings`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getTaggedEntities';
 export const title = 'Get elements by tag';
 export const description = '**Requires an Enterprise plan.** Tagging is only available on Postman Enterprise plans. This tool returns a 404 error on Free, Basic, and Professional accounts.\n\nGets Postman elements (entities) by a given tag. Tags enable you to organize and search workspaces, APIs, and collections that contain shared tags.\n';
 export const parameters = z.object({
     slug: z
         .string()
-        .regex(new RegExp('^[a-z][a-z0-9-]*[a-z0-9]+$'))
+        .regex(new RegExp('^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])$'))
         .min(2)
         .max(64)
         .describe("The tag's ID within a team or individual (non-team) user scope."),
@@ -38,7 +38,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/tags/${encodeURIComponent(String(args.slug))}/entities`;
+        const endpoint = `/tags/${encodePathSegment(args.slug, 'slug')}/entities`;
         const query = new URLSearchParams();
         if (args.limit !== undefined)
             query.set('limit', String(args.limit));

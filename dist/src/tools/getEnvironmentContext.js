@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getEnvironmentContext';
 export const title = 'Get environment context';
 export const description = 'Returns a markdown-formatted summary of an environment, including its name and enabled variables with their keys, values, and types.';
@@ -15,7 +15,7 @@ export const annotations = defineToolAnnotations({
 });
 export async function handler(args, extra) {
     try {
-        const endpoint = `/context/environments/${encodeURIComponent(String(args.environmentId))}`;
+        const endpoint = `/context/environments/${encodePathSegment(args.environmentId, 'environmentId')}`;
         const result = await extra.client.get(endpoint, {
             headers: extra.headers,
         });

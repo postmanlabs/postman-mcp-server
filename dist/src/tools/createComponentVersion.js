@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createComponentVersion';
 export const title = 'Create a component version';
 export const description = "Publishes the component's current draft as a new immutable version under the \\`label\\`\nyou supply, making it referenceable by the team's specifications. Labels must be\nunique per component. Publishing cannot be undone and the resulting version cannot be\nedited — publish another version to supersede it. Archived components cannot be\npublished; restore them with updateComponent first.\nDo not use this tool to save work in progress; use updateComponentDraft instead.\nRequires a Postman Enterprise plan.\n";
@@ -27,7 +27,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/components/${encodeURIComponent(String(args.componentId))}/versions`;
+        const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}/versions`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

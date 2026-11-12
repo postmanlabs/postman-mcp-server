@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getCustomFunction';
 export const title = 'Get a custom function';
 export const description = "Gets a custom function's metadata by ID. Pass \\`include=content\\` to also return its\nJavaScript source, which is required before editing it with updateCustomFunction.\n";
@@ -19,7 +19,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/custom-functions/${encodeURIComponent(String(args.customFunctionId))}`;
+        const endpoint = `/custom-functions/${encodePathSegment(args.customFunctionId, 'customFunctionId')}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

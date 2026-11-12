@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getCollectionContext';
 export const title = 'Get collection context';
 export const description = 'Returns a markdown-formatted summary of a collection, including its metadata, authentication, variables, and a tree of folders and requests. Use this to understand the structure and contents of a collection.';
@@ -15,7 +15,7 @@ export const annotations = defineToolAnnotations({
 });
 export async function handler(args, extra) {
     try {
-        const endpoint = `/context/collections/${encodeURIComponent(String(args.collectionId))}`;
+        const endpoint = `/context/collections/${encodePathSegment(args.collectionId, 'collectionId')}`;
         const result = await extra.client.get(endpoint, {
             headers: extra.headers,
         });

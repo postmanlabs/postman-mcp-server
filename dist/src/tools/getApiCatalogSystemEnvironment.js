@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogSystemEnvironment';
 export const title = 'Get an API Catalog system environment';
 export const description = "Gets one system environment by ID. Use getApiCatalogSystemEnvironments when you need\nto discover the ID.\nDo not use this tool to list the services in that environment; use\ngetApiCatalogServices with this environment's ID instead. Requires a Postman\nEnterprise plan.\n";
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/system-environments/${encodeURIComponent(String(args.systemEnvironmentId))}`;
+        const endpoint = `/api-catalog/system-environments/${encodePathSegment(args.systemEnvironmentId, 'systemEnvironmentId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

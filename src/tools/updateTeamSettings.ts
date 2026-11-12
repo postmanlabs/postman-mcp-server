@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'updateTeamSettings';
 export const title = 'Update team settings';
@@ -38,7 +43,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/teams/${encodeURIComponent(String(args.teamId))}/settings`;
+    const endpoint = `/teams/${encodePathSegment(args.teamId, 'teamId')}/settings`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

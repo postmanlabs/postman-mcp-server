@@ -1,7 +1,9 @@
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
+import { encodePathSegment } from '../utils/toolHelpers.js';
 export async function fetchCollection(collectionId, client) {
+    const endpoint = `/collections/${encodePathSegment(collectionId, 'collectionId')}`;
     try {
-        const response = await client.get(`/collections/${encodeURIComponent(collectionId)}`);
+        const response = await client.get(endpoint);
         const collectionJSON = response.collection || response;
         return {
             json: collectionJSON,
@@ -16,8 +18,9 @@ export async function fetchCollection(collectionId, client) {
     }
 }
 export async function fetchEnvironment(environmentId, client) {
+    const endpoint = `/environments/${encodePathSegment(environmentId, 'environmentId')}`;
     try {
-        const response = await client.get(`/environments/${encodeURIComponent(environmentId)}`);
+        const response = await client.get(endpoint);
         const environmentJSON = response.environment || response;
         return {
             json: environmentJSON,

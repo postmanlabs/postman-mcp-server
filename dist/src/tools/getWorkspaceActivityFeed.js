@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceActivityFeed';
 export const title = "Get a workspace's activity feed";
 export const description = "Gets a workspace's activity feed — who added or removed collections, environments, and\nother elements, and who joined or left. Use this to explain how a workspace reached its\ncurrent state, or to build a changelog. Narrow with \\`userId\\` and \\`elementType\\`, and page\nwith \\`limit\\` and \\`cursor\\`.\nThis is workspace-level history. For a single collection's change history use the\ncollection's own tools, and for team-wide administrative events use getAuditLogs.\n";
@@ -30,7 +30,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/activities`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/activities`;
         const query = new URLSearchParams();
         if (args.userId !== undefined)
             query.set('userId', String(args.userId));

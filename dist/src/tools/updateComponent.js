@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateComponent';
 export const title = 'Update a component';
 export const description = "Renames a component or changes its lifecycle status. Send \\`name\\` to rename, or\n\\`status\\` to archive (\\`archive\\`, making the component read-only while keeping its\npublished versions accessible) or restore it (\\`active\\`). Send only one of the two per\ncall: name and status cannot change together. Archived components cannot be renamed,\nedited, or published until they are set back to \\`active\\`.\nDo not use this tool to change a component's content; use updateComponentDraft instead.\nRequires a Postman Enterprise plan.\n";
@@ -24,7 +24,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/components/${encodeURIComponent(String(args.componentId))}`;
+        const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

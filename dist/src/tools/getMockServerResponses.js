@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getMockServerResponses';
 export const title = 'List server responses for a mock';
 export const description = "Gets all server responses configured for a mock server.\n\n- Server responses simulate 5xx server-level failures (e.g. 500, 503) independently of any specific route or example.\n- This endpoint returns summary metadata only (id, name, statusCode, timestamps). To get the full body and headers of a specific response, call \\`getMockServerResponse\\` with the response's \\`id\\`.\n- To see which server response is currently active, call \\`getMock\\` and check \\`config.serverResponseId\\`.\n";
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/mocks/${encodeURIComponent(String(args.mockId))}/server-responses`;
+        const endpoint = `/mocks/${encodePathSegment(args.mockId, 'mockId')}/server-responses`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

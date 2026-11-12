@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getWorkspace';
 export const title = 'Get a workspace';
 export const description = "Gets information about a workspace.\n\n**Note:**\n\nThis endpoint's response contains the \\`visibility\\` field. [Visibility](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/managing-workspaces/#changing-workspace-visibility) determines who can access the workspace:\n- \\`personal\\` — Only you can access the workspace.\n- \\`team\\` — All team members can access the workspace.\n- \\`private\\` — Only invited team members can access the workspace ([**Team** and **Enterprise** plans only](https://www.postman.com/pricing)).\n- \\`public\\` — Everyone can access the workspace.\n- \\`partner\\` — Only invited team members and [partners](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/partner-workspaces/) can access the workspace ([**Team** and **Enterprise** plans only](https://www.postman.com/pricing)).\n";
@@ -20,7 +20,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

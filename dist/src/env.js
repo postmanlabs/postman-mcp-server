@@ -7,6 +7,7 @@ const envSchema = z.object({
         .string()
         .url()
         .default('https://learning.postman.com/_mcp/server'),
+    POSTMAN_LEARNING_CENTER_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
     POSTMAN_MCP_TELEMETRY: z.string().optional(),
 });
 const parsedEnv = envSchema.safeParse(process.env);

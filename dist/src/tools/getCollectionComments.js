@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getCollectionComments';
 export const title = "Get a collection's comments";
 export const description = 'Gets all comments left by users in a collection.';
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/comments`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/comments`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

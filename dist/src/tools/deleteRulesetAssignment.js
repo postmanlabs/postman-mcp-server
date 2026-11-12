@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteRulesetAssignment';
 export const title = 'Unassign a ruleset from a governance group';
 export const description = "Unassigns a ruleset from one governance group, so its rules stop applying to that\ngroup's workspaces. Pass \\`targetType=governance_group\\` and the group's ID as\n\\`targetId\\`. The ruleset and the group both remain.\n";
@@ -19,7 +19,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}/assignments`;
+        const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}/assignments`;
         const query = new URLSearchParams();
         if (args.targetType !== undefined)
             query.set('targetType', String(args.targetType));

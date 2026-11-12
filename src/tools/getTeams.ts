@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  withHeaderArgs,
+} from './utils/toolHelpers.js';
 
 export const method = 'getTeams';
 export const title = 'Get all teams';
@@ -50,7 +55,7 @@ export async function handler(
     if (args.userRoles !== undefined) query.set('userRoles', String(args.userRoles));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const options: any = {
-      headers: extra.headers,
+      headers: withHeaderArgs(extra.headers, { identifierType: args['identifierType'] }),
     };
     const result = await extra.client.get(url, options);
     return {

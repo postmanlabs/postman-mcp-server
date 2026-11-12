@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getRuleset';
 export const title = 'Get a ruleset';
 export const description = "Gets a governance ruleset's metadata by ID. Pass \\`include=content\\` to also return the\nruleset's rule content, which is required before editing it with updateRuleset.\n";
@@ -19,7 +19,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/rulesets/${encodeURIComponent(String(args.rulesetId))}`;
+        const endpoint = `/rulesets/${encodePathSegment(args.rulesetId, 'rulesetId')}`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

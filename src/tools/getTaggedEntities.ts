@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getTaggedEntities';
 export const title = 'Get elements by tag';
@@ -10,7 +15,7 @@ export const description =
 export const parameters = z.object({
   slug: z
     .string()
-    .regex(new RegExp('^[a-z][a-z0-9-]*[a-z0-9]+$'))
+    .regex(new RegExp('^[a-z](?:[a-z0-9-]{0,62}[a-z0-9])$'))
     .min(2)
     .max(64)
     .describe("The tag's ID within a team or individual (non-team) user scope."),
@@ -50,7 +55,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/tags/${encodeURIComponent(String(args.slug))}/entities`;
+    const endpoint = `/tags/${encodePathSegment(args.slug, 'slug')}/entities`;
     const query = new URLSearchParams();
     if (args.limit !== undefined) query.set('limit', String(args.limit));
     if (args.direction !== undefined) query.set('direction', String(args.direction));

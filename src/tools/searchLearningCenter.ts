@@ -75,13 +75,41 @@ function parseMcpResponseBody(body: string, contentType: string): JsonRpcRespons
   return JSON.parse(trimmed) as JsonRpcResponse;
 }
 
+function abortWhenAnyAborts(sources: AbortSignal[]): { signal: AbortSignal; dispose: () => void } {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  for (const source of sources) {
+    if (source.aborted) {
+      controller.abort();
+      break;
+    }
+    source.addEventListener('abort', abort, { once: true });
+  }
+  return {
+    signal: controller.signal,
+    dispose: () => sources.forEach((source) => source.removeEventListener('abort', abort)),
+  };
+}
+
 export async function handler(
   args: z.infer<typeof parameters>,
-  _extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
+  extra: {
+    client: PostmanAPIClient;
+    headers?: IsomorphicHeaders;
+    serverContext?: ServerContext;
+    signal?: AbortSignal;
+  }
 ): Promise<CallToolResult> {
+  const timeoutMs = env.POSTMAN_LEARNING_CENTER_TIMEOUT_MS;
+  const timeoutSignal = AbortSignal.timeout(timeoutMs);
+  const { signal, dispose } = abortWhenAnyAborts(
+    extra.signal ? [extra.signal, timeoutSignal] : [timeoutSignal]
+  );
+
   try {
     const response = await fetch(env.POSTMAN_LEARNING_CENTER_MCP_URL, {
       method: 'POST',
+      signal,
       headers: {
         'content-type': 'application/json',
         accept: 'application/json, text/event-stream',
@@ -126,6 +154,17 @@ export async function handler(
     if (e instanceof McpError) {
       throw e;
     }
+    if (extra.signal?.aborted) {
+      throw new McpError(ErrorCode.InternalError, 'Learning Center search was cancelled.');
+    }
+    if (timeoutSignal.aborted) {
+      throw new McpError(
+        ErrorCode.RequestTimeout,
+        `Learning Center search timed out after ${timeoutMs / 1000}s`
+      );
+    }
     throw asMcpError(e);
+  } finally {
+    dispose();
   }
 }

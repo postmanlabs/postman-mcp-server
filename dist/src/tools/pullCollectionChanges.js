@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'pullCollectionChanges';
 export const title = "Pull changes from a collection's source";
 export const description = "Pulls the changes from a parent (source) collection into the forked collection. In the endpoint's response:\n\n- The \\`destinationId\\` is the ID of the forked collection.\n- The \\`sourceId\\` is the ID of the source collection.\n";
@@ -15,7 +15,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/pulls`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/pulls`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

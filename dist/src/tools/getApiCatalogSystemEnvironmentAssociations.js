@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getApiCatalogSystemEnvironmentAssociations';
 export const title = "Get an API Catalog system environment's associations";
 export const description = 'Lists the workspace environments attached to a system environment. Use this to see\nwhich Postman environments feed a deployment stage before adding or removing any.\nNarrow to one workspace with \\`workspaceId\\`; page with \\`limit\\` (max 100) and \\`cursor\\`.\nRequires a Postman Enterprise plan.\n';
@@ -30,7 +30,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/api-catalog/system-environments/${encodeURIComponent(String(args.systemEnvironmentId))}/associations`;
+        const endpoint = `/api-catalog/system-environments/${encodePathSegment(args.systemEnvironmentId, 'systemEnvironmentId')}/associations`;
         const query = new URLSearchParams();
         if (args.workspaceId !== undefined)
             query.set('workspaceId', String(args.workspaceId));

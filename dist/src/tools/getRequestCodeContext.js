@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError, defineToolAnnotations } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, defineToolAnnotations, } from './utils/toolHelpers.js';
 export const method = 'getRequestCodeContext';
 export const title = 'Get request code context';
 export const description = 'Returns comprehensive markdown-formatted context for generating code from a request. Includes the full request definition (method, URL, headers, query params, body, auth), all response examples with full details, and merged collection and environment variables with source tags.';
@@ -16,7 +16,7 @@ export const annotations = defineToolAnnotations({
 });
 export async function handler(args, extra) {
     try {
-        const result = await extra.client.get(`/context/collections/${encodeURIComponent(String(args.collectionId))}/requests/${encodeURIComponent(String(args.requestId))}/context`, { headers: extra.headers });
+        const result = await extra.client.get(`/context/collections/${encodePathSegment(args.collectionId, 'collectionId')}/requests/${encodePathSegment(args.requestId, 'requestId')}/context`, { headers: extra.headers });
         return {
             content: [{ type: 'text', text: result }],
         };

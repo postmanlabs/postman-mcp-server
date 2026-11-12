@@ -7,6 +7,8 @@ import { PluginSourceSchema, PluginVersionSchema } from './types.js';
 
 const PluginSourceHeaderSchema = z.string().max(96).trim().pipe(PluginSourceSchema);
 const PluginVersionHeaderSchema = z.string().max(64).trim().pipe(PluginVersionSchema);
+const PLUGIN_USER_AGENT_FORMAT = /^([^/\s]+)\/([^/\s]+)$/;
+const PLUGIN_USER_AGENT_MAX_LENGTH = 96 + 1 + 64;
 
 /**
  * Options for constructing a TelemetrySession.
@@ -165,6 +167,24 @@ export class TelemetrySession {
     const parsedVersion = PluginVersionHeaderSchema.safeParse(version);
     this.pluginSource = parsedSource.success ? parsedSource.data : '';
     this.pluginVersion = parsedSource.success && parsedVersion.success ? parsedVersion.data : '';
+  }
+
+  /**
+   * Reads plugin metadata from X-Source/X-Plugin-Version, or, when X-Source is
+   * absent, from a User-Agent that is exactly `<source>/<version>`. The Claude
+   * Code route sends only that User-Agent: its directory refuses custom headers.
+   */
+  setPluginInfoFromHeaders(headers: Record<string, unknown>): void {
+    if (headers['x-source'] !== undefined) {
+      this.setPluginInfo(headers['x-source'], headers['x-plugin-version']);
+      return;
+    }
+    const userAgent = headers['user-agent'];
+    const [, source, version] =
+      (typeof userAgent === 'string' && userAgent.length <= PLUGIN_USER_AGENT_MAX_LENGTH
+        ? PLUGIN_USER_AGENT_FORMAT.exec(userAgent.trim())
+        : null) ?? [];
+    this.setPluginInfo(source, version);
   }
 
   /**

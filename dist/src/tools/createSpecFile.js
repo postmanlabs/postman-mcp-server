@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createSpecFile';
 export const title = 'Create a spec file';
 export const description = 'Creates a file for an OpenAPI or a protobuf 2 or 3 specification.\n\n**Note:**\n\n- If the file path contains a \\`/\\` (forward slash) character, then a folder is created. For example, if the path is the \\`components/schemas.json\\` value, then a \\`components\\` folder is created with the \\`schemas.json\\` file inside.\n- Creating a spec file assigns it the \\`DEFAULT\\` file type.\n- Multi-file specifications can only have one root file.\n- Files cannot exceed a maximum of 10 MB in size.\n';
@@ -18,7 +18,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}/files`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}/files`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

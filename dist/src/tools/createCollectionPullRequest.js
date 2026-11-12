@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'createCollectionPullRequest';
 export const title = 'Create a collection pull request';
 export const description = "Creates a pull request to merge changes from a forked collection into its parent\n(destination) collection. Provide the title, description, source and destination\ncollection IDs, and reviewer IDs. Use this after forking a collection\n(createCollectionFork) to propose the fork's changes for review rather than\nhard-merging them directly.\n";
@@ -22,7 +22,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/pull-requests`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/pull-requests`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};

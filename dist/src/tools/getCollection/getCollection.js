@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from '../utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from '../utils/toolHelpers.js';
 export const method = 'getCollection';
 export const description = "Gets information about a collection. For a complete list of this endpoint's possible values, refer to the [Postman Collection Format documentation](https://schema.postman.com/collection/json/v2.1.0/draft-07/docs/index.html).";
 export const parameters = z.object({
@@ -23,7 +23,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}`;
+        const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}`;
         const query = new URLSearchParams();
         if (args.access_key !== undefined)
             query.set('access_key', String(args.access_key));

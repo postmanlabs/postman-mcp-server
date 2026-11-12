@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getWorkspaceRoles';
 export const title = "Get a workspace's roles";
 export const description = "Gets who has access to a workspace and at what level, covering users, user groups, and\npartners. Use this to audit access, and to read the current state before changing it.\nPass \\`include=scim\\` to get SCIM IDs alongside Postman IDs. Partner roles do not support\nSCIM IDs.\nResolve the IDs in the response with getTeamUsers and getGroups. For a single\ncollection's access list use getCollectionRoles instead.\n";
@@ -19,7 +19,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/roles`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/roles`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

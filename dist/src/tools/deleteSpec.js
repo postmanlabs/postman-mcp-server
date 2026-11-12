@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'deleteSpec';
 export const title = 'Delete a spec';
 export const description = 'Deletes an API specification. On success, this returns an HTTP \\`204 No Content\\` response.';
@@ -13,7 +13,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/specs/${encodeURIComponent(String(args.specId))}`;
+        const endpoint = `/specs/${encodePathSegment(args.specId, 'specId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const options = {

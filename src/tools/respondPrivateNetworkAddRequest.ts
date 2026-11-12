@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'respondPrivateNetworkAddRequest';
 export const title = 'Respond to a Private API Network add request';
@@ -33,7 +38,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/network/private/network-entity/request/${encodeURIComponent(String(args.requestId))}`;
+    const endpoint = `/network/private/network-entity/request/${encodePathSegment(args.requestId, 'requestId')}`;
     const query = new URLSearchParams();
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
     const bodyPayload: any = {};

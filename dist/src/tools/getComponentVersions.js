@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'getComponentVersions';
 export const title = 'Get all component versions';
 export const description = "Lists a component's published versions. Use this to discover version IDs and labels,\nor to check whether pending draft edits have been published yet. Pass\n\\`include=content\\` when you also need each version's content.\nDo not use this tool to read unpublished edits; use getComponentDraft instead.\nRequires a Postman Enterprise plan.\n";
@@ -19,7 +19,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/components/${encodeURIComponent(String(args.componentId))}/versions`;
+        const endpoint = `/components/${encodePathSegment(args.componentId, 'componentId')}/versions`;
         const query = new URLSearchParams();
         if (args.include !== undefined)
             query.set('include', String(args.include));

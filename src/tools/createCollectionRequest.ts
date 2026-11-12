@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient, ContentType } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'createCollectionRequest';
 export const title = 'Create a collection request';
@@ -423,7 +428,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/collections/${encodeURIComponent(String(args.collectionId))}/requests`;
+    const endpoint = `/collections/${encodePathSegment(args.collectionId, 'collectionId')}/requests`;
     const query = new URLSearchParams();
     if (args.folder !== undefined) query.set('folder', String(args.folder));
     const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;

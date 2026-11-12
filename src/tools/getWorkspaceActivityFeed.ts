@@ -1,7 +1,12 @@
 import { z } from 'zod';
 import { PostmanAPIClient } from '../clients/postman.js';
 import { IsomorphicHeaders, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { ServerContext, asMcpError, McpError } from './utils/toolHelpers.js';
+import {
+  ServerContext,
+  asMcpError,
+  McpError,
+  encodePathSegment,
+} from './utils/toolHelpers.js';
 
 export const method = 'getWorkspaceActivityFeed';
 export const title = "Get a workspace's activity feed";
@@ -40,7 +45,7 @@ export async function handler(
   extra: { client: PostmanAPIClient; headers?: IsomorphicHeaders; serverContext?: ServerContext }
 ): Promise<CallToolResult> {
   try {
-    const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}/activities`;
+    const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}/activities`;
     const query = new URLSearchParams();
     if (args.userId !== undefined) query.set('userId', String(args.userId));
     if (args.elementType !== undefined) query.set('elementType', String(args.elementType));

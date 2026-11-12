@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ContentType } from '../clients/postman.js';
-import { asMcpError, McpError } from './utils/toolHelpers.js';
+import { asMcpError, McpError, encodePathSegment, } from './utils/toolHelpers.js';
 export const method = 'updateWorkspace';
 export const title = 'Update a workspace';
 export const description = "Updates a workspace's property, such as its name or visibility.\n\n**Note:**\n\n- This endpoint does not support the following visibility changes:\n  - \\`private\\` to \\`public\\`, \\`public\\` to \\`private\\`, and \\`private\\` to \\`personal\\` for **Free** and **Solo** [plans](https://www.postman.com/pricing/).\n  - \\`public\\` to \\`personal\\` for team users only.\n- There are rate limits when publishing public workspaces.\n- Public team workspace names must be unique.\n";
@@ -28,7 +28,7 @@ export const annotations = {
 };
 export async function handler(args, extra) {
     try {
-        const endpoint = `/workspaces/${encodeURIComponent(String(args.workspaceId))}`;
+        const endpoint = `/workspaces/${encodePathSegment(args.workspaceId, 'workspaceId')}`;
         const query = new URLSearchParams();
         const url = query.toString() ? `${endpoint}?${query.toString()}` : endpoint;
         const bodyPayload = {};
